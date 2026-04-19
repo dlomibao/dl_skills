@@ -14,6 +14,8 @@ const NODE_HEIGHT = 48;
 const NODE_GAP = 18;
 const PADDING = 32;
 const MAX_NODES = 12;
+const MAX_CHARS_PER_LINE = 16;   // fits 148px box at 13px sans
+const MAX_CHARS_TOTAL = 32;      // 2 lines × 16 chars; labels longer get ellipsis
 
 function validate(spec) {
   if (!Array.isArray(spec.nodes)) throw new Error("graph: nodes required");
@@ -95,10 +97,17 @@ function render(spec, tokens) {
     elements.push(
       `<rect x="${x}" y="${y}" width="${w}" height="${NODE_HEIGHT}" fill="${tokens.paper}" stroke="${borderColor}" stroke-width="${borderW}"/>`
     );
-    // Label, clipped to box
-    elements.push(
-      `<text x="${cx}" y="${cy + 5}" font-family='${escapeAttr(tokens.sansFont)}' font-size="${tokens.font.sm}" fill="${textColor}" text-anchor="middle">${escapeText(truncate(n.label, 22))}</text>`
-    );
+    // Label — wrap at hyphens/spaces to 2 lines max, font scaled down if
+    // we're forced to wrap (so two 16-char lines fit the 48px box height).
+    const lines = wrapLabel(n.label, MAX_CHARS_PER_LINE);
+    const fontSize = lines.length > 1 ? tokens.font.xs + 1 : tokens.font.sm;
+    const lineHeight = fontSize + 3;
+    const baseY = cy + (lines.length === 1 ? 5 : -lineHeight / 2 + 4);
+    lines.forEach((line, li) => {
+      elements.push(
+        `<text x="${cx}" y="${baseY + li * lineHeight}" font-family='${escapeAttr(tokens.sansFont)}' font-size="${fontSize}" fill="${textColor}" text-anchor="middle">${escapeText(line)}</text>`
+      );
+    });
     // Role tag (entry/exit) above
     if (n.role) {
       elements.push(
@@ -123,6 +132,62 @@ function svg(width, height, body) {
 }
 function escapeText(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function escapeAttr(s) { return String(s).replace(/"/g, "&quot;"); }
-function truncate(s, max) { return s.length > max ? s.slice(0, max - 1) + "…" : s; }
 
-module.exports = { render, validate };
+// Wrap a label at spaces or hyphens to ≤ maxChars per line, cap at 2 lines.
+// "requesting-code-review" → ["requesting-code-", "review"]. Hyphen stays
+// with the preceding line. Single tokens still longer than maxChars get
+// hard-truncated with ellipsis.
+function wrapLabel(text, maxChars) {
+  const tokens = [];
+  let remaining = text;
+  while (remaining.length) {
+    const sp = remaining.match(/^\s+/);
+    if (sp) { tokens.push(sp[0]); remaining = remaining.slice(sp[0].length); continue; }
+    const hy = remaining.match(/^[^\s-]+-/);
+    if (hy) { tokens.push(hy[0]); remaining = remaining.slice(hy[0].length); continue; }
+    const wd = remaining.match(/^[^\s-]+/);
+    if (wd) { tokens.push(wd[0]); remaining = remaining.slice(wd[0].length); continue; }
+    tokens.push(remaining[0]); remaining = remaining.slice(1);
+  }
+
+  const lines = [];
+  let cur = "";
+  for (const t of tokens) {
+    if (/^\s+$/.test(t)) { if (cur) cur += " "; continue; }
+    const cand = cur + t;
+    if (cand.length > maxChars && cur) {
+      lines.push(cur.trimEnd());
+      cur = t;
+    } else {
+      cur = cand;
+    }
+  }
+  if (cur) lines.push(cur.trimEnd());
+
+  return lines.slice(0, 2).map(l => l.length > maxChars + 2 ? l.slice(0, maxChars - 1) + "…" : l);
+}
+
+// Budget check — render-visual.js reads this to surface warnings before
+// drawing. Returns an array of { label, chars, softLimit } entries for
+// labels that will wrap or truncate.
+function budgetCheck(spec) {
+  const warnings = [];
+  if (!Array.isArray(spec.nodes)) return warnings;
+  for (const n of spec.nodes) {
+    if (!n.label) continue;
+    if (n.label.length > MAX_CHARS_PER_LINE) {
+      const lines = wrapLabel(n.label, MAX_CHARS_PER_LINE);
+      const willTruncate = lines.some(l => /…$/.test(l));
+      warnings.push({
+        label: n.label,
+        chars: n.label.length,
+        softLimit: MAX_CHARS_PER_LINE,
+        willWrap: lines.length > 1,
+        willTruncate,
+      });
+    }
+  }
+  return warnings;
+}
+
+module.exports = { render, validate, budgetCheck, MAX_CHARS_PER_LINE, MAX_CHARS_TOTAL };

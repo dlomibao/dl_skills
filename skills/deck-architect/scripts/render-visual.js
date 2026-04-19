@@ -83,6 +83,7 @@ const commentOrFigureRe = /(<!--[\s\S]*?-->)|<figure\b([^>]*\bdata-visual-spec\s
 
 let swaps = 0;
 const errors = [];
+const warnings = [];
 
 const rendered = html.replace(commentOrFigureRe, (match, comment, attrs, singleQuoteSpec, doubleQuoteSpec) => {
   // Comment match: return as-is.
@@ -103,6 +104,18 @@ const rendered = html.replace(commentOrFigureRe, (match, comment, attrs, singleQ
   if (!renderer) {
     errors.push(`  unknown shape "${spec.type}"; supported: ${Object.keys(RENDERERS).join(", ")}`);
     return match;
+  }
+
+  // Budget pre-flight — collect warnings before drawing. Renderers that
+  // export a budgetCheck function return [{label, chars, softLimit, ...}]
+  // for labels that will wrap/truncate. Non-blocking.
+  if (typeof renderer.budgetCheck === "function") {
+    const figLabel = extractDataAttr(attrs, "data-label") || spec.caption || spec.type;
+    const bw = renderer.budgetCheck(spec);
+    for (const w of bw) {
+      const action = w.willTruncate ? "will truncate" : w.willWrap ? "will wrap to 2 lines" : `exceeds soft limit ${w.softLimit}`;
+      warnings.push(`  [${spec.type}] ${figLabel}: "${w.label}" (${w.chars} chars) ${action}`);
+    }
   }
 
   let svg;
@@ -132,6 +145,10 @@ if (swaps === 0) {
 
 fs.writeFileSync(outputFile, rendered, "utf8");
 console.log(`render-visual: swapped ${swaps} placeholder(s) into ${path.basename(outputFile)}`);
+if (warnings.length) {
+  console.log(`render-visual: ${warnings.length} budget warning(s) (non-blocking)`);
+  warnings.forEach(w => console.log(w));
+}
 process.exit(0);
 
 // ─── helpers ──────────────────────────────────────────────────────────────

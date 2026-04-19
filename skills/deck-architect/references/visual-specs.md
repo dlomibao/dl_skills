@@ -242,6 +242,23 @@ When the visual is genuinely custom (a hand-drawn whiteboard, a product screensh
 
 The lint flags any `data-visual-todo` on main-flow slides (backup allowed as work-in-progress). The escape hatch makes unfinished work visible; it does not make it shippable.
 
+## Label budgets per shape
+
+Every shape has a per-label character budget matched to its rendered box size and font metrics. Labels within budget render on a single line; labels over budget wrap (where shape rules allow) or get hard-truncated with an ellipsis. `render-visual.js` emits a non-blocking warning for any label that will wrap or truncate — the render still succeeds, but the author sees what's being transformed so they can rename or shorten.
+
+| Shape | Element | Soft limit (1 line) | Hard limit (total, after wrap) | Behavior over soft limit |
+|---|---|---|---|---|
+| `flow` | node `label` | ~16 chars | ~32 (2 lines) | wrap at hyphens / spaces; 2-line cap; truncate with ellipsis beyond |
+| `graph` | node `label` | ~16 chars | ~32 (2 lines) | same as flow |
+| `bar` | row `category` | ~22 chars (horizontal) / ~14 (vertical) | — | no wrap; truncated at box |
+| `quadrant` | item `label` | ~22 chars | — | no wrap; text extends right; may collide with neighbors |
+| `waterfall` | bar `label` | ~14 chars per slot | — | no wrap; truncated at slot width |
+
+**Guidance:**
+- Prefer short labels. "executing-plans" reads better than "executing-plans-skill-v2".
+- Hyphenated identifiers (`using-superpowers`, `finishing-a-branch`) wrap naturally at the dashes — no authoring action needed.
+- If a warning fires, first try renaming. Second option: accept the wrap (usually fine in flow/graph). Last resort: use the `caption` field for detail the label can't hold.
+
 ## Validation
 
 Every spec validates against its shape's schema before the renderer draws. Validation errors fail the render with the offending slide identified. The orchestrator's error output names:
