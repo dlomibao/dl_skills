@@ -35,7 +35,7 @@ bash scripts/install-skill.sh --all             # everything
 
 | Skill | Version | Description |
 |---|---|---|
-| [deck-architect](skills/deck-architect/) | `2.2.0` | Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide w... |
+| [deck-architect](skills/deck-architect/) | `2.3.0` | Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide w... |
 
 <!-- SKILLS:END -->
 
