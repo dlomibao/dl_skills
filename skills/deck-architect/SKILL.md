@@ -1,7 +1,7 @@
 ---
 name: deck-architect
 description: Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide what to say, in what order, and what to cut. Use when a draft feels too long, too generic, doesn't land, or sounds AI-generated. Use when someone says "help me make a deck about X" — structure is where decks fail. Do NOT use when the user only wants visual polish on already-finalized content. Style enforcement (slop-phrase list) is English-only; structural rules apply to any language.
-version: 2.3.1
+version: 2.4.0
 license: MIT
 allowed-tools: [WebSearch]
 tested-with: claude-sonnet-4.5+, claude-opus-4+
@@ -134,6 +134,8 @@ Numbered list. Each slide:
 - **Load** — `slide-heavy` | `balanced` | `speaker-heavy`
 
 **The slide/speaker split is the craft.** If a phrase is on the slide, the presenter shouldn't read it aloud. Slide = anchor (number, phrase, chart, question). Presenter = story, nuance, example, "why this matters."
+
+**Slide-body vs. speaker-notes bans are enforced at render time.** Authoring vocabulary from the outline (`Triggered by:`, `Depth: L2`, `See B4`, `[INFERRED — confirm]`, structural narration like "in the next slide…") must never reach audience-visible body copy. It goes in `Speaker notes`, or it gets cut. See the "Slide-body commentary" section of `references/forbidden-phrases.md` for the full list. A renderer that drops these fields flat onto the slide has broken the contract — flag it during handoff.
 
 **Required content for every deck:**
 
@@ -297,6 +299,9 @@ Deliver as **structured text**, not slides. Use this schema verbatim:
 
 2. ...
 
+## Appendix divider
+[A one-line header for the pause between main flow and backup. Renderers use this to insert an unambiguous visual break — never skip it when a backup layer exists. Example: "Appendix — reference material, triggered on question."]
+
 ## Backup layer
 B1. [Title] — triggered by: [question/moment] — depth: L2
    - Content: ...
@@ -337,7 +342,30 @@ For a complete worked example (brief → full schema filled out), see [reference
 
 ### Phase 9 — Handoff (only if rendering)
 
-Don't render slides in this skill. Hand off to `pptx` (or the user's chosen tool) with the outline above. Keep the content exactly as outlined — the visual skill makes it look good, not rewrites the points. Include both main flow and backup layer.
+Don't render slides in this skill. Hand off to a visual skill with the outline above. Keep the content exactly as outlined — the visual skill makes it look good, not rewrites the points. Include main flow, the appendix divider, and the backup layer.
+
+**Handoff by target format:**
+
+| Target | Skill / tool | Contract |
+|---|---|---|
+| `pptx` / Keynote / Google Slides | `pptx` skill | Pass the Phase 8 output. Speaker notes go in the native notes pane. Appendix divider is a section break + a pause slide. |
+| `html` (self-contained file, reveal.js, slidev) | `/impeccable` for visual design + `references/html-renderer.md` for the contract | See below |
+| Markdown handoff (user renders separately) | — | The Phase 8 schema is already the handoff; flag that appendix divider is a required slide, not an optional heading. |
+
+**HTML handoff — specific contract:**
+
+1. **Confirm design context first.** The renderer inherits aesthetic discipline from `/impeccable`. Before generating HTML:
+   - Check for `.impeccable.md` in the project root. If present, the palette, typography, and ban-lists are already decided — use them.
+   - If absent, either run `/impeccable teach` to gather design context, or make a documented assumption in handoff notes so the user can override.
+2. **Follow `references/html-renderer.md` exactly.** It specifies semantic `data-role` values (`cover`, `main`, `appendix-divider`, `appendix`, `credits`), the `<aside class="notes">` contract, appendix-divider requirement, backup-slide visual treatment, meta-row overflow guards, and the keyboard-nav minimum. Every item on that contract's checklist is a non-negotiable.
+3. **Never collapse speaker notes into slide body.** They render as `<aside class="notes">` and reveal via presenter mode (`S` key). A rendered HTML deck with no `<aside>` elements is a broken handoff — regenerate.
+4. **Never let outline metadata leak onto slides.** `Triggered by:`, `Depth:`, `Hardest sell:`, `[INFERRED — confirm]`, `Pressure-tested as:` — all authoring vocabulary. They're in the outline because the outline is also the handoff spec; they are not slide content. The renderer places them in notes or omits them.
+5. **Lint before declaring done.** `node skills/deck-architect/scripts/lint-deck.js path/to/deck.html` runs the static checks: missing `data-role`, missing notes asides, missing appendix divider, slide-body commentary bans, impeccable absolute-ban CSS. A clean lint is the minimum bar; it does not replace a manual review of the visible design.
+6. **Visible checklist before shipping:**
+   - Counter and meta row survive at a 960px viewport (no truncation).
+   - Backup slides visibly differ from main (tint, watermark, or typographic shift — not just a label change).
+   - `S` reveals notes; `F` goes fullscreen; `←/→` navigates; `#N` deep-links work after reload.
+   - No reflex fonts, no gradient text, no border-left accent stripes, no cards-in-cards.
 
 ---
 
@@ -373,6 +401,8 @@ If any of these are true while you're drafting, you skipped or under-cooked a ph
 - About to present the outline without pressure-testing → Phase 6
 - Load-bearing claim doesn't specify direction ("roughly the same cost" — more or less?) → Phase 6 will catch it; fix now
 - Relying on a trust assertion the audience can't verify ("I talked to X and we're aligned") → Phase 6 will catch it; fix now
+- Target format is HTML and you haven't read `references/html-renderer.md` → back to Phase 9 (the contract is non-negotiable, not aspirational)
+- Target format is HTML and there's no `.impeccable.md` → run `/impeccable teach` or document the design assumption; don't improvise palette/typography
 
 For the full catalogue of rationalizations and how to refuse them, see [references/rationalizations.md](references/rationalizations.md).
 
@@ -409,6 +439,10 @@ Specific behaviors to avoid (the failure-modes catalogue is descriptive; this is
 - Inventing contributor names
 - Hedged qualifier-heavy prose where specific claims belong
 - Three-equal-weight bullets as a reflex
+- HTML rendering a deck without `/impeccable` design context (reflex fonts, gradient text, border-left stripes re-appear)
+- HTML rendering that drops speaker notes (or collapses them into on-slide footers)
+- HTML rendering without an appendix-divider between main flow and backup (main-to-reference transition is invisible live)
+- Outline metadata (`Triggered by:`, `Depth: L2`, `See B4`, `[INFERRED]`) rendered as audience-visible slide copy
 
 For background on *why* these matter — the failure modes that motivate this whole skill: [references/failure-modes.md](references/failure-modes.md). (Background reading; not required for any phase.)
 
