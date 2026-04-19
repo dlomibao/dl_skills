@@ -22,9 +22,14 @@ skills/<name>/
     *.md
   scripts/          # optional — helper scripts the skill calls
   ...
+samples/<name>/     # optional — real outputs, test runs, regression evidence
+  README.md         # index of what's here
+  *.md
 ```
 
 Keep `SKILL.md` lean (target <500 lines — the linter warns above that). Move depth into `references/*.md` files and link to them from SKILL.md so they load only when needed.
+
+Samples directories are scoped per skill (`samples/<skill-name>/`) so multiple skills can each ship their own test artifacts without colliding. Each sample dir should have a `README.md` index listing what's inside.
 
 ## Local development
 
