@@ -146,6 +146,42 @@ appendix 5     → 16 / 16
 
 Rationale: the presenter navigates by absolute slide index at runtime; `B1 / 5` forces them to mentally translate. The `data-section` label on backup slides (e.g. `B1 · Command list`) carries the "this is backup content" signal — the counter stays continuous.
 
+### 5a. Visual specs — how topology becomes inline SVG
+
+Chains, graphs, sequences, 2×2 quadrants, and waterfalls auto-earn a visual (see `visuals.md`). The renderer embeds them as `<figure data-visual-spec='…'>` placeholders in the HTML, then runs `scripts/render-visual.js` as a post-processing pass to swap each placeholder for inline SVG.
+
+**Placeholder format:**
+
+```html
+<figure data-visual-spec='{"type":"flow","nodes":[{"id":"a","label":"using-superpowers","role":"entry"},{"id":"b","label":"brainstorming"},{"id":"c","label":"writing-plans","highlight":true}],"caption":"the handoff chain"}' data-label="superpowers chain"></figure>
+```
+
+- `data-visual-spec` — JSON literal of the spec. Must validate against one of the five shipped shapes.
+- `data-label` — short accessible label; becomes `aria-label` on the rendered figure.
+
+**Design-token inheritance — the unification mechanism:**
+
+The renderer parses the deck's own `:root { --accent: …; --ink: …; --sans-font: …; }` block and passes those tokens into every shape renderer. Colors, typography, and stroke weight in the SVG come from the same source as the CSS. If the deck's accent changes, the next render picks it up automatically. No SVG has hardcoded palette values.
+
+The tokens honored: `--accent`, `--ink`, `--ink-2`, `--muted`, `--paper`, `--paper-2`, `--rule`, `--strike`, `--display-font`, `--sans-font`, `--mono-font`. The renderer ships sensible defaults if any are absent, so decks without a full token set still render, just with fallback aesthetics.
+
+**Pipeline order:**
+
+1. Generate HTML (includes `<figure data-visual-spec>` placeholders).
+2. Run `render-visual.js` — swaps placeholders for inline SVG.
+3. Run `lint-deck.js` — catches any remaining `data-visual-todo` on main-flow slides.
+
+**When a visual can't fit a shape** (screenshots, photographs, hand-drawn, custom illustrations): emit `<figure data-visual-todo="one-line description">`. The lint flags it on main-flow slides but permits it in the backup layer as a work-in-progress artifact.
+
+**Forbidden inside SVG:**
+
+The impeccable bans carry over. The renderer enforces them; a custom shape extension must not reintroduce them:
+
+- No gradient fills or strokes
+- No drop shadows on rounded rectangles (in fact: no rounded corners anywhere in the shipped shapes — flat geometric only)
+- No reflex default typography — the SVG inherits the deck's display/sans/mono fonts; if the deck is clean, the SVG is clean
+- No fill tints as a "nice touch" — accent used sparingly per the 60/30/10 discipline
+
 ### 6. Keyboard navigation minimum
 
 - `←` / `→` / `PageDown` / `PageUp`: prev/next slide

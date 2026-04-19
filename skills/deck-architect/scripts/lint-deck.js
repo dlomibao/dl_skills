@@ -152,6 +152,43 @@ if (cover) {
   }
 }
 
+// ─── Check 6a: unrendered visual specs on main-flow slides ────────────────
+// data-visual-todo is the explicit placeholder for not-yet-supplied visuals.
+// It's fine during authoring; not fine on a shipped main-flow slide. Allowed
+// in appendix (work-in-progress reference material).
+const todoHits = [];
+const unrenderedSpecs = [];
+for (const s of slides) {
+  const todoRe = /<figure\b[^>]*\bdata-visual-todo\b/gi;
+  const specRe = /<figure\b[^>]*\bdata-visual-spec\b/gi;
+  const renderedRe = /<figure\b[^>]*\bdata-rendered\s*=\s*["']true/i;
+
+  let m;
+  while ((m = todoRe.exec(s.body)) !== null) {
+    if (s.role === "main" || s.role === "cover") {
+      todoHits.push({ section: s.section || `#${s.index}`, role: s.role });
+    }
+  }
+  // A raw <figure data-visual-spec> that wasn't post-processed means the
+  // renderer wasn't run. Render-visual.js replaces the <figure> opening tag
+  // with data-rendered="true" after swapping.
+  if (specRe.test(s.body) && !renderedRe.test(s.body)) {
+    unrenderedSpecs.push({ section: s.section || `#${s.index}`, role: s.role });
+  }
+}
+if (todoHits.length) {
+  fail(`${todoHits.length} unrendered data-visual-todo placeholder(s) on main-flow slides:`);
+  todoHits.forEach(h => console.error(`        [${h.section}]`));
+} else {
+  ok(`no unrendered visual-todo placeholders on main-flow slides`);
+}
+if (unrenderedSpecs.length) {
+  fail(`${unrenderedSpecs.length} data-visual-spec placeholder(s) not yet rendered — run scripts/render-visual.js before shipping:`);
+  unrenderedSpecs.forEach(h => console.error(`        [${h.section}] role=${h.role}`));
+} else {
+  ok(`no unrendered visual-spec placeholders`);
+}
+
 // ─── Check 6b: appendix-divider has no meta row ───────────────────────────
 // The divider is a dramatic pause, not a content slide. A counter chip next
 // to the word "Appendix" competes for the same attention. The contract

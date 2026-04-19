@@ -1,7 +1,7 @@
 ---
 name: deck-architect
 description: Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide what to say, in what order, and what to cut. Use when a draft feels too long, too generic, doesn't land, or sounds AI-generated. Use when someone says "help me make a deck about X" — structure is where decks fail. Do NOT use when the user only wants visual polish on already-finalized content. Style enforcement (slop-phrase list) is English-only; structural rules apply to any language.
-version: 2.4.2
+version: 2.5.0
 license: MIT
 allowed-tools: [WebSearch]
 tested-with: claude-sonnet-4.5+, claude-opus-4+
@@ -196,6 +196,8 @@ Otherwise: mark `text-only` and move on.
 
 > **TL;DR if you don't load the reference:** comparison → bar; trend → line (≤5 series); part-to-whole → stacked bar (avoid pies >4 slices); relationship → scatter. **Forbidden:** 3D charts, pies with many slices, dual-axis without genuine unit difference. Chart titles state the insight, not the metric. One highlight color per chart; everything else gray. For images, run `WebSearch` for 2–3 candidates with a slide-specific query, surface URLs with one-line fit notes, **always flag licensing** — never fabricate URLs.
 
+**Topology auto-earns a visual.** Chains, graphs, sequences, 2×2 quadrants, and waterfalls with ≥ 3 nodes and explicit directional structure are not allowed to fall through to text-only. deck-architect emits a structured spec and the shipped renderer (`scripts/render-visual.js`) produces inline SVG that inherits the deck's design tokens. See `references/visual-specs.md` for the five shipped shapes (`flow`, `bar`, `graph`, `quadrant`, `waterfall`), their spec schemas, and the placement contract. For visuals that don't fit any shape (screenshots, photographs, hand-drawn), the outline emits a `data-visual-todo` placeholder and the lint flags it if it ships.
+
 When images are needed and the user hasn't supplied an asset, run `WebSearch` for 2–3 candidates with a slide-specific query. **Real-world constraint:** `WebSearch` typically returns stock-library **collection pages** (e.g. `https://www.istockphoto.com/photos/server-fire`) rather than direct image-asset URLs (e.g. `https://www.istockphoto.com/photo/server-on-fire-id12345.jpg`). Surface the collection URLs honestly with one line on which fits best and a note that the user must pick the specific frame. **Always flag licensing risk** — user must verify reuse rights. **Never fabricate URLs to look more specific than the search actually returned.** When the concept is genuinely specific (a real lockscreen, a real product UI, a real whiteboard), recommend the user shoot their own — phone-shot beats stock for hooks.
 
 ### Phase 6 — Pressure test (role-play the skeptic), then final scan
@@ -365,8 +367,9 @@ Don't render slides in this skill. Hand off to a visual skill with the outline a
 2. **Follow `references/html-renderer.md` exactly.** It specifies semantic `data-role` values (`cover`, `main`, `appendix-divider`, `appendix`, `credits`), the `<aside class="notes">` contract, appendix-divider requirement, backup-slide visual treatment, meta-row overflow guards, and the keyboard-nav minimum. Every item on that contract's checklist is a non-negotiable.
 3. **Never collapse speaker notes into slide body.** They render as `<aside class="notes">` and reveal via presenter mode (`S` key). A rendered HTML deck with no `<aside>` elements is a broken handoff — regenerate.
 4. **Never let outline metadata leak onto slides.** `Triggered by:`, `Depth:`, `Hardest sell:`, `[INFERRED — confirm]`, `Pressure-tested as:` — all authoring vocabulary. They're in the outline because the outline is also the handoff spec; they are not slide content. The renderer places them in notes or omits them.
-5. **Lint before declaring done.** `node skills/deck-architect/scripts/lint-deck.js path/to/deck.html` runs the static checks: missing `data-role`, missing notes asides, missing appendix divider, slide-body commentary bans, impeccable absolute-ban CSS. A clean lint is the minimum bar; it does not replace a manual review of the visible design.
-6. **Visible checklist before shipping:**
+5. **Render visual specs before lint.** `node skills/deck-architect/scripts/render-visual.js path/to/deck.html` walks the file for `<figure data-visual-spec>` placeholders and swaps each for an inline SVG that reads the deck's own `:root` tokens (accent, ink, paper, rule, typography). This is the unification mechanism — no hardcoded colors or fonts in the SVG. Run it after HTML generation, before the lint.
+6. **Lint before declaring done.** `node skills/deck-architect/scripts/lint-deck.js path/to/deck.html` runs the static checks: missing `data-role`, missing notes asides, missing appendix divider, slide-body commentary bans, impeccable absolute-ban CSS, remaining `data-visual-todo` on main-flow slides. A clean lint is the minimum bar; it does not replace a manual review of the visible design.
+7. **Visible checklist before shipping:**
    - Counter and meta row survive at a 960px viewport (no truncation).
    - Backup slides visibly differ from main (tint, watermark, or typographic shift — not just a label change).
    - `S` reveals notes; `F` goes fullscreen; `←/→` navigates; `#N` deep-links work after reload.
