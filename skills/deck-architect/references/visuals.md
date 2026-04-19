@@ -47,7 +47,7 @@ Most decks need 0–2 of these total, usually opening hook or STAR moment.
 - **If the user signaled an existing asset** (Phase 1b): reference by name/path; note "use user-provided asset."
 - **Otherwise, run `WebSearch` for 2–3 candidates** with a slide-specific query. Surface URLs with one line on which fits best.
   - Example: "For the hook about infrastructure fragility, search: 'server rack on fire datacenter'; candidates: [url1] (strongest — conveys urgency), [url2], [url3]."
-- **Real-world constraint:** `WebSearch` typically returns stock-library collection pages (iStock, Getty, StockCake) rather than direct image-asset URLs. Surface the collection URL with a one-line query that locates the right frame, and tell the user they must pick the specific frame.
+- **Real-world constraint:** `WebSearch` typically returns stock-library **collection pages** (e.g. `https://www.istockphoto.com/photos/server-fire`) rather than direct image-asset URLs (e.g. `https://www.istockphoto.com/photo/server-on-fire-id12345.jpg`). Surface the collection URL with a one-line query that locates the right frame, and tell the user they must pick the specific frame.
 - **Always flag licensing risk** — user must verify reuse rights before publishing.
 - **Never fabricate URLs** to look more specific than the search actually returned. If `WebSearch` isn't available, give specific search queries and describe what a good result looks like.
 - **When the concept is genuinely specific** (a real lockscreen with real notifications, a real product UI, a real whiteboard), recommend the user shoot their own — a phone-shot beats any stock photo for hooks, and costs 20 minutes.

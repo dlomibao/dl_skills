@@ -1,7 +1,7 @@
 ---
 name: deck-architect
 description: Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide what to say, in what order, and what to cut. Use when a draft feels too long, too generic, doesn't land, or sounds AI-generated. Use when someone says "help me make a deck about X" — structure is where decks fail. Do NOT use when the user only wants visual polish on already-finalized content. Style enforcement (slop-phrase list) is English-only; structural rules apply to any language.
-version: 2.3.0
+version: 2.3.1
 license: MIT
 allowed-tools: [WebSearch]
 tested-with: claude-sonnet-4.5+, claude-opus-4+
@@ -38,7 +38,7 @@ A deck that passes:
 - The deck argues something — it doesn't just "cover" a topic
 - Nothing could be copy-pasted to another company with nouns swapped
 
-**When the test fails OR you're uncertain: Read `references/forbidden-phrases.md`** for the full list and structural tells. Use the TL;DR below as a first pass; load the reference when (a) a slide title or body hits one of the listed phrases, (b) you're writing fresh persuasive copy where slop risk is high, or (c) the audience is sophisticated enough to penalize any generic language. If the TL;DR catches everything, no need to load.
+**When the test fails OR you're uncertain: Read `references/forbidden-phrases.md`** for the full list and structural tells. Use the TL;DR below as a first pass; load the reference when (a) a slide title or body hits one of the listed phrases, (b) you're writing fresh persuasive copy where slop risk is high (pitch, exec recommendation, board update), or (c) the audience is sophisticated enough to penalize any generic language. If the TL;DR catches everything, no need to load.
 
 > **TL;DR if you don't load the reference:** ban hedged corporate filler — "leverage," "unlock," "drive alignment," "robust," "seamlessly," "stakeholders," "ecosystem," "significant impact," "in today's fast-paced world," "we are excited to." Replace each with a concrete noun or verb that carries information. "Significant impact on retention" → "D30 retention moved from 22% to 41%." Specificity is what kills the slop.
 
@@ -62,7 +62,7 @@ A deck that passes:
 
 Follow phases in order. Don't skip ahead.
 
-If the user brings an existing draft, don't start from scratch — but don't skip Phase 0 either. Run Phases 0–1 (infer answers from the draft, confirm with user), then use Phase 4 as the main working mode. All other phases still run — driven by the existing draft rather than a blank page. Phase 2 (spine) re-validates or replaces the existing structure; Phase 3 becomes a slot-by-slot revision (cut / merge / rewrite titles / add missing hook or STAR); Phases 5–8 unchanged. Output a revised outline plus a "what changed and why" section (the Phase 9 schema has a slot for this).
+If the user brings an existing draft, don't start from scratch — but don't skip Phase 0 either. Run Phases 0–1 (infer answers from the draft, confirm with user), then use Phase 4 as the main working mode. All other phases still run — driven by the existing draft rather than a blank page. Phase 2 (spine) re-validates or replaces the existing structure; Phase 3 becomes a slot-by-slot revision (cut / merge / rewrite titles / add missing hook or STAR); Phases 5–8 unchanged. Output a revised outline plus a "what changed and why" section (the Phase 8 output schema has a slot for this).
 
 ### Phase 0 — Model the audience
 
@@ -174,7 +174,7 @@ If content exceeds the ceiling, **cut — don't shrink fonts.** Move detail to a
 - **Filler to delete on sight:** agenda slides on decks <15 slides; "About us" up front; "Thank you" / "Questions?" closers; transition slides ("Section 2"); slides that restate what's about to come.
 - **Empty-calorie tells:** title could apply to any company; lists categories without synthesis; chart shows data without takeaway in title.
 
-**Run the AI Slop Test** using the inline TL;DR at the top of this file. **Read `references/forbidden-phrases.md`** when (a) any slide title or body hits a listed phrase, (b) this is fresh persuasive copy (pitch, exec recommendation), or (c) the audience will penalize generic language. Skip the load if the TL;DR catches nothing. Rewrite with specifics — every forbidden phrase has a concrete replacement.
+**Run the AI Slop Test** using the inline TL;DR at the top of this file. **Read `references/forbidden-phrases.md`** when (a) any slide title or body hits a listed phrase, (b) this is fresh persuasive copy (pitch, exec recommendation, board update), or (c) the audience is sophisticated enough to penalize any generic language. Skip the load if the TL;DR catches nothing. Rewrite with specifics — every forbidden phrase has a concrete replacement.
 
 **Audience-fit check.** Re-read through the audience's eyes. Cut what they know. Add what they'd push back on.
 
@@ -194,7 +194,7 @@ Otherwise: mark `text-only` and move on.
 
 > **TL;DR if you don't load the reference:** comparison → bar; trend → line (≤5 series); part-to-whole → stacked bar (avoid pies >4 slices); relationship → scatter. **Forbidden:** 3D charts, pies with many slices, dual-axis without genuine unit difference. Chart titles state the insight, not the metric. One highlight color per chart; everything else gray. For images, run `WebSearch` for 2–3 candidates with a slide-specific query, surface URLs with one-line fit notes, **always flag licensing** — never fabricate URLs.
 
-When images are needed and the user hasn't supplied an asset, run `WebSearch` for 2–3 candidates with a slide-specific query. **Real-world constraint:** `WebSearch` typically returns stock-library collection pages (iStock/Getty/etc.) rather than direct image-asset URLs. Surface the collection URLs honestly with one line on which fits best and a note that the user must pick the specific frame. **Always flag licensing risk** — user must verify reuse rights. **Never fabricate URLs to look more specific than the search actually returned.** When the concept is genuinely specific (a real lockscreen, a real product UI, a real whiteboard), recommend the user shoot their own — phone-shot beats stock for hooks.
+When images are needed and the user hasn't supplied an asset, run `WebSearch` for 2–3 candidates with a slide-specific query. **Real-world constraint:** `WebSearch` typically returns stock-library **collection pages** (e.g. `https://www.istockphoto.com/photos/server-fire`) rather than direct image-asset URLs (e.g. `https://www.istockphoto.com/photo/server-on-fire-id12345.jpg`). Surface the collection URLs honestly with one line on which fits best and a note that the user must pick the specific frame. **Always flag licensing risk** — user must verify reuse rights. **Never fabricate URLs to look more specific than the search actually returned.** When the concept is genuinely specific (a real lockscreen, a real product UI, a real whiteboard), recommend the user shoot their own — phone-shot beats stock for hooks.
 
 ### Phase 6 — Pressure test (role-play the skeptic), then final scan
 
