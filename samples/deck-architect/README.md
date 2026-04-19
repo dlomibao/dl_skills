@@ -2,15 +2,43 @@
 
 Real outputs and test artifacts for the [deck-architect](../../skills/deck-architect/) skill.
 
-## End-to-end example runs
+## Featured: v6 end-to-end deck
 
-| File | Prompt shape | What it demonstrates |
-|---|---|---|
-| [impeccable-superpowers-meta-deck.md](impeccable-superpowers-meta-deck.md) | "Build a deck about what makes these two skills great" | Full Phase 8 output with research (WebSearch + gh API), tradeoff slide, rollback slide, Standard pressure test, final scan |
+**[v6-what-makes-great-skills.html](v6-what-makes-great-skills.html)** — a 12-minute conference talk rendered from a deck-architect outline through `/impeccable` for HTML. Self-contained file; open it in any browser.
 
-## Subagent test runs (v2.2.0 — validated the skill's loading semantics)
+- **Cover:** *"Weak skills describe. Strong skills forbid."*
+- **Close:** *"Pick. Forbid. Check."*
+- **Structure:** SCQA + pyramid, 4 MECE moves, honest tradeoff, main-flow rollback, action-ask close
+- **Visuals:** flow (chain), bar (Mejba data), quadrant (skill positioning), graph (dependency DAG, appendix), waterfall (cumulative contribution, appendix)
+- **Typography:** Sora (display) + Literata (body) + Geist Mono (meta)
+- **Palette:** warm terracotta accent over tinted-paper OKLCH neutrals
+- **Lint:** clean on all 11 static checks
+- **Grade:** A+ (97/100)
 
-Each test spawned a clean-context subagent given only the `SKILL.md` path and an explicit instruction not to pre-load references.
+Outline source at [v6-outline.md](v6-outline.md). Open the HTML and press `S` to see presenter-mode speaker notes; `←/→` to navigate; `F` for fullscreen.
+
+## The progression — how we got to v6
+
+Each version was a fresh end-to-end subagent run against a different skill version. Every regression the prior version surfaced drove the next skill bump.
+
+| Version | Skill | Cover | Grade | What the failure-mode round taught |
+|---|---|---|---|---|
+| [v1](what-makes-great-skills.html) | 2.3.1 | descriptive | F | Commentary leaked onto slides; no `data-role`; no speaker notes; chain rendered as text paragraphs |
+| [v2](v2-what-makes-great-skills.html) | 2.4.0 | fragmented kicker + headline | caught by lint | HTML handoff contract shipped; fragmented cover snuck past |
+| [v3](v3-what-makes-great-skills.html) | 2.4.2 | informative ("The design moves behind…") | A−, 90 | Structure clean but chain still rendered as seven text paragraphs |
+| [v4](v4-what-makes-great-skills.html) | 2.5.0 | quotable ("Four moves that turn a skill into a system.") | A, 93 | Structured visual specs + shipped renderer — chain is finally SVG |
+| [v5](v5-what-makes-great-skills.html) | 2.5.1 | rhetorical ("Great skills refuse. Average skills suggest.") | A+, 97 | Cover echoes close; hyphen-wrap fixes flow overflow |
+| **[v6](v6-what-makes-great-skills.html)** | **2.5.2** | **"Weak skills describe. Strong skills forbid."** | **A+, 97** | Graph label wrap + budget warnings at render time |
+
+Each HTML file has the corresponding `-outline.md` alongside it showing the Phase 8 source the subagent produced.
+
+## Meta-deck on the skills themselves
+
+[impeccable-superpowers-meta-deck.md](impeccable-superpowers-meta-deck.md) — the original Phase 8 markdown output from the same prompt, before the HTML handoff contract existed. Kept as the reference point the progression measured itself against.
+
+## Earlier subagent test runs (v2.2.0)
+
+Validated the skill's loading semantics — clean-context subagents given only `SKILL.md` paths.
 
 | File | Prompt | Result |
 |---|---|---|
@@ -21,7 +49,7 @@ Each test spawned a clean-context subagent given only the `SKILL.md` path and an
 
 ## Regression tests (v2.3.0)
 
-Same 3 prompts, re-run against v2.3.0 to validate the fixes landed. Surfaced 3 small polish items addressed in v2.3.1.
+Same 3 prompts re-run against v2.3.0 to validate the fixes landed. Surfaced 3 small polish items addressed in v2.3.1.
 
 | File | What it validates |
 |---|---|

@@ -1,0 +1,1218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weak skills describe. Strong skills forbid.</title>
+<!--
+  design-context (inferred, no .impeccable.md present)
+
+  audience     : Claude Code power users who have already authored at
+                 least one production skill of their own. They read
+                 SKILL.md frontmatter like prose and live in terminals.
+                 Mildly defensive about being told their skills need
+                 teeth.
+  viewing ctx  : late-morning technical conference slot, projector in a
+                 moderately lit room. 12-minute live talk + ~5 min Q&A.
+                 Laptop preview on a 13-14" screen is the dev surface.
+  theme        : light — because a daylit conference projector washes
+                 out dark-mode contrast, and a warm-paper surface reads
+                 closer to a printed field notebook / monograph than
+                 any slide-template default. v5 of this deck used a
+                 cool-teal monitor register; v6 picks the opposite
+                 physicality (warm paper, ink, rust accent) so two
+                 generations don't converge on one look.
+  brand words  : opinionated, instrumented, forbidding.
+                 NOT modern / elegant / sleek — dead categories per
+                 impeccable. "Forbidding" is load-bearing: the deck's
+                 argument is literally that forbidding specific model
+                 defaults is the move that separates a shippable skill
+                 from a private note.
+  font pick    : display = Sora (Google, monolinear geometric sans.
+                            Uniform stroke weight across letters.
+                            Architectural / quiet register. Not on the
+                            reject list. User-override from the v6
+                            initial pick, Sora, which
+                            had too much stroke contrast).
+                 body    = Literata (Google, Pelavin's screen-tuned
+                            serif. Distinct from Lora / Crimson /
+                            Newsreader / Source Serif. Designed for
+                            long reading, matches the monograph feel).
+                 mono    = Geist Mono (Vercel, distinct from Fira Code,
+                            JetBrains Mono, IBM Plex Mono, Space Mono).
+                 rejected reflexes: Inter, DM Sans, Fraunces, Instrument
+                                    Serif, Space Grotesk, Plus Jakarta
+                                    Sans, Newsreader, Lora, Crimson,
+                                    IBM Plex Mono, Outfit, Cormorant,
+                                    and Fira Code (last one specifically
+                                    rejected as the v5 carry-over mono).
+  palette      : OKLCH, tinted warm toward terracotta-rust (hue ~42-52).
+                 Accent oklch(58% 0.138 42) — warm terracotta — at
+                 ~10% visual weight. Audience reads terminal output all
+                 day; a warm accent reads as printed-monograph rather
+                 than monitor, opposite physicality from v5's cool teal.
+                 Neutrals tinted 0.010-0.018 chroma toward hue 52 so
+                 paper, ink, rule share one warm hue family (60/30/10).
+  bans held    : no reflex fonts (extended reject list above); no
+                 gradient text (BAN 2); no border-left > 1px (BAN 1);
+                 no cards-in-cards; no pure #000 / #fff; no
+                 glassmorphism; no bounce easing; no sparklines as
+                 decoration; no 3D charts; no rounded corners inside
+                 rendered SVG.
+  visual-specs : all five shipped shapes exercised once — quadrant
+                 (slide 5), bar (slide 6), flow (slide 8), graph (B2),
+                 waterfall (B3). Specs emitted as
+                 <figure data-visual-spec='{json}'> placeholders and
+                 swapped for inline SVG by scripts/render-visual.js
+                 (2.5.2), inheriting the :root tokens defined below.
+                 B2's graph intentionally exercises 2.5.2's new
+                 hyphen-wrap on using-superpowers (17c),
+                 requesting-code-review (22c), finishing-a-branch (18c)
+                 — budget warnings are expected and accepted; the real
+                 skill-file identifiers are preferred over renamed
+                 shorter labels. See outline handoff for the decision.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400;1,7..72,500&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* OKLCH palette — warm terracotta-rust, light theme, tinted neutrals. */
+  --paper:     oklch(97.2% 0.012 70);
+  --paper-2:   oklch(94.2% 0.017 62);
+  --rule:      oklch(82% 0.020 58);
+  --ink:       oklch(24% 0.028 45);
+  --ink-2:     oklch(40% 0.028 50);
+  --ink-mute:  oklch(55% 0.024 55);
+  --muted:     oklch(55% 0.024 55);
+  --accent:    oklch(58% 0.138 42);
+  --accent-2:  oklch(64% 0.110 50);
+  --strike:    oklch(70% 0.020 58);
+
+  --display-font: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --sans-font:    "Sora", ui-sans-serif, system-ui, sans-serif;
+  --body-font:    "Literata", ui-serif, Georgia, serif;
+  --mono-font:    "Geist Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  /* Back-compat aliases used throughout the sheet. */
+  --f-display: var(--display-font);
+  --f-body:    var(--body-font);
+  --f-mono:    var(--mono-font);
+
+  /* 4pt spacing scale, semantic names. */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px; --sp-9: 96px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; background: var(--ink); }
+body {
+  font-family: var(--f-body);
+  font-size: clamp(16px, 1.4vw, 20px);
+  color: var(--ink);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+.deck { position: fixed; inset: 0; }
+
+.slide {
+  position: absolute; inset: 0;
+  background: var(--paper);
+  padding: clamp(32px, 5.5vh, 72px) clamp(40px, 6vw, 96px);
+  display: none;
+  flex-direction: column;
+  gap: var(--sp-6);
+  overflow: hidden;
+}
+.slide.active { display: flex; }
+
+/* --- Meta row ---------------------------------------------------------- */
+.meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.meta .section {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.meta .counter {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+
+/* --- Typography -------------------------------------------------------- */
+h1.slide-title, h2.slide-title {
+  font-family: var(--f-display);
+  font-weight: 600;
+  letter-spacing: -0.014em;
+  line-height: 1.10;
+  color: var(--ink);
+  margin: 0;
+  max-width: 26ch;
+}
+.slide[data-role="cover"] h1 { font-size: clamp(44px, 6.4vw, 92px); max-width: 18ch; }
+.slide[data-role="main"] h1.slide-title { font-size: clamp(28px, 3.6vw, 50px); }
+.slide[data-role="appendix-divider"] h1 { font-size: clamp(36px, 5vw, 68px); max-width: 22ch; }
+.slide[data-role="appendix"] h1.slide-title { font-size: clamp(24px, 3vw, 38px); font-weight: 500; }
+
+p { margin: 0; max-width: 72ch; }
+p.lead { font-size: clamp(18px, 1.7vw, 23px); color: var(--ink-2); max-width: 60ch; line-height: 1.45; }
+p.small { font-size: 14px; color: var(--ink-mute); }
+
+em.accent { font-style: normal; color: var(--accent); font-weight: 500; }
+strong { font-weight: 600; color: var(--ink); }
+
+/* --- Slide 1 anchor verbs (grid of moves) ------------------------------ */
+ul.anchors {
+  list-style: none; padding: 0; margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--sp-5);
+  margin-top: var(--sp-3);
+}
+ul.anchors li {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(18px, 1.5vw, 22px);
+  color: var(--ink);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--rule);
+  line-height: 1.25;
+}
+ul.anchors li .n {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: var(--sp-2);
+}
+ul.anchors li .d {
+  display: block;
+  font-family: var(--f-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--ink-mute);
+  margin-top: var(--sp-2);
+  max-width: 30ch;
+  line-height: 1.45;
+}
+
+/* --- Slide 2 two-column reframe --------------------------------------- */
+.reframe {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-8);
+  align-items: start;
+}
+.reframe .col h3 {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0 0 var(--sp-5) 0;
+  color: var(--ink-mute);
+  font-weight: 500;
+}
+.reframe .col.expected li {
+  color: var(--strike);
+  text-decoration: line-through;
+  text-decoration-color: var(--strike);
+  text-decoration-thickness: 1px;
+}
+.reframe .col.actual li { color: var(--ink); }
+.reframe .col.actual h3 { color: var(--accent); }
+.reframe ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: var(--sp-4);
+  font-family: var(--f-body); font-size: clamp(18px, 1.7vw, 23px); line-height: 1.3;
+}
+
+/* --- Slide 3 side-by-side examples ------------------------------------ */
+.examples {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-7);
+  margin-top: var(--sp-2);
+}
+.examples .ex h4 {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); margin: 0 0 var(--sp-3);
+  font-weight: 500;
+}
+.examples .ex p.source {
+  font-family: var(--f-body); font-style: italic; color: var(--ink-mute);
+  margin-bottom: var(--sp-3); font-size: 14px;
+}
+.examples .ex .payload {
+  font-family: var(--f-mono); font-size: clamp(13px, 1.15vw, 15px);
+  line-height: 1.65;
+  color: var(--ink);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--sp-4);
+}
+.examples .ex .payload .ban { color: var(--accent); }
+.examples .ex .payload .kw { color: var(--accent); font-weight: 500; }
+
+/* --- Slide 4 rebuttal table ------------------------------------------- */
+table.rebut {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--f-body);
+  font-size: clamp(15px, 1.35vw, 18px);
+  line-height: 1.4;
+  margin-top: var(--sp-2);
+}
+table.rebut th {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; font-weight: 500; color: var(--ink-mute);
+  text-align: left; padding: 0 var(--sp-5) var(--sp-3);
+  border-bottom: 1px solid var(--rule);
+}
+table.rebut td {
+  padding: var(--sp-4) var(--sp-5);
+  vertical-align: top;
+}
+table.rebut td.lhs { color: var(--strike); font-style: italic; width: 48%; }
+table.rebut td.rhs { color: var(--ink); font-weight: 500; }
+table.rebut tr + tr td { border-top: 1px dotted var(--rule); }
+
+/* --- Figures for rendered SVG ---------------------------------------- */
+figure {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+figure svg { max-width: 100%; max-height: 100%; height: auto; width: auto; display: block; }
+
+/* --- Slide 6 bar-chart insight line ----------------------------------- */
+.insight {
+  font-size: clamp(16px, 1.5vw, 20px);
+  color: var(--ink-2);
+  max-width: 72ch;
+  line-height: 1.4;
+  font-style: italic;
+}
+.insight em.accent { font-style: normal; }
+
+/* --- Slide 7 terminal block ------------------------------------------- */
+.check-layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--sp-7);
+  align-items: start;
+  margin-top: var(--sp-2);
+}
+.check-layout .artefact h4 {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); margin: 0 0 var(--sp-3);
+  font-weight: 500;
+}
+pre.term {
+  font-family: var(--f-mono); font-size: clamp(12px, 1.1vw, 14px);
+  line-height: 1.7;
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--sp-5) var(--sp-5);
+  margin: 0;
+  overflow: hidden;
+  max-width: 62ch;
+  white-space: pre;
+}
+pre.term .prompt { color: var(--accent-2); }
+pre.term .ok   { color: var(--accent-2); }
+pre.term .fail { color: oklch(68% 0.17 28); }
+pre.term .dim  { color: oklch(70% 0.012 58); }
+
+.check-layout .pattern {
+  display: flex; flex-direction: column; gap: var(--sp-4);
+}
+.check-layout .pattern p {
+  font-size: clamp(15px, 1.4vw, 18px);
+  color: var(--ink-2);
+  line-height: 1.45;
+  max-width: 40ch;
+}
+.check-layout .pattern p strong { color: var(--ink); }
+
+/* --- Slide 9 tradeoff costs ------------------------------------------- */
+ol.costs {
+  list-style: none; padding: 0; margin: var(--sp-4) 0 0;
+  display: flex; flex-direction: column; gap: var(--sp-5);
+  counter-reset: cost;
+  max-width: 72ch;
+}
+ol.costs li {
+  counter-increment: cost;
+  padding-left: var(--sp-7);
+  position: relative;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.45;
+}
+ol.costs li::before {
+  content: counter(cost, decimal-leading-zero);
+  position: absolute; left: 0; top: 0.15em;
+  font-family: var(--f-mono);
+  font-size: 0.78em;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+ol.costs li strong { display: block; color: var(--ink); margin-bottom: var(--sp-1); font-family: var(--f-display); font-weight: 500; }
+
+/* --- Slide 10 rollback --------------------------------------------------- */
+.rollback { display: grid; grid-template-columns: 2fr 1fr; gap: var(--sp-7); }
+.rollback .block h3 {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-mute); font-weight: 500;
+  margin: 0 0 var(--sp-4);
+}
+.rollback ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.rollback .steps li {
+  font-size: clamp(15px, 1.4vw, 18px);
+  padding-left: var(--sp-6); position: relative;
+  line-height: 1.45;
+}
+.rollback .steps li .k {
+  position: absolute; left: 0; top: 0.1em;
+  font-family: var(--f-mono); font-size: 11px; color: var(--accent);
+  letter-spacing: 0.1em;
+}
+.rollback .nots li {
+  font-size: 15px; color: var(--ink-2);
+  padding-left: var(--sp-5); position: relative;
+  line-height: 1.45;
+}
+.rollback .nots li::before {
+  content: "\2014"; position: absolute; left: 0; color: var(--strike);
+}
+
+/* --- Slide 11 close --------------------------------------------------- */
+.close-v6 {
+  display: flex; flex-direction: column; justify-content: space-between;
+  height: 100%; gap: var(--sp-7);
+}
+.close-v6 .takeaway {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.020em;
+  color: var(--ink);
+  max-width: 22ch;
+}
+.close-v6 .takeaway .ac { color: var(--accent); }
+.close-v6 .action {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--sp-5);
+}
+.close-v6 .action-line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-5);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(28px, 3.2vw, 42px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: var(--sp-4);
+  flex-wrap: wrap;
+}
+.close-v6 .action-line span { color: var(--ink); }
+.close-v6 .action-line span + span::before {
+  content: "\00B7";
+  color: var(--rule);
+  margin-right: var(--sp-5);
+  margin-left: calc(var(--sp-5) * -1);
+}
+.close-v6 .action-notes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-6);
+  font-family: var(--f-body);
+  font-size: clamp(14px, 1.25vw, 16px);
+  color: var(--ink-2);
+  line-height: 1.4;
+  max-width: 90ch;
+}
+.close-v6 .action-notes .act-lbl {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--sp-2);
+}
+
+/* --- Cover slide ------------------------------------------------------- */
+.slide[data-role="cover"] {
+  justify-content: space-between;
+  padding: clamp(40px, 7vh, 96px) clamp(48px, 7vw, 120px);
+}
+.slide[data-role="cover"] .cover-title-block {
+  display: flex; flex-direction: column; gap: var(--sp-5);
+  margin-top: auto; margin-bottom: auto;
+}
+.slide[data-role="cover"] h1 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  letter-spacing: -0.024em;
+  line-height: 1.02;
+  color: var(--ink);
+  margin: 0;
+}
+.slide[data-role="cover"] h1 .ac { color: var(--accent); }
+.slide[data-role="cover"] .subtitle {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: clamp(18px, 1.8vw, 24px);
+  color: var(--ink-2);
+  max-width: 54ch;
+  line-height: 1.4;
+  margin: 0;
+}
+.slide[data-role="cover"] .cover-meta {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-top: 1px solid var(--rule); padding-top: var(--sp-4);
+  font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.10em;
+  text-transform: uppercase; color: var(--ink-mute);
+}
+
+/* --- Appendix divider --------------------------------------------------- */
+.slide[data-role="appendix-divider"] {
+  justify-content: center;
+  background: var(--paper-2);
+}
+.slide[data-role="appendix-divider"] .appendix-label {
+  font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--accent); margin: 0 0 var(--sp-5);
+}
+.slide[data-role="appendix-divider"] .appendix-hint {
+  font-family: var(--f-body); font-style: italic; color: var(--ink-mute);
+  font-size: 18px; margin-top: var(--sp-5); max-width: 48ch;
+}
+
+/* --- Appendix slides — visibly distinct treatment --------------------- */
+.slide[data-role="appendix"] {
+  background: var(--paper-2);
+  font-family: var(--f-body);
+}
+.slide[data-role="appendix"] .meta::before {
+  content: "REFERENCE \00B7  ";
+  color: var(--accent);
+  font-weight: 500;
+}
+.slide[data-role="appendix"] h1.slide-title {
+  max-width: 30ch;
+}
+.slide[data-role="appendix"] .ref-body {
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--sp-7);
+  align-items: start;
+}
+.slide[data-role="appendix"] .ref-body p { font-size: clamp(14px, 1.3vw, 17px); color: var(--ink-2); }
+.slide[data-role="appendix"] table.cmds {
+  width: 100%; border-collapse: collapse; font-family: var(--f-mono); font-size: 13px;
+}
+.slide[data-role="appendix"] table.cmds td {
+  padding: 6px 12px; border-bottom: 1px dotted var(--rule); vertical-align: top;
+}
+.slide[data-role="appendix"] table.cmds td.cmd { color: var(--accent); white-space: nowrap; }
+.slide[data-role="appendix"] table.cmds td.desc { color: var(--ink-2); }
+.slide[data-role="appendix"] blockquote {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: var(--sp-5) 0;
+  margin: var(--sp-4) 0;
+  font-family: var(--f-body); font-style: italic;
+  font-size: clamp(17px, 1.6vw, 22px); line-height: 1.4;
+  color: var(--ink); max-width: 56ch;
+}
+.slide[data-role="appendix"] blockquote cite {
+  display: block; margin-top: var(--sp-3);
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-mute); font-style: normal;
+}
+
+/* --- Speaker notes ----------------------------------------------------- */
+.notes { display: none; }
+body.presenter .notes {
+  display: block;
+  position: fixed; right: 0; top: 0; bottom: 0;
+  width: min(38vw, 520px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--sp-7) var(--sp-6);
+  overflow: auto;
+  z-index: 100;
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.6;
+  border-left: 1px solid oklch(32% 0.028 50); /* 1px — within impeccable BAN 1 threshold */
+}
+
+/* --- Hint bar ---------------------------------------------------------- */
+.hint {
+  position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-mute);
+  background: var(--paper); padding: 6px 14px;
+  border: 1px solid var(--rule);
+  transition: opacity 400ms ease;
+  z-index: 50;
+}
+.hint.hidden { opacity: 0; pointer-events: none; }
+
+@media (max-width: 960px) {
+  .reframe, .examples, .rollback, .close-v6 .action-notes, .check-layout { grid-template-columns: 1fr; gap: var(--sp-5); }
+  .slide[data-role="appendix"] .ref-body { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+<!-- ======================================================================
+     COVER — one h1 (antithesis, two 4-word sentences reading as one
+     complete thought), one subtitle in same voice (12 words), one
+     neutral meta row. "Forbid" is the load-bearing verb — returns
+     in the close on slide 11.
+     ================================================================== -->
+<section class="slide" data-role="cover">
+  <div class="cover-title-block">
+    <h1>Weak skills describe. Strong skills <span class="ac">forbid</span>.</h1>
+    <p class="subtitle">Four moves from impeccable and superpowers &mdash; for authors of other skills.</p>
+  </div>
+  <div class="cover-meta">
+    <span>Power-user talk &middot; 12 min</span>
+    <span>Press <span style="color:var(--accent)">&rarr;</span> to begin &middot; <span style="color:var(--accent)">S</span> for notes</span>
+  </div>
+</section>
+
+<!-- ======================================================================
+     01 — Answer up front, four anchor verbs
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="01 &middot; answer up front">
+  <div class="meta"><span class="section">01 &middot; answer up front</span><span class="counter">01 / 17</span></div>
+  <h1 class="slide-title">Your skills mostly say do. The best ones say don't &mdash; and check the don't held.</h1>
+  <p class="lead">Four moves, in order. The next seven slides defend each one with direct evidence from impeccable and superpowers.</p>
+  <ul class="anchors">
+    <li><span class="n">Move 01</span>Name the default.<span class="d">Specific token in, specific replacement out.</span></li>
+    <li><span class="n">Move 02</span>Rebut the excuse.<span class="d">Write the rationalization's rebuttal first.</span></li>
+    <li><span class="n">Move 03</span>Ship the check.<span class="d">A verifier that runs without the model.</span></li>
+    <li><span class="n">Move 04</span>Split by failure.<span class="d">One failure mode per skill, then chain.</span></li>
+  </ul>
+  <aside class="notes">
+    This is the thesis. Seven slides defend each move with named artefacts from the two skills. Slide 9 is the honest-costs slide, slide 10 is the 72-hour rollback check, slide 11 is the one-line ask. Disarm the tool-tour expectation up front &mdash; nothing in the seven slides after this one depends on having installed either skill.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     02 — STAR: enforcement systems dressed as capability skills
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="02 &middot; the reframe">
+  <div class="meta"><span class="section">02 &middot; the reframe</span><span class="counter">02 / 17</span></div>
+  <h1 class="slide-title">Both skills are enforcement systems dressed as capability skills.</h1>
+  <div class="reframe">
+    <div class="col expected">
+      <h3>What people install them for</h3>
+      <ul>
+        <li>Better typography</li>
+        <li>A TDD workflow</li>
+        <li>Clean design output</li>
+        <li>A checklist you can hand Claude</li>
+      </ul>
+    </div>
+    <div class="col actual">
+      <h3>What they actually do</h3>
+      <ul>
+        <li>Forbid the eleven fonts Claude reaches for</li>
+        <li>Pre-empt the fourteen excuses Claude uses to skip TDD</li>
+        <li>Reject the design patterns before generation</li>
+        <li>Encode the rules so a Node script can enforce them</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">
+    This is the STAR line. Quote pbakaus on generic-template convergence; quote obra on "if you have a skill to do something, you must use it." Both authors explicitly name the model's own defaults as the adversary. Surface features are downstream of that framing. If the audience remembers one line from this talk, it is this reframe.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     03 — Move 01: name the default
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="03 &middot; move 01 &middot; name the default">
+  <div class="meta"><span class="section">03 &middot; move 01 &middot; name the default</span><span class="counter">03 / 17</span></div>
+  <h1 class="slide-title">Vague priors lose. Name the specific default you want killed.</h1>
+  <div class="examples">
+    <div class="ex">
+      <h4>impeccable</h4>
+      <p class="source">font reject list, verbatim</p>
+      <div class="payload">
+        DO NOT use:<br>
+        <span class="ban">Inter &middot; DM Sans &middot; Plus Jakarta Sans</span><br>
+        <span class="ban">Instrument Serif &middot; Fraunces</span><br>
+        <span class="ban">Space Grotesk &middot; Newsreader</span><br>
+        <span class="ban">Lora &middot; Crimson &middot; Outfit</span><br>
+        <span class="ban">Cormorant</span>
+      </div>
+    </div>
+    <div class="ex">
+      <h4>superpowers</h4>
+      <p class="source">using-superpowers frontmatter, paraphrased</p>
+      <div class="payload">
+        If there is a <span class="kw">1%</span> chance this skill<br>
+        applies, <span class="kw">you MUST</span> check.<br><br>
+        Trivial is a red flag.<br>
+        "Already understood" is a red flag.<br>
+        Time pressure is a red flag.
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    "Use good fonts" activates nothing &mdash; the model's prior for "good font" is Inter. Eleven families named verbatim forces a decision. The move generalises outside visuals: deck-architect ships a forbidden-phrase list for the same reason. Name the token you want killed; name the replacement. If your skill tells Claude to "be thorough," you have written guidance, not a skill.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     04 — Move 02: rebut the excuse
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="04 &middot; move 02 &middot; rebut the excuse">
+  <div class="meta"><span class="section">04 &middot; move 02 &middot; rebut the excuse</span><span class="counter">04 / 17</span></div>
+  <h1 class="slide-title">Rebut the rationalization before the model writes it.</h1>
+  <table class="rebut">
+    <thead>
+      <tr>
+        <th>What the model is about to think</th>
+        <th>The rebuttal that fires first</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="lhs">&ldquo;This case is special.&rdquo;</td>
+        <td class="rhs">No exceptions. Tests still run.</td>
+      </tr>
+      <tr>
+        <td class="lhs">&ldquo;The user is in a hurry.&rdquo;</td>
+        <td class="rhs">Speed comes from skipping review, not skipping tests.</td>
+      </tr>
+      <tr>
+        <td class="lhs">&ldquo;This is a trivial change.&rdquo;</td>
+        <td class="rhs">Trivial changes are where silent regressions hide.</td>
+      </tr>
+      <tr>
+        <td class="lhs">&ldquo;I already understand the problem.&rdquo;</td>
+        <td class="rhs">Write the failing test and confirm your understanding.</td>
+      </tr>
+      <tr>
+        <td class="lhs">&ldquo;One-percent risk is acceptable.&rdquo;</td>
+        <td class="rhs">One-percent means you MUST check.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="small" style="margin-top:var(--sp-4)">Excerpt of the superpowers Red Flags table. The pattern is the move; the exact list is domain-specific to the skill.</p>
+  <aside class="notes">
+    The excuses Claude reaches for under time pressure are uniform across sessions. Observe the ones your own skill provokes once, then write the rebuttal inline. This is the move that separates usable from installed &mdash; it is why superpowers feels different from "a good prompt." The rationalization is named before it runs. Ask the room: what excuse does your last-authored skill fail on most? Whoever answers first has their Friday task.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     05 — Quadrant (data-visual-spec — renders to SVG)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="05 &middot; where skills sit">
+  <div class="meta"><span class="section">05 &middot; where skills sit</span><span class="counter">05 / 17</span></div>
+  <h1 class="slide-title">Where these two sit, compared to what power-users typically ship.</h1>
+  <figure data-label="where impeccable and superpowers sit among power-user skills" data-rendered="true" aria-label="where impeccable and superpowers sit among power-user skills">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 560" width="100%" role="img">
+  <rect x="80" y="80" width="700" height="368" fill="none" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <line x1="80" y1="264" x2="780" y2="264" stroke="oklch(24% 0.028 45)" stroke-width="1"/>
+  <line x1="430" y1="80" x2="430" y2="448" stroke="oklch(24% 0.028 45)" stroke-width="1"/>
+  <text x="84" y="256" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em">SUGGESTS &#8592;</text>
+  <text x="776" y="256" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em" text-anchor="end">&#8594; ENFORCES</text>
+  <text x="430" y="472" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(24% 0.028 45)" text-anchor="middle">Enforcement strength</text>
+  <text x="438" y="444" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em">NARROW FAILURE MODE &#8595;</text>
+  <text x="438" y="94" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em">&#8593; BROAD AREA</text>
+  <text x="64" y="264" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(24% 0.028 45)" text-anchor="middle" transform="rotate(-90 64 264)">Domain breadth</text>
+  <text x="772" y="96" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" text-anchor="end" letter-spacing="0.06em">ENFORCEMENT + BREADTH</text>
+  <text x="88" y="96" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em">BROAD BUT SOFT</text>
+  <text x="772" y="442" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" text-anchor="end" letter-spacing="0.06em">NARROW BUT SHARP</text>
+  <text x="88" y="442" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em">SITS IN A DRAWER</text>
+  <circle cx="682" cy="153.59999999999997" r="5" fill="oklch(58% 0.138 42)"/>
+  <text x="692" y="157.59999999999997" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(58% 0.138 42)" font-weight="600">impeccable</text>
+  <circle cx="710" cy="109.44" r="5" fill="oklch(58% 0.138 42)"/>
+  <text x="720" y="113.44" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(58% 0.138 42)" font-weight="600">superpowers</text>
+  <circle cx="276" cy="168.32" r="3" fill="oklch(40% 0.028 50)"/>
+  <text x="286" y="172.32" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(40% 0.028 50)" font-weight="400">a typical custom skill</text>
+  <circle cx="626" cy="308.15999999999997" r="3" fill="oklch(40% 0.028 50)"/>
+  <text x="636" y="312.15999999999997" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(40% 0.028 50)" font-weight="400">deck-architect</text>
+  <circle cx="150" cy="392.8" r="3" fill="oklch(40% 0.028 50)"/>
+  <text x="160" y="396.8" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(40% 0.028 50)" font-weight="400">a one-shot prompt</text>
+  <text x="80" y="552" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.08em">TWO SHIPPED SKILLS, THREE REFERENCE POINTS</text>
+</svg>
+</figure>
+  <aside class="notes">
+    Most power-user skills live in the broad-but-soft quadrant &mdash; they cover a lot of surface with polite guidance. The shipping move is not to redraw the skill; it is to add teeth. A narrow-but-sharp skill beats a broad-but-soft one every time, because the narrow one actually fires. This quadrant is a thinking tool, not a ranking &mdash; grading my own two skills on it is itself a bias. Invite the room to plot one of their own during Q&A.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     06 — Move 03 evidence: the bar chart
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="06 &middot; move 03 &middot; the evidence">
+  <div class="meta"><span class="section">06 &middot; move 03 &middot; the evidence</span><span class="counter">06 / 17</span></div>
+  <h1 class="slide-title">The numbers you'd run on your own laptop.</h1>
+  <p class="insight">The effect is concentrated where the chain runs end-to-end &mdash; <em class="accent">zero on trivial work, twenty-three percent off complex multi-file</em>.</p>
+  <figure data-label="Mejba controlled-test token cost by task complexity" data-rendered="true" aria-label="Mejba controlled-test token cost by task complexity">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 412" width="100%" role="img">
+  <line x1="180" y1="48" x2="180" y2="336" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <rect x="180" y="23" width="12" height="12" fill="oklch(24% 0.028 45)"/>
+  <text x="198" y="32" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em">BASELINE</text>
+  <rect x="400" y="23" width="12" height="12" fill="oklch(58% 0.138 42)"/>
+  <text x="418" y="32" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em">WITH SUPERPOWERS</text>
+  <text x="168" y="86" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="15" fill="oklch(24% 0.028 45)" text-anchor="end">Trivial task</text>
+  <rect x="180" y="48" width="660" height="28" fill="oklch(24% 0.028 45)"/>
+  <text x="848" y="66" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(55% 0.024 55)">100</text>
+  <rect x="180" y="80" width="646.8" height="28" fill="oklch(58% 0.138 42)"/>
+  <text x="834.8" y="98" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(55% 0.024 55)">98</text>
+  <text x="168" y="158" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="15" fill="oklch(24% 0.028 45)" text-anchor="end">Simple feature</text>
+  <rect x="180" y="120" width="660" height="28" fill="oklch(24% 0.028 45)"/>
+  <text x="848" y="138" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(55% 0.024 55)">100</text>
+  <rect x="180" y="152" width="600.6" height="28" fill="oklch(58% 0.138 42)"/>
+  <text x="788.6" y="170" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(55% 0.024 55)">91</text>
+  <text x="168" y="230" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="15" fill="oklch(24% 0.028 45)" text-anchor="end">Moderate feature</text>
+  <rect x="180" y="192" width="660" height="28" fill="oklch(24% 0.028 45)"/>
+  <text x="848" y="210" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(55% 0.024 55)">100</text>
+  <rect x="180" y="224" width="554.4" height="28" fill="oklch(58% 0.138 42)"/>
+  <text x="742.4" y="242" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(55% 0.024 55)">84</text>
+  <text x="168" y="302" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="15" fill="oklch(58% 0.138 42)" text-anchor="end">Complex multi-file</text>
+  <rect x="180" y="264" width="660" height="28" fill="oklch(24% 0.028 45)"/>
+  <text x="848" y="282" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(55% 0.024 55)">100</text>
+  <rect x="180" y="296" width="508.2" height="28" fill="oklch(58% 0.138 42)"/>
+  <text x="696.2" y="314" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(55% 0.024 55)">77</text>
+  <text x="944" y="304" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(58% 0.138 42)" font-weight="600" text-anchor="end">-23% on complex tasks</text>
+  <text x="180" y="360" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em">RELATIVE TOKEN COST · 100 = BASELINE</text>
+  <text x="180" y="404" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.08em">MEJBA AHMED · 12 PAIRED SESSIONS · 14% OVERALL</text>
+</svg>
+</figure>
+  <aside class="notes">
+    Mejba's twelve paired sessions is the sharp datum. Fourteen percent fewer tokens overall, twenty-three percent fewer on the complex multi-file tasks where the skill chain runs end-to-end. No effect on trivial work. Say the n out loud &mdash; twelve sessions is thin, and the honesty about the sample size is what buys credibility for the mechanism slide right after this one. Slide 7 shows what the check is that made those numbers move.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     07 — Move 03 mechanism: the CLI check
+     Styled <pre> terminal — no data-visual-spec.
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="07 &middot; move 03 &middot; the mechanism">
+  <div class="meta"><span class="section">07 &middot; move 03 &middot; the mechanism</span><span class="counter">07 / 17</span></div>
+  <h1 class="slide-title">Ship a check that runs without Claude.</h1>
+  <div class="check-layout">
+    <div class="artefact">
+      <h4>impeccable audit &mdash; a Node script, ~24 deterministic checks</h4>
+      <pre class="term"><span class="prompt">$</span> impeccable audit build/index.html
+<span class="ok">  ok: no reflex fonts              </span><span class="dim">#</span> font-family vs reject list
+<span class="ok">  ok: no gradient text             </span><span class="dim">#</span> impeccable BAN 2
+<span class="ok">  ok: heading monotonicity         </span><span class="dim">#</span> h1 &gt; h2 &gt; h3 size order
+<span class="fail">FAIL: border-left 4px on .callout </span><span class="dim">#</span> impeccable BAN 1
+<span class="fail">FAIL: card nested inside card    </span><span class="dim">#</span> .panel &gt; .panel
+
+FAIL  build/index.html &mdash; 2 check(s) failed</pre>
+    </div>
+    <div class="pattern">
+      <p><strong>Your skill needs a check that does not require Claude to grade Claude.</strong> The verifier does not need to understand intent &mdash; only to encode the bans.</p>
+      <p>A few hundred lines of deterministic code buys external verification that the skill's instructions actually held in output.</p>
+      <p><strong>lint-deck.js is the same pattern applied to this deck</strong> &mdash; regex checks over the rendered HTML, no model in the loop. Thirty lines of work, permanent reliability dividend.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    The point is the pattern, not the command list. A Node script with regex checks is all a verifier needs. Superpowers ships the same architectural move at a different layer &mdash; its subagent pressure-test is a fresh-session verifier that proves the skill fires from a clean slate, with no author bias. The deck in front of the room was linted with a script on the same architectural pattern &mdash; regex checks over the rendered HTML, no model at runtime. The payoff is asymmetric: effort to build is one afternoon, reliability buy is permanent.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     08 — Move 04: split by failure — flow (data-visual-spec)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="08 &middot; move 04 &middot; split by failure">
+  <div class="meta"><span class="section">08 &middot; move 04 &middot; split by failure</span><span class="counter">08 / 17</span></div>
+  <h1 class="slide-title">Decompose by failure mode. Then chain the skills.</h1>
+  <figure data-label="superpowers handoff chain, six nodes, execution core highlighted" data-rendered="true" aria-label="superpowers handoff chain, six nodes, execution core highlighted">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 216" width="100%" role="img">
+  <line x1="16" y1="40" x2="164" y2="40" stroke="oklch(24% 0.028 45)" stroke-width="2"/>
+  <text x="16" y="32" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(58% 0.138 42)" letter-spacing="0.08em">01 · entry</text>
+  <text x="16" y="60" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(24% 0.028 45)">using-</text>
+  <text x="16" y="82" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(24% 0.028 45)">superpowers</text>
+  <line x1="196" y1="40" x2="344" y2="40" stroke="oklch(24% 0.028 45)" stroke-width="2"/>
+  <text x="196" y="32" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(58% 0.138 42)" letter-spacing="0.08em">02</text>
+  <text x="196" y="60" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(24% 0.028 45)">brainstorming</text>
+  <line x1="376" y1="40" x2="524" y2="40" stroke="oklch(58% 0.138 42)" stroke-width="2"/>
+  <text x="376" y="32" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(58% 0.138 42)" letter-spacing="0.08em">03</text>
+  <text x="376" y="60" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(58% 0.138 42)">writing-plans</text>
+  <line x1="556" y1="40" x2="704" y2="40" stroke="oklch(58% 0.138 42)" stroke-width="2"/>
+  <text x="556" y="32" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(58% 0.138 42)" letter-spacing="0.08em">04</text>
+  <text x="556" y="60" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(58% 0.138 42)">executing-plans</text>
+  <line x1="736" y1="40" x2="884" y2="40" stroke="oklch(58% 0.138 42)" stroke-width="2"/>
+  <text x="736" y="32" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(58% 0.138 42)" letter-spacing="0.08em">05</text>
+  <text x="736" y="60" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(58% 0.138 42)">requesting-code-</text>
+  <text x="736" y="82" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(58% 0.138 42)">review</text>
+  <line x1="916" y1="40" x2="1064" y2="40" stroke="oklch(24% 0.028 45)" stroke-width="2"/>
+  <text x="916" y="32" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(58% 0.138 42)" letter-spacing="0.08em">06 · exit</text>
+  <text x="916" y="60" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(24% 0.028 45)">finishing-a-</text>
+  <text x="916" y="82" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(24% 0.028 45)">branch</text>
+  <text x="168" y="68" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="15" fill="oklch(82% 0.020 58)" font-weight="700">&#8594;</text>
+  <text x="348" y="68" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="15" fill="oklch(82% 0.020 58)" font-weight="700">&#8594;</text>
+  <text x="528" y="68" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="15" fill="oklch(58% 0.138 42)" font-weight="700">&#8594;</text>
+  <text x="708" y="68" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="15" fill="oklch(58% 0.138 42)" font-weight="700">&#8594;</text>
+  <text x="888" y="68" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="15" fill="oklch(82% 0.020 58)" font-weight="700">&#8594;</text>
+  <text x="16" y="204" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.08em">THE SUPERPOWERS HANDOFF CHAIN · THREE-SKILL EXECUTION CORE</text>
+</svg>
+</figure>
+  <aside class="notes">
+    Topic-decomposition ("a design skill," "a testing skill") creates surfaces too broad to fire reliably. Failure-mode decomposition creates skills that fire exactly when needed. Once each skill is sharp enough to trigger on its own, chain them. Schwartz's review names the chain effect explicitly &mdash; no single skill does the work. The fourteen-percent token reduction two slides back was concentrated on exactly the complex multi-step tasks where this chain runs end-to-end. Pragmatic threshold: one failure mode per skill until the same skill fires for genuinely different failures.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     09 — Tradeoff
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="09 &middot; what you give up">
+  <div class="meta"><span class="section">09 &middot; what you give up</span><span class="counter">09 / 17</span></div>
+  <h1 class="slide-title">What you give up: longer files, sharper edges, real authoring time.</h1>
+  <ol class="costs">
+    <li>
+      <strong>SKILL.md roughly doubles.</strong>
+      A ban list and a rebuttal table are real tokens. A twenty-line skill becomes forty lines before you have measured anything.
+    </li>
+    <li>
+      <strong>Opinionated skills fight the user on edges.</strong>
+      Enforcement cuts both ways &mdash; sometimes the user was right. You need an override path, and you need to actually use it when the override is correct.
+    </li>
+    <li>
+      <strong>The first pass is weak, and you have to live with it.</strong>
+      You cannot write a ban list for a domain you have not lived in. The skill sharpens only with invocation data; budget for version two.
+    </li>
+  </ol>
+  <aside class="notes">
+    The smallest useful version is one banned token plus one rebutted excuse. Twenty authoring minutes, not a weekend. Name the "sounds heavy" instinct directly &mdash; the audience is thinking it before you say it. Call out one skill you would not apply these moves to this quarter and why: if the skill has fewer than five real invocations, you are guessing at the ban list and will ban things you later need.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     10 — Rollback
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="10 &middot; rollback">
+  <div class="meta"><span class="section">10 &middot; rollback</span><span class="counter">10 / 17</span></div>
+  <h1 class="slide-title">If this backfires, catch it in 72 hours &mdash; not next sprint.</h1>
+  <div class="rollback">
+    <div class="block">
+      <h3>The 72-hour check</h3>
+      <ul class="steps">
+        <li><span class="k">A</span>Keep the prior SKILL.md as <code style="font-family:var(--f-mono);font-size:0.9em">SKILL.md.prev</code> beside the new one. One-line diff is your rollback path.</li>
+        <li><span class="k">B</span>Log invocation count for 72 hours after the change. A terminal ring-buffer of fired-skill names is enough.</li>
+        <li><span class="k">C</span>If invocations drop by more than 30% against the trailing week, triggering regressed &mdash; restore, diagnose, retry.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>When not to do this</h3>
+      <ul class="nots">
+        <li>No enforcement on skills with fewer than five real invocations &mdash; you are guessing.</li>
+        <li>No ban without a specific replacement &mdash; half a move is worse than no move.</li>
+        <li>If enforcement consistently fights user intent, the user wins. Every time.</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">
+    Anticipate the "I will not notice regressions for a week" objection head-on. The 72-hour check is cheap, survives being forgotten, and catches the failure mode of a ban list with no replacement. The 30% drop threshold is a practitioner heuristic, not a controlled number &mdash; if someone pushes on it, flag that and be honest. The point is the existence of a pre-committed threshold, not its exact value. Rollback lives in main flow because this deck asks for a change to a working artefact.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     11 — Close on the takeaway + single-line action. "Forbid" returns
+     as the middle verb, echoing the cover word.
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="11 &middot; pick, forbid, check">
+  <div class="meta"><span class="section">11 &middot; pick, forbid, check</span><span class="counter">11 / 17</span></div>
+  <div class="close-v6">
+    <div class="takeaway">
+      A skill earns its keep by <span class="ac">forbidding</span> the model's defaults &mdash; not by describing behaviours you wish it had.
+    </div>
+    <div class="action">
+      <div class="action-line">
+        <span>Pick.</span><span>Forbid.</span><span>Check.</span>
+      </div>
+      <div class="action-notes">
+        <div><span class="act-lbl">Pick</span>A skill you already own.</div>
+        <div><span class="act-lbl">Forbid</span>One specific token &mdash; start with Move 01.</div>
+        <div><span class="act-lbl">Check</span>Invocation count, 72 hours, 30% threshold.</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    The deck succeeds when the audience names a skill aloud. Ask for one out loud before the room moves on &mdash; the public commitment is what makes Friday happen. "Pick, Forbid, Check" is a memory aid: Pick a skill, Forbid a specific token (Move 01), Check triggering at 72 hours. The middle verb is deliberately the cover word &mdash; the close and the cover should land on the same sound. If the room is early-career, offer to help someone in Q&A pick which skill and which token. Leave this slide on screen through Q&A &mdash; the takeaway is what they carry out.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     APPENDIX DIVIDER — no meta row, no counter (position 12, not shown)
+     ================================================================== -->
+<section class="slide" data-role="appendix-divider">
+  <p class="appendix-label">Appendix</p>
+  <h1>Reference material &mdash; triggered on question.</h1>
+  <p class="appendix-hint">B1 through B5. Depth indicators live in presenter notes. Surface only what the room asks for.</p>
+</section>
+
+<!-- ======================================================================
+     B1 — Impeccable commands (counter 13 / 17)
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B1 &middot; impeccable commands">
+  <div class="meta"><span class="section">B1 &middot; impeccable commands</span><span class="counter">13 / 17</span></div>
+  <h1 class="slide-title">Impeccable's command surface, one line each.</h1>
+  <div class="ref-body">
+    <table class="cmds">
+      <tr><td class="cmd">/audit</td><td class="desc">Deterministic HTML/CSS scan for the ~24 anti-patterns.</td></tr>
+      <tr><td class="cmd">/craft</td><td class="desc">Guided generation for a single polished artefact.</td></tr>
+      <tr><td class="cmd">/extract</td><td class="desc">Pull a named component out of a larger page.</td></tr>
+      <tr><td class="cmd">/teach</td><td class="desc">Set up design context (.impeccable.md).</td></tr>
+      <tr><td class="cmd">/distill</td><td class="desc">Cut over-elaboration back to the load-bearing choices.</td></tr>
+      <tr><td class="cmd">/colorize</td><td class="desc">Replace palette reflexes with OKLCH tinted neutrals.</td></tr>
+      <tr><td class="cmd">/quieter</td><td class="desc">De-animate; strip bounce and ornamental motion.</td></tr>
+      <tr><td class="cmd">/typeset</td><td class="desc">Replace reflex fonts; enforce the reject list.</td></tr>
+    </table>
+    <div>
+      <p>Each command targets one named failure mode. None of them fire on every page load &mdash; they run when that specific failure is possible. The authoring discipline is the same as deck-architect's: one skill per failure, not one skill per topic.</p>
+      <p class="small" style="margin-top:var(--sp-4); color:var(--ink-mute)">List is abbreviated; the full set is in the impeccable repo.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    Expand this only if the audience pushes on "what do all those commands actually do." Most rooms do not. The point is not the list; it is the decomposition pattern. If you find yourself reciting commands, redirect to the pattern &mdash; one failure, one command.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     B2 — dependency graph (data-visual-spec — renders to SVG)
+     2.5.2 exercise: hyphen-wrap on using-superpowers,
+     requesting-code-review, finishing-a-branch. Budget warnings
+     expected and accepted — real skill-file identifiers preferred.
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B2 &middot; dependency graph">
+  <div class="meta"><span class="section">B2 &middot; dependency graph</span><span class="counter">14 / 17</span></div>
+  <h1 class="slide-title">Superpowers' skill graph beyond the main handoff chain.</h1>
+  <figure data-label="superpowers dependency graph with tiered layout" data-rendered="true" aria-label="superpowers dependency graph with tiered layout">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 964 232" width="100%" role="img">
+  <line x1="196" y1="98" x2="228" y2="98" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <polygon points="223,93 228,98 223,103" fill="oklch(82% 0.020 58)"/>
+  <line x1="196" y1="98" x2="408" y2="65" stroke="oklch(58% 0.138 42)" stroke-width="1.5"/>
+  <polygon points="403,60 408,65 403,70" fill="oklch(58% 0.138 42)"/>
+  <line x1="376" y1="98" x2="408" y2="65" stroke="oklch(58% 0.138 42)" stroke-width="1.5"/>
+  <polygon points="403,60 408,65 403,70" fill="oklch(58% 0.138 42)"/>
+  <line x1="556" y1="65" x2="408" y2="131" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <polygon points="403,126 408,131 403,136" fill="oklch(82% 0.020 58)"/>
+  <line x1="556" y1="65" x2="588" y2="65" stroke="oklch(58% 0.138 42)" stroke-width="1.5"/>
+  <polygon points="583,60 588,65 583,70" fill="oklch(58% 0.138 42)"/>
+  <line x1="556" y1="131" x2="588" y2="65" stroke="oklch(58% 0.138 42)" stroke-width="1.5"/>
+  <polygon points="583,60 588,65 583,70" fill="oklch(58% 0.138 42)"/>
+  <line x1="736" y1="65" x2="588" y2="131" stroke="oklch(58% 0.138 42)" stroke-width="1.5"/>
+  <polygon points="583,126 588,131 583,136" fill="oklch(58% 0.138 42)"/>
+  <line x1="736" y1="131" x2="768" y2="98" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <polygon points="763,93 768,98 763,103" fill="oklch(82% 0.020 58)"/>
+  <rect x="48" y="74" width="148" height="48" fill="oklch(97.2% 0.012 70)" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <text x="122" y="94.5" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="12" fill="oklch(24% 0.028 45)" text-anchor="middle">using-</text>
+  <text x="122" y="109.5" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="12" fill="oklch(24% 0.028 45)" text-anchor="middle">superpowers</text>
+  <text x="122" y="68" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(58% 0.138 42)" text-anchor="middle" letter-spacing="0.08em">ENTRY</text>
+  <rect x="228" y="74" width="148" height="48" fill="oklch(97.2% 0.012 70)" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <text x="302" y="103" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(24% 0.028 45)" text-anchor="middle">brainstorming</text>
+  <rect x="408" y="41" width="148" height="48" fill="oklch(97.2% 0.012 70)" stroke="oklch(58% 0.138 42)" stroke-width="1.5"/>
+  <text x="482" y="70" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(58% 0.138 42)" text-anchor="middle">writing-plans</text>
+  <rect x="408" y="107" width="148" height="48" fill="oklch(97.2% 0.012 70)" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <text x="482" y="136" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(24% 0.028 45)" text-anchor="middle">subagent-dev</text>
+  <rect x="588" y="41" width="148" height="48" fill="oklch(97.2% 0.012 70)" stroke="oklch(58% 0.138 42)" stroke-width="1.5"/>
+  <text x="662" y="70" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(58% 0.138 42)" text-anchor="middle">executing-plans</text>
+  <rect x="588" y="107" width="148" height="48" fill="oklch(97.2% 0.012 70)" stroke="oklch(58% 0.138 42)" stroke-width="1.5"/>
+  <text x="662" y="127.5" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="12" fill="oklch(58% 0.138 42)" text-anchor="middle">requesting-code-</text>
+  <text x="662" y="142.5" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="12" fill="oklch(58% 0.138 42)" text-anchor="middle">review</text>
+  <rect x="768" y="74" width="148" height="48" fill="oklch(97.2% 0.012 70)" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <text x="842" y="94.5" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="12" fill="oklch(24% 0.028 45)" text-anchor="middle">finishing-a-</text>
+  <text x="842" y="109.5" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="12" fill="oklch(24% 0.028 45)" text-anchor="middle">branch</text>
+  <text x="842" y="68" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(58% 0.138 42)" text-anchor="middle" letter-spacing="0.08em">EXIT</text>
+  <text x="32" y="224" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.08em">SUPERPOWERS SKILL GRAPH · EXECUTION CORE HIGHLIGHTED</text>
+</svg>
+</figure>
+  <aside class="notes">
+    Surface this if the room asks "how do the skills actually depend on each other" &mdash; the linear chain on slide 8 is the happy path; the real structure has branches. subagent-dev is parallel to writing-plans; both feed the execution core. The highlights match slide 8 so the visual language is consistent across the deck. Three labels (using-superpowers, requesting-code-review, finishing-a-branch) wrap at hyphens under 2.5.2's new graph budget handling &mdash; the real skill-file identifiers are preferred over shorter renames, and the wrap is legible rather than broken.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     B3 — waterfall, cumulative contribution (data-visual-spec)
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B3 &middot; cumulative contribution">
+  <div class="meta"><span class="section">B3 &middot; cumulative contribution</span><span class="counter">15 / 17</span></div>
+  <h1 class="slide-title">Cumulative contribution &mdash; illustrative, not controlled data.</h1>
+  <figure data-label="cumulative contribution of the four moves to skill reliability, illustrative" data-rendered="true" aria-label="cumulative contribution of the four moves to skill reliability, illustrative">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 448" width="100%" role="img">
+  <line x1="60" y1="348" x2="920" y2="348" stroke="oklch(82% 0.020 58)" stroke-width="1"/>
+  <rect x="88.66666666666667" y="120.72727272727272" width="86" height="227.27272727272728" fill="oklch(24% 0.028 45)"/>
+  <text x="131.66666666666669" y="112.72727272727272" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(24% 0.028 45)" text-anchor="middle" font-weight="600">100</text>
+  <text x="131.66666666666669" y="368" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(55% 0.024 55)" text-anchor="middle">Baseline</text>
+  <line x1="174.66666666666669" y1="120.72727272727272" x2="232" y2="120.72727272727272" stroke="oklch(82% 0.020 58)" stroke-width="1" stroke-dasharray="4 4"/>
+  <rect x="232" y="93.45454545454544" width="86" height="27.27272727272728" fill="oklch(58% 0.138 42)"/>
+  <text x="275" y="85.45454545454544" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(58% 0.138 42)" text-anchor="middle" font-weight="600">+12</text>
+  <text x="275" y="368" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(55% 0.024 55)" text-anchor="middle">+ Name default</text>
+  <line x1="318" y1="93.45454545454544" x2="375.33333333333337" y2="93.45454545454544" stroke="oklch(82% 0.020 58)" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="275" y="65.45454545454544" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(58% 0.138 42)" text-anchor="middle" font-weight="600">highest-leverage single move</text>
+  <rect x="375.33333333333337" y="70.72727272727269" width="86" height="22.727272727272748" fill="oklch(58% 0.138 42)"/>
+  <text x="418.33333333333337" y="62.72727272727269" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(58% 0.138 42)" text-anchor="middle" font-weight="600">+10</text>
+  <text x="418.33333333333337" y="368" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(55% 0.024 55)" text-anchor="middle">+ Rebut excuse</text>
+  <line x1="461.33333333333337" y1="70.72727272727269" x2="518.6666666666666" y2="70.72727272727269" stroke="oklch(82% 0.020 58)" stroke-width="1" stroke-dasharray="4 4"/>
+  <rect x="518.6666666666666" y="57.090909090909065" width="86" height="13.636363636363626" fill="oklch(58% 0.138 42)"/>
+  <text x="561.6666666666666" y="49.090909090909065" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(58% 0.138 42)" text-anchor="middle" font-weight="600">+6</text>
+  <text x="561.6666666666666" y="368" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(55% 0.024 55)" text-anchor="middle">+ Ship check</text>
+  <line x1="604.6666666666666" y1="57.090909090909065" x2="662" y2="57.090909090909065" stroke="oklch(82% 0.020 58)" stroke-width="1" stroke-dasharray="4 4"/>
+  <rect x="662" y="48" width="86" height="9.090909090909065" fill="oklch(58% 0.138 42)"/>
+  <text x="705" y="40" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(58% 0.138 42)" text-anchor="middle" font-weight="600">+4</text>
+  <text x="705" y="368" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(55% 0.024 55)" text-anchor="middle">+ Split failure</text>
+  <line x1="748" y1="48" x2="805.3333333333334" y2="48" stroke="oklch(82% 0.020 58)" stroke-width="1" stroke-dasharray="4 4"/>
+  <rect x="805.3333333333334" y="48" width="86" height="300" fill="oklch(24% 0.028 45)"/>
+  <text x="848.3333333333334" y="40" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(24% 0.028 45)" text-anchor="middle" font-weight="600">132</text>
+  <text x="848.3333333333334" y="368" font-family='&quot;Sora&quot;, ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(55% 0.024 55)" text-anchor="middle">Final</text>
+  <text x="60" y="396" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.06em">RELATIVE RELIABILITY · 100 = BASELINE</text>
+  <text x="60" y="440" font-family='&quot;Geist Mono&quot;, ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(55% 0.024 55)" letter-spacing="0.08em">CUMULATIVE ILLUSTRATIVE IMPACT · PRACTITIONER ORDERING, NOT CONTROLLED DATA</text>
+</svg>
+</figure>
+  <aside class="notes">
+    This chart is explicitly illustrative. The numbers reflect practitioner ordering, not a controlled measurement. The one point that is load-bearing is the ordering &mdash; Move 01 (name the default) buys the most per authoring hour because the prior it displaces is the strongest. If the room confuses this with Mejba's data (slide 6), stop and correct: slide 6 is twelve sessions of real tokens; this is my mental model.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     B4 — Cialdini / authority language
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B4 &middot; why the tone">
+  <div class="meta"><span class="section">B4 &middot; why the tone</span><span class="counter">16 / 17</span></div>
+  <h1 class="slide-title">The &ldquo;you MUST&rdquo; language is testing-derived, not stylistic.</h1>
+  <blockquote>
+    Authority, commitment, scarcity &mdash; Cialdini's three levers that reliably shift behaviour, applied to a model that will argue its way out of a soft instruction but comply with a hard one. The capital letters are load-bearing.
+    <cite>obra &mdash; fsck.com, late 2025 (paraphrased)</cite>
+  </blockquote>
+  <p class="small" style="color:var(--ink-mute); max-width:60ch">The uppercase tags (&ldquo;EXTREMELY-IMPORTANT&rdquo;) look aesthetic but were arrived at by measuring compliance. Soft versions produced measurably worse adherence. Treat tone decisions as testable.</p>
+  <aside class="notes">
+    Answer to the "isn't the authoritarian tone off-putting?" objection. The tone is a feature, not a bug. You can be warm in prose and firm in instructions &mdash; the firmness is specifically what gets obeyed. Soft enforcement is indistinguishable from suggestion, which is why it fails silently.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     B5 — How the impeccable CLI is shaped (reference terminal output)
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B5 &middot; the CLI inside">
+  <div class="meta"><span class="section">B5 &middot; the CLI inside</span><span class="counter">17 / 17</span></div>
+  <h1 class="slide-title">How impeccable's auditor is shaped.</h1>
+  <div class="ref-body">
+    <div>
+      <p>Reads rendered HTML and CSS, applies roughly 24 deterministic checks &mdash; font family against a reject list, gradient-text detection, border-left width ban, contrast ratios, heading monotonicity, padding rhythm on a 4pt scale. No AI runtime at execution time; a Node script. CI-runnable.</p>
+      <p class="small" style="margin-top:var(--sp-4); color:var(--ink-mute)">The architectural move: any skill can ship with a companion verifier. The verifier does not need to understand intent &mdash; it only needs to encode the bans. A few hundred lines of deterministic code buys external verification that the skill's instructions are being followed.</p>
+    </div>
+    <pre class="term">$ impeccable audit build/index.html
+<span class="ok">  ok: no reflex fonts</span>
+<span class="ok">  ok: no gradient text</span>
+<span class="ok">  ok: heading monotonicity</span>
+<span class="fail">FAIL: border-left 4px on .callout</span>
+<span class="fail">FAIL: card nested inside card (.panel &gt; .panel)</span>
+FAIL  build/index.html &mdash; 2 check(s) failed
+</pre>
+  </div>
+  <aside class="notes">
+    This deck was itself linted by a companion script on the same architectural pattern &mdash; regex checks over the rendered HTML, no model in the loop. The payoff is asymmetric: the effort to build is one afternoon; the reliability buy is permanent. If someone asks "can I really do this for my own skill" &mdash; yes, and the smallest useful version is a single check for your single most common failure.
+  </aside>
+</section>
+
+</div>
+
+<div class="hint" id="hint">&larr; &rarr; navigate &nbsp;&middot;&nbsp; S presenter mode &nbsp;&middot;&nbsp; F fullscreen &nbsp;&middot;&nbsp; Esc exit</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+
+  function show(i, replaceHash){
+    if (i < 0) i = 0;
+    if (i >= slides.length) i = slides.length - 1;
+    slides[current].classList.remove('active');
+    slides[i].classList.add('active');
+    current = i;
+    const hash = '#' + (i + 1);
+    if (replaceHash) {
+      history.replaceState(null, '', hash);
+    } else {
+      if (location.hash !== hash) history.replaceState(null, '', hash);
+    }
+  }
+
+  function fromHash(){
+    const h = location.hash.replace('#','');
+    const n = parseInt(h, 10);
+    if (!isNaN(n) && n >= 1 && n <= slides.length) return n - 1;
+    return 0;
+  }
+
+  function dismissHint(){
+    const h = document.getElementById('hint');
+    if (h && !h.classList.contains('hidden')) h.classList.add('hidden');
+  }
+
+  document.addEventListener('keydown', function(e){
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') {
+      e.preventDefault(); show(current + 1, true); dismissHint();
+    } else if (k === 'ArrowLeft' || k === 'PageUp') {
+      e.preventDefault(); show(current - 1, true); dismissHint();
+    } else if (k === 'Home') {
+      e.preventDefault(); show(0, true); dismissHint();
+    } else if (k === 'End') {
+      e.preventDefault(); show(slides.length - 1, true); dismissHint();
+    } else if (k === 's' || k === 'S') {
+      e.preventDefault(); document.body.classList.toggle('presenter'); dismissHint();
+    } else if (k === 'f' || k === 'F') {
+      e.preventDefault();
+      if (!document.fullscreenElement) {
+        (document.documentElement.requestFullscreen || function(){}).call(document.documentElement);
+      } else {
+        (document.exitFullscreen || function(){}).call(document);
+      }
+      dismissHint();
+    } else if (k === 'Escape') {
+      if (document.body.classList.contains('presenter')) {
+        document.body.classList.remove('presenter');
+      } else if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
+    }
+  });
+
+  window.addEventListener('hashchange', function(){ show(fromHash(), true); });
+
+  show(fromHash(), true);
+  setTimeout(dismissHint, 6000);
+})();
+</script>
+
+</body>
+</html>

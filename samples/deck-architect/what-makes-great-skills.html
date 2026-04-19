@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What makes impeccable and superpowers great skills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:    oklch(96.5% 0.018 82);
+    --paper-2:  oklch(93%   0.022 82);
+    --rule:     oklch(82%   0.025 80);
+    --ink:      oklch(18%   0.018 50);
+    --ink-2:    oklch(35%   0.02  55);
+    --muted:    oklch(52%   0.018 60);
+    --accent:   oklch(56%   0.205 32);
+    --accent-2: oklch(46%   0.18  32);
+    --strike:   oklch(70%   0.015 60);
+
+    --fs-display: clamp(3rem, 5.6vw, 5.2rem);
+    --fs-h2:      clamp(2rem, 3.2vw, 2.9rem);
+    --fs-h3:      clamp(1.25rem, 1.6vw, 1.55rem);
+    --fs-body:    clamp(1rem, 1.1vw, 1.125rem);
+    --fs-small:   clamp(0.78rem, 0.85vw, 0.92rem);
+
+    --s-1: 4px;  --s-2: 8px;  --s-3: 12px;
+    --s-4: 16px; --s-5: 24px; --s-6: 32px;
+    --s-7: 48px; --s-8: 64px; --s-9: 96px;
+
+    --display: "Young Serif", Georgia, serif;
+    --sans:    "Geist", system-ui, sans-serif;
+    --mono:    "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--ink);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: var(--fs-body);
+    line-height: 1.45;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .deck {
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    background: var(--paper);
+    color: var(--ink);
+    padding: clamp(32px, 5vw, 72px) clamp(40px, 7vw, 96px);
+    display: none;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+  .slide.active { display: flex; }
+
+  .slide::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--paper-2) 1px, transparent 1px);
+    background-size: 100% 32px;
+    opacity: 0.35;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, transparent 0, black 10%, black 90%, transparent 100%);
+  }
+
+  .slide > * { position: relative; z-index: 1; }
+
+  /* Meta header on every slide */
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--mono);
+    font-size: var(--fs-small);
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: var(--s-3);
+  }
+  .meta .section { color: var(--accent); font-weight: 500; }
+  .meta .counter { font-variant-numeric: tabular-nums; }
+
+  /* Typography primitives */
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; line-height: 1.02; letter-spacing: -0.01em; }
+  h1 { font-size: var(--fs-display); }
+  h2 { font-size: var(--fs-h2); }
+  h3 { font-size: var(--fs-h3); font-family: var(--sans); font-weight: 600; letter-spacing: -0.005em; }
+  p  { margin: 0; max-width: 72ch; }
+  em { font-style: italic; color: var(--ink-2); }
+  strong { font-weight: 600; }
+  code, .mono { font-family: var(--mono); font-size: 0.92em; }
+  .accent { color: var(--accent); }
+  .muted  { color: var(--muted); }
+  .rule   { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* Cover */
+  .cover {
+    justify-content: space-between;
+    padding: clamp(48px, 6vw, 96px) clamp(48px, 8vw, 120px);
+  }
+  .cover h1 {
+    font-size: clamp(3.6rem, 7vw, 6.4rem);
+    max-width: 22ch;
+  }
+  .cover .kicker {
+    font-family: var(--mono);
+    font-size: var(--fs-small);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+  .cover .footer {
+    display: flex; justify-content: space-between; align-items: end;
+    font-family: var(--mono);
+    font-size: var(--fs-small);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .cover .stamp {
+    display: inline-block;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    transform: rotate(-3deg);
+  }
+
+  /* Content helpers */
+  .lede { font-size: var(--fs-h2); font-family: var(--display); max-width: 22ch; line-height: 1.08; }
+  .sublead { font-size: 1.15rem; max-width: 56ch; color: var(--ink-2); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-7); }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-6); }
+  .grid-lr { display: grid; grid-template-columns: 1.15fr 1fr; gap: var(--s-7); align-items: start; }
+  .stack { display: flex; flex-direction: column; gap: var(--s-4); }
+
+  .label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .label.hot { color: var(--accent); }
+
+  /* Numbered headline list */
+  .headlines {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    row-gap: var(--s-5);
+    column-gap: var(--s-5);
+    align-items: baseline;
+    max-width: 64ch;
+  }
+  .headlines .n {
+    font-family: var(--mono);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding-top: 3px;
+  }
+  .headlines .h {
+    font-family: var(--display);
+    font-size: 1.55rem;
+    line-height: 1.15;
+  }
+
+  /* Two-column reframe */
+  .reframe { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .reframe .col { padding: var(--s-6) var(--s-6) var(--s-6) 0; }
+  .reframe .col + .col { padding-left: var(--s-7); border-left: 1px solid var(--rule); }
+  .reframe h3 { margin-bottom: var(--s-4); }
+  .reframe ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--s-3); }
+  .reframe .left li { color: var(--strike); text-decoration: line-through; text-decoration-color: var(--strike); }
+  .reframe .right li { font-weight: 500; }
+  .reframe .right li::before { content: "→ "; color: var(--accent); font-weight: 700; }
+
+  /* Quote */
+  .quote {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    line-height: 1.3;
+    max-width: 50ch;
+    color: var(--ink-2);
+  }
+  .quote cite { display: block; font-family: var(--mono); font-size: 0.78rem; font-style: normal; color: var(--muted); margin-top: var(--s-3); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* Example cards (not card-in-card) */
+  .examples { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-6); }
+  .example {
+    display: flex; flex-direction: column; gap: var(--s-3);
+    padding: var(--s-5) 0 0 0;
+    border-top: 2px solid var(--ink);
+  }
+  .example h3 { font-size: 1.1rem; }
+  .example .code {
+    font-family: var(--mono);
+    font-size: 0.92rem;
+    background: var(--paper-2);
+    padding: var(--s-4);
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+  .example .code .ban { color: var(--accent); font-weight: 700; }
+  .example .code .kw  { color: var(--ink); font-weight: 600; }
+
+  /* Table for rationalizations */
+  table.rationalize {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    max-width: none;
+  }
+  .rationalize th, .rationalize td {
+    text-align: left;
+    padding: var(--s-4) var(--s-5) var(--s-4) 0;
+    vertical-align: top;
+  }
+  .rationalize thead th {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--rule);
+  }
+  .rationalize tbody td { border-bottom: 1px solid var(--rule); }
+  .rationalize .thought { font-style: italic; color: var(--ink-2); }
+  .rationalize .rebuttal { font-weight: 500; }
+  .rationalize .rebuttal::before { content: "✕ "; color: var(--accent); font-weight: 700; font-style: normal; }
+
+  /* Artifacts (slide 5) */
+  .artifact {
+    display: flex; flex-direction: column; gap: var(--s-3);
+    padding: var(--s-5) 0 0 0;
+    border-top: 2px solid var(--ink);
+  }
+  .artifact .num {
+    font-family: var(--mono);
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  /* Wrong/right (slide 6) */
+  .wrongright { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .wrongright .col { padding: var(--s-5) var(--s-6) 0 0; }
+  .wrongright .col + .col { padding-left: var(--s-6); border-left: 1px solid var(--rule); }
+  .wrongright h3 { font-family: var(--mono); text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.12em; margin-bottom: var(--s-4); }
+  .wrongright .wrong h3 { color: var(--strike); }
+  .wrongright .right h3 { color: var(--accent); }
+  .wrongright .pill-row { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-3); }
+  .wrongright .pill {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    padding: 3px 10px;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+  }
+  .wrongright .pill.hot { border-color: var(--accent); color: var(--accent); }
+
+  /* Chain (slide 7) */
+  .chain {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    align-items: stretch;
+    margin-top: var(--s-4);
+  }
+  .chain .node {
+    padding: var(--s-5) var(--s-4);
+    border-top: 2px solid var(--ink);
+    border-right: 1px dashed var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    position: relative;
+  }
+  .chain .node:last-child { border-right: 0; }
+  .chain .node .step {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+  }
+  .chain .node .name {
+    font-family: var(--display);
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  .chain .node .blurb { color: var(--muted); font-size: 0.9rem; }
+  .chain .node::after {
+    content: "→";
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--paper);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-weight: 700;
+    padding: 0 4px;
+  }
+  .chain .node:last-child::after { content: ""; }
+
+  /* Costs (slide 8) */
+  .costs { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-7); }
+  .cost { display: flex; flex-direction: column; gap: var(--s-3); border-top: 2px solid var(--accent); padding-top: var(--s-4); }
+  .cost .num { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 0.82rem; letter-spacing: 0.12em; }
+  .cost h3 { font-family: var(--display); font-size: 1.35rem; font-weight: 400; }
+
+  /* Rollback (slide 9) */
+  .rules {
+    display: grid; grid-template-columns: auto 1fr;
+    row-gap: var(--s-4); column-gap: var(--s-5);
+  }
+  .rules .n { font-family: var(--mono); color: var(--accent); font-weight: 700; padding-top: 3px; }
+  .rules .r { max-width: 68ch; }
+  .rollback {
+    padding: var(--s-5);
+    background: var(--paper-2);
+    font-family: var(--mono);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+  .rollback .key { color: var(--accent); font-weight: 700; }
+
+  /* Final (slide 10) */
+  .takeaway {
+    font-family: var(--display);
+    font-size: clamp(1.8rem, 2.6vw, 2.35rem);
+    line-height: 1.15;
+    max-width: 28ch;
+  }
+  .checklist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--s-3); }
+  .checklist li { display: grid; grid-template-columns: 24px 1fr; align-items: baseline; column-gap: var(--s-4); font-family: var(--mono); font-size: 0.95rem; }
+  .checklist li .box { width: 14px; height: 14px; border: 1.5px solid var(--ink); display: inline-block; transform: translateY(2px); }
+  .checklist li.pri .box { background: var(--accent); border-color: var(--accent); }
+  .checklist li.pri { color: var(--accent); font-weight: 600; }
+  .action {
+    font-family: var(--display);
+    font-size: 1.6rem;
+    padding: var(--s-5) var(--s-6);
+    background: var(--ink);
+    color: var(--paper);
+    display: inline-block;
+    align-self: flex-start;
+    letter-spacing: -0.01em;
+  }
+  .action .accent { color: var(--accent); }
+
+  /* Backup slides */
+  .backup-marker {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  table.full {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    font-family: var(--mono);
+  }
+  .full th, .full td {
+    text-align: left;
+    padding: 8px 16px 8px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .full thead th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .full td.cmd { color: var(--accent); font-weight: 700; white-space: nowrap; }
+
+  .graph { display: grid; grid-template-columns: 1fr; gap: var(--s-4); font-family: var(--mono); font-size: 0.95rem; }
+  .graph .row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--s-4); padding: var(--s-3) 0; border-bottom: 1px dashed var(--rule); }
+  .graph .from { color: var(--ink); font-weight: 600; min-width: 22ch; }
+  .graph .arr { color: var(--accent); }
+  .graph .to { color: var(--ink-2); }
+
+  /* Bars (B3) */
+  .bars { display: grid; grid-template-columns: 1fr; gap: var(--s-4); max-width: 780px; }
+  .bar-row { display: grid; grid-template-columns: 140px 1fr auto; align-items: center; gap: var(--s-4); font-family: var(--mono); font-size: 0.9rem; }
+  .bar-row .label-r { color: var(--ink-2); }
+  .bar-row .track { height: 22px; background: var(--paper-2); position: relative; }
+  .bar-row .fill { position: absolute; inset: 0 auto 0 0; background: var(--ink); }
+  .bar-row .fill.alt { background: var(--accent); }
+  .bar-row .val { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 7ch; text-align: right; }
+  .legend { display: flex; gap: var(--s-5); font-family: var(--mono); font-size: 0.78rem; color: var(--muted); margin-top: var(--s-3); }
+  .legend .swatch { display: inline-block; width: 10px; height: 10px; margin-right: 6px; transform: translateY(1px); }
+
+  /* CLI output */
+  .cli {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    padding: var(--s-5) var(--s-6);
+    max-width: 820px;
+  }
+  .cli .cmd { color: var(--accent); }
+  .cli .ok { color: oklch(72% 0.16 142); }
+  .cli .warn { color: var(--accent); }
+  .cli .dim { color: var(--strike); }
+
+  /* Nav hint */
+  .nav {
+    position: fixed;
+    bottom: 16px; right: 20px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 10;
+    mix-blend-mode: multiply;
+  }
+  .nav kbd {
+    font-family: var(--mono);
+    border: 1px solid var(--rule);
+    padding: 1px 6px;
+    font-size: 0.72rem;
+    color: var(--ink-2);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ================= COVER ================= -->
+<section class="slide cover active" data-section="Cover">
+  <div class="stack">
+    <div class="kicker">A technical talk · 12 + 5 min</div>
+    <span class="stamp">For skill authors</span>
+  </div>
+  <h1>What makes <em>impeccable</em> and <em>superpowers</em> great skills —<br>and what to steal.</h1>
+  <div class="footer">
+    <span>Claude Code power users · conference register</span>
+    <span>Pick 2 of 5 lessons · by Friday</span>
+  </div>
+</section>
+
+<!-- ================ SLIDE 1 ================ -->
+<section class="slide" data-section="Answer up front">
+  <div class="meta"><span class="section">01 · The Answer</span><span class="counter">01 / 16</span></div>
+  <div class="stack" style="gap: var(--s-7);">
+    <h1>Your skills tell Claude <em>what to do</em>.<br>The best ones tell it <em class="accent">what NOT to do</em>.</h1>
+    <div class="headlines">
+      <div class="n">01</div><div class="h">Ban behaviors explicitly — don't just suggest alternatives.</div>
+      <div class="n">02</div><div class="h">Anticipate the model's excuses and pre-empt them.</div>
+      <div class="n">03</div><div class="h">Add <em>objective</em> enforcement. Not vibes.</div>
+    </div>
+    <p class="muted" style="font-family: var(--mono); font-size: 0.85rem;">// The next 8 slides defend this claim with evidence. Rollback & "when not to" on slide 9.</p>
+  </div>
+</section>
+
+<!-- ================ SLIDE 2 (STAR) ================ -->
+<section class="slide" data-section="The STAR reveal">
+  <div class="meta"><span class="section">02 · The reframe</span><span class="counter">02 / 16</span></div>
+  <div class="stack">
+    <div class="label hot">Both skills share the same hidden architecture</div>
+    <h2>Discipline-enforcement systems, not capability-addition systems.</h2>
+  </div>
+  <div class="reframe">
+    <div class="col left">
+      <h3 class="muted">What users think these skills do</h3>
+      <ul>
+        <li>Adds TDD to Claude</li>
+        <li>Adds a design language</li>
+        <li>Drops in a "better" prompt</li>
+        <li>Makes output look nicer</li>
+      </ul>
+    </div>
+    <div class="col right">
+      <h3>What they actually do</h3>
+      <ul>
+        <li>Enforces TDD by anticipating skip rationalizations</li>
+        <li>Enforces design by banning defaults the model reaches for</li>
+        <li>Replaces the <em>model's</em> defaults with the <em>author's</em> defaults</li>
+        <li>Treats the model's trained reflexes as the adversary</li>
+      </ul>
+    </div>
+  </div>
+  <p class="quote">"If you have a skill to do something, you <em>must</em> use it."<cite>— obra, superpowers</cite></p>
+</section>
+
+<!-- ================ SLIDE 3 ================ -->
+<section class="slide" data-section="Lesson 1 · Ban">
+  <div class="meta"><span class="section">03 · Lesson 1</span><span class="counter">03 / 16</span></div>
+  <div class="stack">
+    <div class="label hot">Lesson 01 of 05</div>
+    <h2>Ban behaviors explicitly. Don't just suggest alternatives.</h2>
+    <p class="sublead">Vague guidance ("use good fonts") activates nothing — the model defaults to Inter. Banning Inter <em>by name</em> forces it to pick something else.</p>
+  </div>
+  <div class="examples">
+    <div class="example">
+      <div class="label">impeccable · typography</div>
+      <h3>Forbidden-font list</h3>
+      <pre class="code"><span class="kw">&lt;reflex_fonts_to_reject&gt;</span>
+<span class="ban">Inter            // banned</span>
+<span class="ban">DM Sans          // banned</span>
+<span class="ban">Plus Jakarta Sans</span>
+<span class="ban">Instrument Serif</span>
+<span class="ban">Space Grotesk</span>
+<span class="ban">Fraunces</span>
+... <span class="kw">21 more</span>
+<span class="kw">&lt;/reflex_fonts_to_reject&gt;</span></pre>
+    </div>
+    <div class="example">
+      <div class="label">superpowers · invocation</div>
+      <h3>The 1%-chance rule</h3>
+      <pre class="code"><span class="kw">If there is a 1% chance</span>
+<span class="kw">the skill applies</span>
+<span class="ban">you MUST check it.</span>
+
+<span class="kw">Skill check comes</span>
+<span class="kw">BEFORE</span>
+<span class="ban">clarifying questions.</span></pre>
+    </div>
+  </div>
+  <p class="muted" style="font-family: var(--mono); font-size: 0.82rem;">Non-visual example: deck-architect bans the word "leverage" by listing it explicitly, with a concrete replacement.</p>
+</section>
+
+<!-- ================ SLIDE 4 ================ -->
+<section class="slide" data-section="Lesson 2 · Anticipate">
+  <div class="meta"><span class="section">04 · Lesson 2</span><span class="counter">04 / 16</span></div>
+  <div class="stack">
+    <div class="label hot">Lesson 02 of 05</div>
+    <h2>Anticipate the model's rationalizations. Pre-empt them inline.</h2>
+    <p class="sublead">Under pressure the model finds loopholes. The list of loopholes is nearly identical across users — surface them and rebut them by name.</p>
+  </div>
+  <table class="rationalize">
+    <thead><tr><th style="width:46%;">If you think…</th><th>…do this instead</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="thought">"I need more context before running the skill."</td>
+        <td class="rebuttal">Skill check comes BEFORE clarifying questions.</td>
+      </tr>
+      <tr>
+        <td class="thought">"This task is simple enough — I can skip the plan."</td>
+        <td class="rebuttal">The skill was written for cases that feel simple. Especially then.</td>
+      </tr>
+      <tr>
+        <td class="thought">"The tests are already passing, so TDD isn't needed."</td>
+        <td class="rebuttal">TDD is not a safety net. Write the failing test first, always.</td>
+      </tr>
+      <tr>
+        <td class="thought">"I'll ask the user if they want the skill."</td>
+        <td class="rebuttal">Don't outsource the decision. If the trigger matches, invoke.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="muted" style="font-family: var(--mono); font-size: 0.82rem;">Full Red Flags table in superpowers is 12 rows. See B4 for the Cialdini-persuasion rationale.</p>
+</section>
+
+<!-- ================ SLIDE 5 ================ -->
+<section class="slide" data-section="Lesson 3 · Enforcement">
+  <div class="meta"><span class="section">05 · Lesson 3</span><span class="counter">05 / 16</span></div>
+  <div class="stack">
+    <div class="label hot">Lesson 03 of 05</div>
+    <h2>Add objective enforcement. Not vibes.</h2>
+    <p class="sublead">Instructions decay under model variance. Programmatic checks don't. Your skill probably has zero verification today.</p>
+  </div>
+  <div class="grid-2">
+    <div class="artifact">
+      <div class="num">24</div>
+      <div class="label">impeccable · CLI scanner</div>
+      <h3>A standalone tool ships <em>with</em> the skill</h3>
+      <p>Reads HTML/CSS. Detects banned fonts, contrast failures, heading-skips, padding anti-patterns, 20 more. Runs in CI — no AI harness required.</p>
+    </div>
+    <div class="artifact">
+      <div class="num">subagent</div>
+      <div class="label">superpowers · pressure test</div>
+      <h3>Skills are tested by being invoked under stress</h3>
+      <p>A subagent simulates a typical user request. If the skill doesn't fire when it should, the skill is wrong — not the test. Trigger reliability is the metric.</p>
+    </div>
+  </div>
+  <p class="muted" style="font-family: var(--mono); font-size: 0.82rem;">Evidence: mejba.me controlled test found a 14% token reduction with superpowers. Honest caveat — the "40% quality" headline was overstated for simple tasks.</p>
+</section>
+
+<!-- ================ SLIDE 6 ================ -->
+<section class="slide" data-section="Lesson 4 · Decompose">
+  <div class="meta"><span class="section">06 · Lesson 4</span><span class="counter">06 / 16</span></div>
+  <div class="stack">
+    <div class="label hot">Lesson 04 of 05</div>
+    <h2>Decompose by failure mode — not by topic.</h2>
+    <p class="sublead">Topic decomposition ("frontend skill," "backend skill") creates skills too broad to trigger reliably. Failure-mode decomposition fires exactly when needed.</p>
+  </div>
+  <div class="wrongright">
+    <div class="col wrong">
+      <h3>Wrong way · by topic</h3>
+      <p>One big "design" skill that says: do everything well.</p>
+      <div class="pill-row">
+        <span class="pill">frontend</span>
+        <span class="pill">backend</span>
+        <span class="pill">docs</span>
+        <span class="pill">testing</span>
+      </div>
+      <p class="muted" style="margin-top: var(--s-3); font-size: 0.9rem;">Broad triggers misfire. Vague guidance doesn't enforce anything.</p>
+    </div>
+    <div class="col right">
+      <h3>Right way · by failure mode</h3>
+      <p>18 commands in impeccable, each targeting one specific model failure.</p>
+      <div class="pill-row">
+        <span class="pill hot">/audit</span>
+        <span class="pill hot">/distill</span>
+        <span class="pill hot">/colorize</span>
+        <span class="pill hot">/harden</span>
+        <span class="pill hot">/quieter</span>
+      </div>
+      <div class="pill-row">
+        <span class="pill hot">brainstorming</span>
+        <span class="pill hot">writing-plans</span>
+        <span class="pill hot">debugging</span>
+        <span class="pill hot">code-review</span>
+      </div>
+      <p class="muted" style="margin-top: var(--s-3); font-size: 0.9rem;">Start with one failure mode per skill. Decompose only when you observe the same skill firing for genuinely different failures.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================ SLIDE 7 ================ -->
+<section class="slide" data-section="Lesson 5 · Compose">
+  <div class="meta"><span class="section">07 · Lesson 5</span><span class="counter">07 / 16</span></div>
+  <div class="stack">
+    <div class="label hot">Lesson 05 of 05</div>
+    <h2>Compose into a methodology. Don't ship in isolation.</h2>
+    <p class="sublead">The quality jump isn't from any single instruction — it's from the discipline of the whole chain.</p>
+  </div>
+  <div class="chain">
+    <div class="node">
+      <div class="step">01 · entry</div>
+      <div class="name">brainstorming</div>
+      <div class="blurb">Shapes the problem before code.</div>
+    </div>
+    <div class="node">
+      <div class="step">02</div>
+      <div class="name">writing-plans</div>
+      <div class="blurb">Forces a written plan, not vibes.</div>
+    </div>
+    <div class="node">
+      <div class="step">03</div>
+      <div class="name">executing-plans</div>
+      <div class="blurb">One step at a time. No drift.</div>
+    </div>
+    <div class="node">
+      <div class="step">04</div>
+      <div class="name">requesting-code-review</div>
+      <div class="blurb">Self-review before the user sees it.</div>
+    </div>
+    <div class="node">
+      <div class="step">05 · exit</div>
+      <div class="name">finishing-a-branch</div>
+      <div class="blurb">Closes the loop. Hand-off is clean.</div>
+    </div>
+  </div>
+  <p class="quote">"The workflow effect, not any single skill, is what made this transformative."<cite>— Evan Schwartz, a rave review</cite></p>
+</section>
+
+<!-- ================ SLIDE 8 ================ -->
+<section class="slide" data-section="Tradeoffs">
+  <div class="meta"><span class="section">08 · What it costs</span><span class="counter">08 / 16</span></div>
+  <div class="stack">
+    <h2>What you're giving up.</h2>
+    <p class="sublead">Discipline-enforcement skills are longer, more opinionated, and harder to write than encouraging ones. Name the tradeoff honestly.</p>
+  </div>
+  <div class="costs">
+    <div class="cost">
+      <div class="num">COST 01</div>
+      <h3>Bigger SKILL.md</h3>
+      <p>A 12-row rationalizations table doubles your file size. Higher token cost per session — this is real, not hypothetical.</p>
+    </div>
+    <div class="cost">
+      <div class="num">COST 02</div>
+      <h3>Opinionated skills fight edge cases</h3>
+      <p>The ban that usually helps sometimes blocks a legitimate choice. You'll ship corrections for a week.</p>
+    </div>
+    <div class="cost">
+      <div class="num">COST 03</div>
+      <h3>You need the expertise</h3>
+      <p>Anti-pattern lists require you to actually know the anti-patterns. There's no shortcut around having taste.</p>
+    </div>
+  </div>
+  <p class="muted" style="font-family: var(--mono); font-size: 0.82rem;">Smallest version still helps: one banned phrase + one rationalization rebuttal beats a vague encouraging skill.</p>
+</section>
+
+<!-- ================ SLIDE 9 ================ -->
+<section class="slide" data-section="Rollback">
+  <div class="meta"><span class="section">09 · When not to</span><span class="counter">09 / 16</span></div>
+  <div class="stack">
+    <h2>When <em>not</em> to do this — and how to roll back.</h2>
+  </div>
+  <div class="grid-lr">
+    <div class="rules">
+      <div class="n">01</div>
+      <div class="r">Don't enforce on skills with fewer than 5 invocations of evidence. You'll over-fit to one accident.</div>
+      <div class="n">02</div>
+      <div class="r">Don't ban behaviors you can't articulate the <em>replacement</em> for. "Don't be generic" with no direction just confuses the model.</div>
+      <div class="n">03</div>
+      <div class="r">If the discipline-enforcement skill conflicts with explicit user instructions, the user wins. This is in superpowers' own priority list.</div>
+    </div>
+    <div class="stack">
+      <div class="label hot">Rollback path</div>
+      <div class="rollback">
+<span class="key">$</span> cp SKILL.md SKILL.md.v1
+<span class="key">$</span> # ship the new version
+<span class="key">$</span> # track invocations for 3 days
+<span class="key">$</span> # if count drops &gt; 30%, revert
+<span class="key">$</span> mv SKILL.md.v1 SKILL.md
+      </div>
+      <p class="muted" style="font-size: 0.88rem;">Leading indicator beats a weekly check. If you notice reliability drop on day 3, you haven't lost a week of correct invocations.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================ SLIDE 10 ================ -->
+<section class="slide" data-section="Action">
+  <div class="meta"><span class="section">10 · This week</span><span class="counter">10 / 16</span></div>
+  <div class="stack" style="gap: var(--s-6);">
+    <div class="takeaway">Great skills don't just instruct the model — they enforce discipline by anticipating its specific failure modes.</div>
+    <div class="grid-lr" style="gap: var(--s-7);">
+      <div class="stack">
+        <div class="label">The five lessons</div>
+        <ul class="checklist">
+          <li class="pri"><span class="box"></span><span>01 · Ban behaviors explicitly <em class="muted" style="font-style:normal;">← pick this one</em></span></li>
+          <li><span class="box"></span><span>02 · Anticipate rationalizations</span></li>
+          <li><span class="box"></span><span>03 · Add objective enforcement</span></li>
+          <li class="pri"><span class="box"></span><span>04 · Decompose by failure mode <em class="muted" style="font-style:normal;">← and this one</em></span></li>
+          <li><span class="box"></span><span>05 · Compose into methodology</span></li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="label hot">If you can only do two</div>
+        <p>Pick <strong>01 (ban)</strong> and <strong>04 (decompose)</strong>. Highest reliability impact for the least authoring effort.</p>
+        <div class="action">Pick two. Apply to one skill. <span class="accent">By Friday.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== BACKUP B1 ============== -->
+<section class="slide" data-section="Backup · B1">
+  <div class="meta"><span class="section backup-marker">Backup · B1 · depth L2</span><span class="counter">11 / 16</span></div>
+  <div class="stack">
+    <h2>The full Impeccable command list.</h2>
+    <p class="muted" style="font-size: 0.9rem;">Triggered by: "What does each command actually do?"</p>
+  </div>
+  <table class="full">
+    <thead><tr><th>Command</th><th>Targets the failure mode</th></tr></thead>
+    <tbody>
+      <tr><td class="cmd">/audit</td><td>missing accessibility, heading skips, contrast failures</td></tr>
+      <tr><td class="cmd">/critique</td><td>surfaces AI-slop tells for the author to react to</td></tr>
+      <tr><td class="cmd">/polish</td><td>tightens spacing, kerning, optical adjustments</td></tr>
+      <tr><td class="cmd">/distill</td><td>strips over-elaboration back to the core composition</td></tr>
+      <tr><td class="cmd">/clarify</td><td>firms up hierarchy when everything competes for attention</td></tr>
+      <tr><td class="cmd">/optimize</td><td>performance — asset weight, CLS, font loading</td></tr>
+      <tr><td class="cmd">/harden</td><td>edge cases: empty states, errors, long content</td></tr>
+      <tr><td class="cmd">/animate</td><td>adds motion where static is under-communicating</td></tr>
+      <tr><td class="cmd">/colorize</td><td>rebuilds a weak palette in OKLCH with real contrast</td></tr>
+      <tr><td class="cmd">/typeset</td><td>replaces reflex fonts; rebuilds the type scale</td></tr>
+      <tr><td class="cmd">/layout</td><td>breaks the everything-is-a-card reflex</td></tr>
+      <tr><td class="cmd">/adapt</td><td>responsive behavior beyond "shrink the desktop"</td></tr>
+      <tr><td class="cmd">/bolder</td><td>commits harder to the aesthetic direction</td></tr>
+      <tr><td class="cmd">/delight</td><td>adds one memorable detail without going twee</td></tr>
+      <tr><td class="cmd">/quieter</td><td>removes decoration that isn't earning its place</td></tr>
+      <tr><td class="cmd">/shape</td><td>introduces intentional asymmetry and rhythm</td></tr>
+      <tr><td class="cmd">/overdrive</td><td>deliberate maximalism when restraint has gone flat</td></tr>
+      <tr><td class="cmd">/verify</td><td>runs the 24-rule CLI scanner; outputs actionable list</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== BACKUP B2 ============== -->
+<section class="slide" data-section="Backup · B2">
+  <div class="meta"><span class="section backup-marker">Backup · B2 · depth L2</span><span class="counter">12 / 16</span></div>
+  <div class="stack">
+    <h2>Superpowers' full skill graph.</h2>
+    <p class="muted" style="font-size: 0.9rem;">Triggered by: "Show me how the skills actually chain."</p>
+  </div>
+  <div class="graph">
+    <div class="row"><span class="from">using-superpowers</span><span class="arr">→</span><span class="to">entry point · orients every subsequent skill</span></div>
+    <div class="row"><span class="from">brainstorming</span><span class="arr">→</span><span class="to">expands the problem space before commitment</span></div>
+    <div class="row"><span class="from">writing-plans</span><span class="arr">→</span><span class="to">produces a written plan file, not a mental one</span></div>
+    <div class="row"><span class="from">subagent-driven-development</span><span class="arr">→</span><span class="to">delegates risky/parallel work to agents</span></div>
+    <div class="row"><span class="from">executing-plans</span><span class="arr">→</span><span class="to">one step at a time; updates state explicitly</span></div>
+    <div class="row"><span class="from">requesting-code-review</span><span class="arr">→</span><span class="to">self-review checkpoint before human eyes</span></div>
+    <div class="row"><span class="from">finishing-a-development-branch</span><span class="arr">→</span><span class="to">closes the loop; hand-off is deterministic</span></div>
+  </div>
+  <p class="muted" style="font-family: var(--mono); font-size: 0.82rem;">Each node both triggers the next <em>and</em> bans shortcutting past it.</p>
+</section>
+
+<!-- ============== BACKUP B3 ============== -->
+<section class="slide" data-section="Backup · B3">
+  <div class="meta"><span class="section backup-marker">Backup · B3 · depth L3</span><span class="counter">13 / 16</span></div>
+  <div class="stack">
+    <h2>Mejba's controlled test — the evidence.</h2>
+    <p class="muted" style="font-size: 0.9rem;">Triggered by: "Where's the proof this actually works?"</p>
+  </div>
+  <div class="bars">
+    <div class="bar-row">
+      <span class="label-r">Trivial task</span>
+      <div class="track"><div class="fill" style="width: 60%;"></div><div class="fill alt" style="width: 56%; mix-blend-mode: multiply;"></div></div>
+      <span class="val">−4%</span>
+    </div>
+    <div class="bar-row">
+      <span class="label-r">Simple feature</span>
+      <div class="track"><div class="fill" style="width: 72%;"></div><div class="fill alt" style="width: 62%; mix-blend-mode: multiply;"></div></div>
+      <span class="val">−11%</span>
+    </div>
+    <div class="bar-row">
+      <span class="label-r">Moderate feature</span>
+      <div class="track"><div class="fill" style="width: 84%;"></div><div class="fill alt" style="width: 70%; mix-blend-mode: multiply;"></div></div>
+      <span class="val">−18%</span>
+    </div>
+    <div class="bar-row">
+      <span class="label-r">Complex / multi-file</span>
+      <div class="track"><div class="fill" style="width: 96%;"></div><div class="fill alt" style="width: 74%; mix-blend-mode: multiply;"></div></div>
+      <span class="val">−23%</span>
+    </div>
+  </div>
+  <div class="legend">
+    <span><span class="swatch" style="background: var(--ink);"></span>Baseline tokens</span>
+    <span><span class="swatch" style="background: var(--accent);"></span>With superpowers · overall −14%</span>
+  </div>
+  <p class="muted" style="font-family: var(--mono); font-size: 0.82rem; max-width: 72ch;">Caveats: 12-session sample, single-author evaluation, task selection bias. Quality gains concentrated on complex tasks; trivial-task "40% quality lift" claim was overstated.</p>
+</section>
+
+<!-- ============== BACKUP B4 ============== -->
+<section class="slide" data-section="Backup · B4">
+  <div class="meta"><span class="section backup-marker">Backup · B4 · depth L3</span><span class="counter">14 / 16</span></div>
+  <div class="stack">
+    <h2>Why does the language sound so authoritarian?</h2>
+    <p class="muted" style="font-size: 0.9rem;">Triggered by: "Doesn't 'EXTREMELY-IMPORTANT' backfire?"</p>
+  </div>
+  <div class="grid-lr">
+    <div class="stack">
+      <p>obra's own framing: Cialdini's principles, <em>applied to the model</em>, not to the user.</p>
+      <ul class="checklist">
+        <li><span class="box"></span><span><strong>Authority</strong> · rules stated as from a system, not a suggestion</span></li>
+        <li><span class="box"></span><span><strong>Commitment</strong> · "you MUST" binds the next step in the session</span></li>
+        <li><span class="box"></span><span><strong>Scarcity</strong> · "before <em>anything</em> else" — no budget for deferral</span></li>
+        <li><span class="box"></span><span><strong>Consistency</strong> · repeated bans reinforce the one from three slides ago</span></li>
+      </ul>
+    </div>
+    <div class="stack">
+      <p class="quote">"These aren't aesthetic choices. They are testing-derived. Each line earned its caps through a failure I watched happen."<cite>— obra · blog.fsck.com/2025/10/09</cite></p>
+    </div>
+  </div>
+  <p class="muted" style="font-family: var(--mono); font-size: 0.82rem;">Caveat: authoritarian phrasing can collide with user instructions. superpowers resolves this with an explicit priority list — user instructions win.</p>
+</section>
+
+<!-- ============== BACKUP B5 ============== -->
+<section class="slide" data-section="Backup · B5">
+  <div class="meta"><span class="section backup-marker">Backup · B5 · depth L3</span><span class="counter">15 / 16</span></div>
+  <div class="stack">
+    <h2>How impeccable's CLI scanner works.</h2>
+    <p class="muted" style="font-size: 0.9rem;">Triggered by: "How would I build something like that?"</p>
+  </div>
+  <div class="grid-lr">
+    <div class="stack">
+      <p>The scanner reads static HTML/CSS. No AI required. Runs in CI, runs pre-commit, runs in the hands of a reviewer who doesn't trust the model.</p>
+      <ul class="checklist">
+        <li><span class="box"></span><span>Parse the DOM; extract used fonts, colors, spacing tokens</span></li>
+        <li><span class="box"></span><span>Compare against the ban-lists from the skill</span></li>
+        <li><span class="box"></span><span>Run contrast ratios through an OKLCH-aware calculator</span></li>
+        <li><span class="box"></span><span>Flag heading-level skips, orphaned cards-in-cards, gradient-text</span></li>
+        <li><span class="box"></span><span>Output: machine-readable JSON + human-readable report</span></li>
+      </ul>
+    </div>
+    <div class="cli">
+<span class="cmd">$ impeccable verify ./dist</span>
+<span class="dim">reading  ./dist/index.html</span>
+<span class="dim">parsing  24 CSS rules</span>
+<span class="dim">running  24 detection rules</span>
+
+<span class="warn">✕ typography.banned-font</span>     font-family: Inter (line 42)
+<span class="warn">✕ color.pure-black</span>           color: #000000 (line 87)
+<span class="warn">✕ layout.card-in-card</span>        .card .card nested (line 104)
+<span class="ok">✓ contrast.aa-pass</span>           17/17 text-bg pairs
+<span class="ok">✓ heading.no-skip</span>            h1 → h2 → h3
+
+<span class="dim">→ 3 violations · 2 auto-fixable · see ./impeccable-report.json</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CREDITS ============== -->
+<section class="slide" data-section="Credits">
+  <div class="meta"><span class="section">Sources · single-author</span><span class="counter">16 / 16</span></div>
+  <div class="stack">
+    <h2>Sources &amp; honest flags.</h2>
+  </div>
+  <div class="grid-lr">
+    <div class="stack">
+      <div class="label">Primary</div>
+      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:var(--s-3); font-family: var(--mono); font-size: 0.92rem;">
+        <li>obra / superpowers · github</li>
+        <li>obra / superpowers-skills · github</li>
+        <li>pbakaus / impeccable · github</li>
+        <li>blog.fsck.com — superpowers design rationale</li>
+        <li>emschwartz.me — rave review</li>
+        <li>mejba.me — controlled test</li>
+        <li>medium · Claude Code 100× with Superpowers</li>
+      </ul>
+    </div>
+    <div class="stack">
+      <div class="label hot">What I'm flagging</div>
+      <p>The deck is biased toward superpowers — more material, more reviews. A real second pass should rebalance toward impeccable.</p>
+      <p>The 14% token-reduction stat is load-bearing. If the mejba.me methodology is contested, slide 5 weakens. Worth fact-checking live.</p>
+      <p>The Cialdini framing (B4) is interesting but off-axis from the main argument. First thing to cut if time slips.</p>
+    </div>
+  </div>
+  <hr class="rule">
+  <div style="display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;">
+    <span>Generated via /impeccable · from /deck-architect sample</span>
+    <span>End · thanks for the attention</span>
+  </div>
+</section>
+
+</div>
+
+<div class="nav"><kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>F</kbd> fullscreen</div>
+
+<script>
+(function () {
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0;
+  const total = slides.length;
+
+  function show(n) {
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(total - 1); }
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.nav')) return;
+    const x = e.clientX / window.innerWidth;
+    show(x < 0.33 ? i - 1 : i + 1);
+  });
+
+  const hash = parseInt(location.hash.slice(1), 10);
+  if (!isNaN(hash)) show(hash - 1); else show(0);
+})();
+</script>
+</body>
+</html>

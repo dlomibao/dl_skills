@@ -2,7 +2,7 @@
 
 Visual aid **selection** (what kind of visual supports this slide's point) is content work and belongs in Phase 5. Visual aid **rendering** (colors, fonts, pixel positions) is layout — handed off.
 
-**Default text-only.** A headline + a few words is often the strongest treatment, especially when the slide's point is a single number, one-line insight, or a direct quote. Text with massive typography beats a generic stock image every time.
+**Default text-only, with one exception.** A headline + a few words is often the strongest treatment, especially when the slide's point is a single number, one-line insight, or a direct quote. Text with massive typography beats a generic stock image every time.
 
 A slide earns a visual when:
 
@@ -12,6 +12,15 @@ A slide earns a visual when:
 - The point is about a specific product/interface/artifact → **screenshot**
 
 Otherwise, mark `text-only`.
+
+**The topology exception.** Structures with ≥ 3 nodes AND explicit directional edges (chains, sequences, graphs, 2×2 quadrants, waterfalls) do NOT fall through to text-only. These auto-earn a visual and deck-architect emits a structured spec for the shipped renderer to draw. Rendering a seven-node handoff chain as seven labeled paragraphs is a failure mode we observed live (v1–v2 of the impeccable-superpowers deck) — the renderer had nothing structured to work from, so text-first won by default. The spec schema is at `visual-specs.md`; the renderer at `scripts/render-visual.js` produces inline SVG that inherits the deck's tokens.
+
+Flow of a visual that auto-earns:
+
+1. Phase 5 outputs a YAML spec in the `Visual:` field of that slide (type, nodes, edges, highlights, caption).
+2. Phase 9 HTML handoff embeds the spec as `<figure data-visual-spec='…'>` in the rendered file.
+3. `render-visual.js` walks the HTML, dispatches to the shape renderer, writes SVG back.
+4. The lint fails if a `data-visual-todo` placeholder remains on a main-flow slide.
 
 ## Chart / data visualization — full spec
 
