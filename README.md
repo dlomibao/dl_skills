@@ -35,9 +35,26 @@ bash scripts/install-skill.sh --all             # everything
 
 | Skill | Version | Description |
 |---|---|---|
-| [deck-architect](skills/deck-architect/) | `2.3.1` | Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide w... |
+| [deck-architect](skills/deck-architect/) | `2.5.2` | Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide w... |
 
 <!-- SKILLS:END -->
+
+## Featured sample
+
+**[What makes impeccable and superpowers great skills](samples/deck-architect/v6-what-makes-great-skills.html)** — a 12-minute talk deck generated end-to-end by the `deck-architect` skill (outline + visual specs) handed off to `/impeccable` (HTML rendering). Self-contained HTML file, inline CSS + SVG, keyboard-navigable, presenter mode built in.
+
+What it showcases:
+
+- **Rhetorical cover** — *"Weak skills describe. Strong skills forbid."* — the deck's takeaway compressed into the title
+- **Structured visual specs** — five shipped shapes (flow, bar, graph, quadrant, waterfall) rendered as inline SVG from YAML specs in the outline, inheriting `:root` design tokens so every visual shares the deck's palette + typography
+- **Token-driven theming** — single-source-of-truth for accent, ink, paper, rule, fonts. One `--accent` change updates CSS text AND the SVG bars, arrows, node borders
+- **Hidden speaker notes** — `<aside class="notes">` on every content slide, revealed via `S` key (presenter mode reveals a side panel)
+- **Appendix divider** — unambiguous visual break between main flow and backup; backup slides tinted + prefixed `REFERENCE ·` in the meta
+- **Lint-clean** — passes all 11 static checks (semantic roles, notes present, no commentary leaks, no impeccable-ban CSS, no unrendered placeholders)
+
+Also see the full [samples index](samples/deck-architect/README.md) — six generations documenting the skill's progression from the original v1 (commentary leaks, no visuals) through v6 (A+ end-to-end).
+
+**Run it yourself:** open `samples/deck-architect/v6-what-makes-great-skills.html` in a browser. Use `←/→` to navigate, `S` for presenter mode, `F` for fullscreen.
 
 ## Layout
 
