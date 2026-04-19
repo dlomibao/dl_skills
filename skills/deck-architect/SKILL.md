@@ -1,9 +1,11 @@
 ---
 name: deck-architect
-description: Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide what to say, in what order, and what to cut. Use when a draft feels too long, too generic, doesn't land, or sounds AI-generated. Use when someone says "help me make a deck about X" — structure is where decks fail. Do NOT use when the user only wants visual polish on already-finalized content.
-version: 2.1.0
+description: Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide what to say, in what order, and what to cut. Use when a draft feels too long, too generic, doesn't land, or sounds AI-generated. Use when someone says "help me make a deck about X" — structure is where decks fail. Do NOT use when the user only wants visual polish on already-finalized content. Style enforcement (slop-phrase list) is English-only; structural rules apply to any language.
+version: 2.2.0
 license: MIT
 allowed-tools: [WebSearch]
+tested-with: claude-sonnet-4.5+, claude-opus-4+
+approx-tokens: ~4500 (SKILL.md only); +1000–3000 per loaded reference
 ---
 
 # Deck Architect
@@ -37,6 +39,8 @@ A deck that passes:
 - Nothing could be copy-pasted to another company with nouns swapped
 
 **When the test fails: Read `references/forbidden-phrases.md` and rewrite the offending content.**
+
+> **TL;DR if you don't load the reference:** ban hedged corporate filler — "leverage," "unlock," "drive alignment," "robust," "seamlessly," "stakeholders," "ecosystem," "significant impact," "in today's fast-paced world," "we are excited to." Replace each with a concrete noun or verb that carries information. "Significant impact on retention" → "D30 retention moved from 22% to 41%." Specificity is what kills the slop.
 
 ## Operating principles
 
@@ -89,7 +93,12 @@ One block, four items:
 
 Same fallback as Phase 0: if the user won't answer after one push, infer and mark with `[INFERRED — confirm]`. Exception: the one-sentence takeaway. Don't infer this — help the user articulate it instead. A wrong takeaway is worse than a missing one.
 
-**Phase 1a — Team credit (conditional).** If the deck describes work by multiple people, ask once: *"Is this a team effort? If so, who contributed to which key wins?"* Then tie specific names to specific wins (see [references/team-credit.md](references/team-credit.md)). Never invent attributions.
+**Phase 1a — Team credit (conditional).** If the deck describes work by multiple people (any "we," "the team," named collaborators, cross-functional shipping of something non-trivial), ask once: *"Is this a team effort? If so, tell me who contributed to which key wins so credit lands with the right people."* Then:
+
+- **Tie specific wins to specific humans on the slide.** Not "the team reduced latency" — "Priya rewrote the caching layer, cutting p99 latency 42%."
+- **Surface individual wins in speaker notes** even when the slide stays clean — verbal credit lands harder than on-slide text.
+- **Add a Credits slide near the end** (second-to-last, before the takeaway close) when the contributor list is meaningful. Specific, name-by-name. "Thanks to the team" gets cut.
+- **Never invent attributions.** If unsure, ask or use neutral framing.
 
 **Phase 1b — Existing assets (conditional).** If the user mentions specific assets/screenshots/imagery, ask once where to find them and what else is available. Don't ask by default — friction without payoff.
 
@@ -104,7 +113,13 @@ Choose ONE structure. State which and why before outlining.
 | Pitch (funding/sales/partnership) | **Problem → Why Now → Solution → Why Us → Proof → Ask** |
 | Update / status | **Headline → What changed → What it means → What's next** — headline first, details on tap |
 
-If the situation doesn't fit cleanly, pick the closest and state the adaptation. Spine details and time-budget guidance: [references/spines.md](references/spines.md).
+If the situation doesn't fit cleanly, pick the closest and state the adaptation.
+
+**Spine details:**
+- **SCQA:** answer-up-front (the recommendation is slide 1 of body), then 2–4 supporting arguments. Arguments must be **MECE** — no overlap, full coverage. Two arguments saying the same thing? Collapse them.
+- **Hook→Insight→Evidence:** time budget ~15% hook/intro, 60–70% body, 15–20% demo + close. The insight is a *single* technical claim, not a survey.
+- **Pitch:** use only when explicitly pitching for funding, sale, or partnership.
+- **Update:** resist walking through every workstream. Headline first; details on tap.
 
 ### Phase 3 — Draft the slide list (in text)
 
@@ -128,6 +143,8 @@ Numbered list. Each slide:
 - **Contrast** — alternate problem/solution, current/future. Don't stack slides in the same emotional register.
 
 **Read `references/slide-craft.md` before writing slide titles** — it contains the DO/DO NOT tables for titles, openings, contrast, tradeoff phrasing, rollback specs, and the slide/speaker split patterns. These rules are enforced; not loading them produces the exact failures Phase 4 will catch.
+
+> **TL;DR if you don't load the reference:** (1) Titles are full sentences with subject + verb + specific claim — never noun phrases. (2) Opening earns the first 30 seconds with a pattern-interrupt; never "Title + name" or "Agenda." (3) Slide and speaker notes complement, never duplicate. (4) Alternate emotional registers — don't stack four problem slides then four solution slides. (5) Close on the takeaway full-screen, never "Thank you" or "Questions?"
 
 ### Phase 4 — Ruthless discipline pass
 
@@ -154,7 +171,7 @@ If content exceeds the ceiling, **cut — don't shrink fonts.** Move detail to a
 - **Filler to delete on sight:** agenda slides on decks <15 slides; "About us" up front; "Thank you" / "Questions?" closers; transition slides ("Section 2"); slides that restate what's about to come.
 - **Empty-calorie tells:** title could apply to any company; lists categories without synthesis; chart shows data without takeaway in title.
 
-**Run the AI Slop Test.** Read the outline asking: would a sharp reader spot this as Claude output? **Read `references/forbidden-phrases.md`** for the reject-on-sight phrase list and structural tells. Rewrite with specifics — every forbidden phrase has a concrete replacement.
+**Run the AI Slop Test.** Read the outline asking: would a sharp reader spot this as Claude output? **Read `references/forbidden-phrases.md`** for the reject-on-sight phrase list and structural tells. Rewrite with specifics — every forbidden phrase has a concrete replacement. (TL;DR is at the top of this file under "The AI Slop Test.")
 
 **Audience-fit check.** Re-read through the audience's eyes. Cut what they know. Add what they'd push back on.
 
@@ -172,9 +189,11 @@ Otherwise: mark `text-only` and move on.
 
 **Read `references/visuals.md`** for full chart-type selection rules, diagram modes, image search/licensing protocol, and screenshot format before specifying any non-text-only slide.
 
+> **TL;DR if you don't load the reference:** comparison → bar; trend → line (≤5 series); part-to-whole → stacked bar (avoid pies >4 slices); relationship → scatter. **Forbidden:** 3D charts, pies with many slices, dual-axis without genuine unit difference. Chart titles state the insight, not the metric. One highlight color per chart; everything else gray. For images, run `WebSearch` for 2–3 candidates with a slide-specific query, surface URLs with one-line fit notes, **always flag licensing** — never fabricate URLs.
+
 When images are needed and the user hasn't supplied an asset, run `WebSearch` for 2–3 candidates with a slide-specific query. Surface URLs with one line on which fits best. **Always flag licensing risk** — user must verify reuse rights. Never fabricate URLs.
 
-### Phase 6 — Pressure test (role-play the skeptic)
+### Phase 6 — Pressure test (role-play the skeptic), then final scan
 
 **Always run. Scale to stakes — never skip.**
 
@@ -188,7 +207,7 @@ The other phases optimize for building a good argument. This phase optimizes for
 4. **Quote, don't summarize.** "The TCO slide is hand-wavy" is useless. "Which direction is the 8% gap, and over 5 years not 1?" is useful.
 5. **Classify:** **Fatal** (ask dies) / **Credibility** (presenter loses trust) / **Minor** (nit). Fix Fatal + Credibility before presenting; Minor → backup layer.
 6. **Apply fixes.** Common patterns: under-specified quantitative claim → add the qualifier in the title itself. Presenter-dependent trust → co-presenter or remove. Hand-wavy direction → name it and own it. Missing tradeoff → see Phase 3c. Buried rollback → promote to main flow (Phase 3d).
-7. **Show your work** in the Pressure-test log (Phase 7 output).
+7. **Show your work** in the Pressure-test log (Phase 8 output).
 
 **Sizing — match to stakes:**
 
@@ -202,19 +221,17 @@ When in doubt, run Standard. Cost of too-large is minutes; too-small is torched 
 
 **Read `references/pressure-test.md`** for the full step-by-step methodology, common-fix patterns, and rationalizations to refuse — load it before running the test, especially the first time per session.
 
-### Phase 7 — Final scan
+> **TL;DR if you don't load the reference:** adopt the hardest sell's voice (specific priors, not Claude's voice), walk every slide, write critiques as direct quotes from the skeptic, classify Fatal/Credibility/Minor, fix Fatals + Credibilities before presenting, log everything.
 
-Cheap re-read after Phase 6 fixes land. Three passes, all decks, no skipping.
+**Step 8 — Final scan (always, all sizes).** After fixes land, do three cheap re-read passes:
 
 1. **Slide-title scan.** Read every title top to bottom. Each must be a full-sentence message, not a noun phrase. Catches the #1 post-fix regression — slides that got edited for content but kept their pre-edit title.
-2. **AI Slop Test on the full deck.** Re-run the named test. New content from Phase 6 fixes is the most likely place for slop because it was written under mild time pressure.
-3. **Argument coherence scan.** Read titles top to bottom as one sentence. Does it tell a coherent story landing on the takeaway? If it jumps/repeats/meanders, a Phase 6 fix broke the spine — go back, don't paper over.
+2. **AI Slop Test on the full deck.** Re-run the named test from the top of this file. New content from pressure-test fixes is the most likely place for slop because it was written under mild time pressure.
+3. **Argument coherence scan.** Read titles top to bottom as one sentence. Does it tell a coherent story landing on the takeaway? If it jumps/repeats/meanders, a Phase 6 fix broke the spine — go back to step 6, don't paper over.
 
-**Not** another pressure test, restructuring phase, or style polish. Content integrity only.
+The final scan is **not** another pressure test, restructuring phase, or style polish — content integrity only. Significant fixes get noted in the Pressure-test log; otherwise silent.
 
-Significant fixes get noted in the Pressure-test log. Otherwise silent.
-
-### Phase 8 — Build the backup layer
+### Phase 7 — Build the backup layer
 
 **Default for high-stakes decks** (board, investor, exec recommendation, anywhere skeptical/technical attendees might interrupt). Skip for low-stakes short decks (5-min status, lightning talk) and note that you did.
 
@@ -228,9 +245,16 @@ Each backup slide:
 
 **Count target:** 30–60% as many backup slides as main flow. Too few = exposed; too many = can't find the right one under pressure.
 
-Typical backup by audience: [references/backup-patterns.md](references/backup-patterns.md).
+**Typical backup by audience:**
 
-### Phase 9 — Present the outline
+- **Exec with technical sub-audience:** technical architecture, implementation timeline, tradeoff analysis, what could go wrong
+- **Financial:** sensitivity analysis, unit economics, scenario tables, assumptions log
+- **Board / investor:** cohort data, churn mechanics, competitive positioning detail, regulatory considerations
+- **Technical:** benchmark methodology, reproducibility, alternative approaches considered and rejected
+
+Group them clearly (by topic, by likely-asker, or by question). If using a deck tool, place after the main appendix divider.
+
+### Phase 8 — Present the outline
 
 Deliver as **structured text**, not slides. Use this schema verbatim:
 
@@ -304,7 +328,7 @@ B2. ...
 
 For a complete worked example (brief → full schema filled out), see [references/example.md](references/example.md).
 
-### Phase 10 — Handoff (only if rendering)
+### Phase 9 — Handoff (only if rendering)
 
 Don't render slides in this skill. Hand off to `pptx` (or the user's chosen tool) with the outline above. Keep the content exactly as outlined — the visual skill makes it look good, not rewrites the points. Include both main flow and backup layer.
 
@@ -324,6 +348,18 @@ Don't render slides in this skill. Hand off to `pptx` (or the user's chosen tool
 - **Quote the skeptic, don't summarize.** Specific and sharp.
 - **Handle stalled briefs.** If after one push the user still won't answer Phase 0/1, infer from context and mark inferences with `[INFERRED — confirm]` so the user can correct in one pass.
 - **Mid-deck audience changes.** If the room composition changes ("CFO is now joining"), re-run Phase 0 question 5 and patch the backup layer. Full re-runs only if the hardest sell changed.
+
+## Graceful degradation — when the user genuinely won't engage
+
+The Iron Law is the default. But if after **two** push-backs the user truly won't engage with Phase 0/1 ("just give me something I can edit," "I'll fix it later," "I don't have time for this"), don't deadlock. Switch to **minimal-brief mode**:
+
+1. **State the switch explicitly:** *"Producing a minimal-brief outline. I've inferred audience, takeaway, and spine from context — flag everything you'd change."*
+2. **Infer all of Phase 0/1** from whatever the user said. Mark every field `[INFERRED — confirm]`.
+3. **Still run Phases 2–8** — spine, slide list, discipline, visuals, pressure test, backup, output. The structural discipline still applies; it's just operating on inferred inputs.
+4. **Run only a Micro pressure test** — without a confirmed audience, anything bigger is theatre.
+5. **Lead the output with a "What I assumed" block** so the user can correct in one pass.
+
+Minimal-brief mode is a fallback, not an alternative path. Don't volunteer it; only use it after the user has actively refused engagement twice. A deck built from inferred inputs is worse than one built from real ones — but it's better than no deck or an argument with the user.
 
 ## Anti-patterns
 
@@ -347,7 +383,7 @@ Specific behaviors to avoid (the failure-modes catalogue is descriptive; this is
 - Hedged qualifier-heavy prose where specific claims belong
 - Three-equal-weight bullets as a reflex
 
-For background on *why* these matter — the failure modes that motivate this whole skill: [references/failure-modes.md](references/failure-modes.md).
+For background on *why* these matter — the failure modes that motivate this whole skill: [references/failure-modes.md](references/failure-modes.md). (Background reading; not required for any phase.)
 
 ## Quick reference: highest-leverage cuts
 
