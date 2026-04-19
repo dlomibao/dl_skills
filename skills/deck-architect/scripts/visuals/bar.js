@@ -88,11 +88,15 @@ function renderHorizontal(spec, tokens) {
       );
     });
 
-    // Callout text at right, if this row
+    // Callout text right-anchored to the viewBox right edge, always.
+    // Placing it next to the bar end was ambiguous — text-width estimates
+    // disagree with real glyph metrics and the callout can clip at the
+    // viewBox edge under viewport scaling. Right-anchored to (width - 16)
+    // guarantees the text fits regardless of string length.
     if (isCallout) {
-      const rightX = width - PADDING.right + 16;
+      const x = width - 16;
       elements.push(
-        `<text x="${rightX}" y="${rowY + rowHeight / 2 + 4}" font-family='${escapeAttr(tokens.sansFont)}' font-size="${tokens.font.sm}" fill="${tokens.accent}" font-weight="600">${escapeText(spec.callout.text)}</text>`
+        `<text x="${x}" y="${rowY + rowHeight / 2 + 4}" font-family='${escapeAttr(tokens.sansFont)}' font-size="${tokens.font.sm}" fill="${tokens.accent}" font-weight="600" text-anchor="end">${escapeText(spec.callout.text)}</text>`
       );
     }
   });

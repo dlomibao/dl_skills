@@ -69,15 +69,26 @@ if (svgOnly) {
 const html = fs.readFileSync(inputFile, "utf8");
 const tokens = extractTokens(html);
 
-// Match <figure data-visual-spec='...'>...</figure>
-// The spec can be single-quoted JSON or HTML-escaped JSON.
-const figRe = /<figure\b([^>]*\bdata-visual-spec\s*=\s*(?:'([^']*)'|"([^"]*)")[^>]*)>([\s\S]*?)<\/figure>/gi;
+// Skip HTML comments during the scan. The documented-assumption template
+// at the top of a rendered deck may include literal <figure data-visual-
+// spec='{json}'> examples as prose documentation of the mechanism —
+// that's exactly what references/html-renderer.md §5a shows. The browser
+// never renders comment content; the renderer shouldn't try to parse it
+// either. Same hygiene as lint-deck.js 2.4.2.
+//
+// Single-pass regex alternation: match either (a) an HTML comment — pass
+// through verbatim, or (b) a <figure data-visual-spec> block — process.
+// This preserves comments in the output rather than stripping them.
+const commentOrFigureRe = /(<!--[\s\S]*?-->)|<figure\b([^>]*\bdata-visual-spec\s*=\s*(?:'([^']*)'|"([^"]*)")[^>]*)>([\s\S]*?)<\/figure>/gi;
 
-let rendered = html;
 let swaps = 0;
-let errors = [];
+const errors = [];
 
-rendered = html.replace(figRe, (match, attrs, singleQuoteSpec, doubleQuoteSpec, inner) => {
+const rendered = html.replace(commentOrFigureRe, (match, comment, attrs, singleQuoteSpec, doubleQuoteSpec) => {
+  // Comment match: return as-is.
+  if (comment) return comment;
+
+  // Figure match: parse spec, render, swap.
   const raw = singleQuoteSpec || doubleQuoteSpec || "";
   const decoded = decodeHtmlEntities(raw);
   let spec;
@@ -103,7 +114,6 @@ rendered = html.replace(figRe, (match, attrs, singleQuoteSpec, doubleQuoteSpec, 
   }
 
   swaps++;
-  // Preserve existing attributes except data-visual-spec itself. Add data-rendered marker.
   const cleanedAttrs = attrs.replace(/\bdata-visual-spec\s*=\s*(?:'[^']*'|"[^"]*")/, "").trim();
   const label = extractDataAttr(attrs, "data-label") || spec.caption || spec.type;
   return `<figure ${cleanedAttrs ? cleanedAttrs + " " : ""}data-rendered="true" aria-label="${escapeAttr(label)}">\n${svg}\n</figure>`;

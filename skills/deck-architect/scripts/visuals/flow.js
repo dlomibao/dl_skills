@@ -183,20 +183,43 @@ function truncate(s, max) {
 }
 
 function wrapLabel(text, maxChars) {
-  const words = text.split(/\s+/);
+  // Break on whitespace OR hyphens, so "finishing-a-branch" (which has
+  // no spaces) wraps at the hyphen instead of overflowing the column.
+  // The hyphen is preserved on the preceding line.
+  const tokens = [];
+  const re = /(\S+?-|\S+$)/g;  // chunks ending in hyphen OR the last non-space run
+  let remaining = text;
+  while (remaining.length) {
+    const spaceMatch = remaining.match(/^\s+/);
+    if (spaceMatch) { tokens.push(spaceMatch[0]); remaining = remaining.slice(spaceMatch[0].length); continue; }
+    const hyphenMatch = remaining.match(/^[^\s-]+-/);
+    if (hyphenMatch) { tokens.push(hyphenMatch[0]); remaining = remaining.slice(hyphenMatch[0].length); continue; }
+    const wordMatch = remaining.match(/^[^\s-]+/);
+    if (wordMatch) { tokens.push(wordMatch[0]); remaining = remaining.slice(wordMatch[0].length); continue; }
+    // shouldn't happen, but break to avoid infinite loop
+    tokens.push(remaining[0]); remaining = remaining.slice(1);
+  }
+
   const lines = [];
   let current = "";
-  for (const w of words) {
-    const candidate = current ? `${current} ${w}` : w;
+  for (const t of tokens) {
+    if (/^\s+$/.test(t)) {
+      if (current) current += " ";  // collapse whitespace to single space
+      continue;
+    }
+    const candidate = current + t;
     if (candidate.length > maxChars && current) {
-      lines.push(current);
-      current = w;
+      lines.push(current.trimEnd());
+      current = t;
     } else {
       current = candidate;
     }
   }
-  if (current) lines.push(current);
-  return lines.slice(0, 2);  // hard cap at 2 lines
+  if (current) lines.push(current.trimEnd());
+
+  // If a single token is still longer than maxChars, hard-truncate with
+  // ellipsis — it will not fit even with wrapping.
+  return lines.slice(0, 2).map(l => l.length > maxChars + 2 ? l.slice(0, maxChars - 1) + "…" : l);
 }
 
 module.exports = { render, validate };
