@@ -152,13 +152,33 @@ if (cover) {
   }
 }
 
+// ─── Check 6b: appendix-divider has no meta row ───────────────────────────
+// The divider is a dramatic pause, not a content slide. A counter chip next
+// to the word "Appendix" competes for the same attention. The contract
+// (html-renderer.md §3) is explicit: no meta row on the divider.
+for (const d of dividers) {
+  const hasCounter = /\bclass=["'][^"']*\bcounter\b[^"']*["']/i.test(d.body);
+  const hasMeta    = /\bclass=["'][^"']*\bmeta\b[^"']*["']/i.test(d.body);
+  if (hasCounter || hasMeta) {
+    fail(`appendix-divider has a meta row / counter — divider should be counter-less (§3)`);
+  }
+}
+if (dividers.length > 0 && !dividers.some(d => /\bclass=["'][^"']*\b(counter|meta)\b/i.test(d.body))) {
+  ok(`appendix-divider has no meta row`);
+}
+
 // ─── Check 7: impeccable absolute bans in rendered CSS/HTML ───────────────
+// Strip HTML comments before scanning. The documented-assumption template
+// names what it is NOT doing ("no gradient text", "rejected: Fraunces")
+// and would otherwise false-positive on its own prose. The browser never
+// renders comments — the lint shouldn't either.
+const htmlRendered = html.replace(/<!--[\s\S]*?-->/g, "");
 const cssBans = [
   { pat: /-webkit-background-clip\s*:\s*text|background-clip\s*:\s*text/i, why: `gradient text (impeccable BAN 2)` },
   { pat: /border-(left|right)\s*:\s*[2-9]\d*\s*px/i,                       why: `border-left/right > 1px accent stripe (impeccable BAN 1)` },
   { pat: /font-family\s*:\s*[^;}]*\b(Inter|DM Sans|Plus Jakarta Sans|Instrument Serif|Space Grotesk|Fraunces|Instrument Sans|Newsreader|Lora|Crimson)\b/i, why: `reflex font from impeccable reject list` },
 ];
-const cssHits = cssBans.filter(b => b.pat.test(html));
+const cssHits = cssBans.filter(b => b.pat.test(htmlRendered));
 if (cssHits.length) {
   fail(`${cssHits.length} impeccable absolute-ban violation(s):`);
   cssHits.forEach(h => console.error(`        ${h.why}`));

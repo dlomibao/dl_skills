@@ -96,6 +96,8 @@ The divider slide is a full-screen pause. Minimum content:
 </section>
 ```
 
+**The divider has no meta row.** No counter chip, no section label — the point is a dramatic pause, and a counter in the top-right next to the word "Appendix" competes for the same attention. The divider is a navigational marker, not content. The counter continuity resumes on the first appendix slide (see §5 for the math).
+
 **The divider is not optional when backup slides exist.** Presenters need an unambiguous visual cue that the main argument has closed.
 
 ### 4. Distinct visual treatment for backup slides
@@ -119,7 +121,30 @@ If the deck has a `counter` or `section-label` in a meta row, those elements mus
 
 A truncated `N /` counter is the canonical smell that the meta row wasn't tested.
 
-**Counter numbering for appendix slides:** continue past the main-flow total rather than restarting. A 10-main + 5-appendix deck numbers `01/16 … 10/16 … 11/16` (divider) `12/16 … 16/16`. Rationale: the presenter navigates by absolute slide index at runtime; `B1 / 5` forces them to mentally translate. The `data-section` label on backup slides (e.g. `B1 · Command list`) carries the "this is backup content" signal — the counter stays continuous.
+**Counter numbering — the full rule:**
+
+- **Counter-bearing slides:** `main`, `appendix`, `credits`. These show the counter chip.
+- **Counter-less slides:** `cover` and `appendix-divider`. These show no meta row at all.
+- **Denominator:** total slide count minus the cover (i.e. every physical slide from the first main onward, including the divider).
+- **Numerator:** the slide's position in the file, counting from 1 at the first main slide. The divider occupies one position but does not display it.
+- **Never reset** between main and appendix — the counter is continuous.
+
+Worked example, 1 cover + 10 main + 1 divider + 5 appendix = 17 physical slides, denominator 16:
+
+```
+cover          → no counter
+main 1         → 01 / 16
+main 2         → 02 / 16
+…
+main 10        → 10 / 16
+divider        → no counter (position 11 is consumed but not shown)
+appendix 1     → 12 / 16
+appendix 2     → 13 / 16
+…
+appendix 5     → 16 / 16
+```
+
+Rationale: the presenter navigates by absolute slide index at runtime; `B1 / 5` forces them to mentally translate. The `data-section` label on backup slides (e.g. `B1 · Command list`) carries the "this is backup content" signal — the counter stays continuous.
 
 ### 6. Keyboard navigation minimum
 

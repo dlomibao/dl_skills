@@ -1,7 +1,7 @@
 ---
 name: deck-architect
 description: Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide what to say, in what order, and what to cut. Use when a draft feels too long, too generic, doesn't land, or sounds AI-generated. Use when someone says "help me make a deck about X" — structure is where decks fail. Do NOT use when the user only wants visual polish on already-finalized content. Style enforcement (slop-phrase list) is English-only; structural rules apply to any language.
-version: 2.4.1
+version: 2.4.2
 license: MIT
 allowed-tools: [WebSearch]
 tested-with: claude-sonnet-4.5+, claude-opus-4+
