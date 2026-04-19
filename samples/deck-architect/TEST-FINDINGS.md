@@ -1,5 +1,8 @@
 # Test findings — deck-architect v2.2.0
 
+> **Status: resolved in v2.3.0.** All 7 findings below were addressed in the v2.3.0 patch. This document remains as the historical record of what the subagent tests surfaced and how each was fixed. See the v2.3.0 PR for the specific edits.
+
+
 Three subagent test runs implemented the PR test plan. Each subagent received only the `SKILL.md` path with explicit instructions not to pre-load any references. They reported which references they actually loaded, which tools they called, and whether the skill's enforcement landed.
 
 | Test | Prompt type | Pass | Notable |

@@ -22,9 +22,24 @@ skills/<name>/
     *.md
   scripts/          # optional — helper scripts the skill calls
   ...
+samples/<name>/     # optional — real outputs, test runs, regression evidence
+  README.md         # index of what's here
+  *.md
 ```
 
 Keep `SKILL.md` lean (target <500 lines — the linter warns above that). Move depth into `references/*.md` files and link to them from SKILL.md so they load only when needed.
+
+Samples directories are scoped per skill (`samples/<skill-name>/`) so multiple skills can each ship their own test artifacts without colliding. Each sample dir should have a `README.md` index listing what's inside.
+
+**Why samples live at the repo root, not inside `skills/<name>/`:** when the Vercel `skills` CLI installs a skill, it copies/symlinks the entire `skills/<name>/` directory into the user's `~/.claude/skills/`. Anything inside that dir bloats the install. Tests and demo outputs belong outside the distributable unit.
+
+**When to split samples into sub-dirs:** keep the layout flat while a skill has few artifacts. Split into `samples/<name>/examples/` (user-facing demos) and `samples/<name>/tests/` (maintainer-facing regression evidence) when any of:
+
+- The skill accumulates >15 sample files
+- A browsing user has to wade past test evidence to find a demo
+- Both kinds of artifacts are growing independently
+
+The split is a 5-minute move that doesn't break anything — cross-references are all relative paths that survive a group move.
 
 ## Local development
 
