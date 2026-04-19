@@ -10,3 +10,8 @@ __pycache__/
 .env
 .env.local
 .claude/settings.local.json
+
+# Skill packaging exports (ZIP bundles produced by external tooling).
+# Source of truth is SKILL.md; existing tracked .skill files are kept,
+# but new ones aren't auto-committed.
+*.skill
