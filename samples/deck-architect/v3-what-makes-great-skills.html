@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The design moves behind impeccable and superpowers</title>
+<!--
+  design-context (inferred, no .impeccable.md present)
+
+  audience     : Claude Code power users who have already shipped at least one
+                 of their own skills and can read SKILL.md frontmatter fluently.
+  viewing ctx  : late-morning technical-conference session, projector in a
+                 moderately lit room, 12-minute live talk slot.
+  theme        : light — because a daylit conference room with a projector
+                 washes out dark-mode contrast, and the audience-is-hero framing
+                 reads warmer on paper-tinted neutrals than on black.
+  brand words  : opinionated, instrumented, tested.
+                 NOT "modern" / "elegant" / "sleek" — dead categories.
+  font pick    : display = Archivo (working-grotesque, Pangram-catalogue lineage),
+                 body    = Literata (reading serif, designed for long-form on
+                           screen, distinct from Lora/Newsreader reflex),
+                 mono    = JetBrains Mono (tabular figures, meta-row counter).
+                 rejected reflexes: Inter, DM Sans, Fraunces, Instrument Serif,
+                 Space Grotesk, Plus Jakarta Sans, Newsreader — all actively
+                 chosen against. Pairing intent: a working-grotesque paired with
+                 a reading-serif reads like a lab notebook, which fits
+                 "tested/instrumented" more than a pure sans or pure serif.
+  palette      : OKLCH, tinted warm toward ember (hue ~50–62). Accent
+                 oklch(55% 0.175 40) — rust/ember — at roughly 10% visual weight.
+                 Neutrals tinted 0.008–0.014 chroma toward the accent hue so
+                 paper, ink, and rule all share one hue family.
+  bans held    : no reflex fonts, no gradient text (impeccable BAN 2),
+                 no border-left > 1px, no cards-in-cards, no pure #000 / #fff,
+                 no glassmorphism, no bounce easing, no sparklines as decoration.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Literata:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* OKLCH palette — warm ember, light theme, tinted neutrals. */
+  --paper:     oklch(96.8% 0.012 62);
+  --paper-2:   oklch(93.4% 0.018 62);
+  --rule:      oklch(85% 0.022 60);
+  --ink:       oklch(22% 0.020 50);
+  --ink-2:     oklch(38% 0.018 52);
+  --ink-mute:  oklch(55% 0.014 55);
+  --accent:    oklch(55% 0.175 40);
+  --accent-2:  oklch(62% 0.128 42);
+  --strike:    oklch(70% 0.020 55);
+
+  --f-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --f-body:    "Literata", ui-serif, Georgia, serif;
+  --f-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  /* 4pt spacing scale, semantic names. */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px; --sp-9: 96px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; background: var(--ink); }
+body {
+  font-family: var(--f-body);
+  font-size: clamp(16px, 1.4vw, 20px);
+  color: var(--ink);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+.deck { position: fixed; inset: 0; }
+
+.slide {
+  position: absolute; inset: 0;
+  background: var(--paper);
+  padding: clamp(32px, 5.5vh, 72px) clamp(40px, 6vw, 96px);
+  display: none;
+  flex-direction: column;
+  gap: var(--sp-6);
+  overflow: hidden;
+}
+.slide.active { display: flex; }
+
+/* --- Meta row ---------------------------------------------------------- */
+.meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.meta .section {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.meta .counter {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  color: var(--ink-2);
+}
+
+/* --- Typography -------------------------------------------------------- */
+h1.slide-title, h2.slide-title {
+  font-family: var(--f-display);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  color: var(--ink);
+  margin: 0;
+  max-width: 22ch;
+}
+.slide[data-role="cover"] h1 { font-size: clamp(40px, 6.2vw, 88px); max-width: 18ch; }
+.slide[data-role="main"] h1.slide-title { font-size: clamp(28px, 3.8vw, 54px); }
+.slide[data-role="appendix-divider"] h1 { font-size: clamp(36px, 5vw, 72px); max-width: 22ch; }
+.slide[data-role="appendix"] h1.slide-title { font-size: clamp(24px, 3vw, 40px); }
+
+p { margin: 0; max-width: 72ch; }
+p.lead { font-size: clamp(18px, 1.7vw, 24px); color: var(--ink-2); max-width: 60ch; }
+p.small { font-size: 14px; color: var(--ink-mute); }
+
+em.accent { font-style: normal; color: var(--accent); font-weight: 500; }
+strong { font-weight: 600; color: var(--ink); }
+
+/* Anchor phrase list (slide 1) */
+ul.anchors {
+  list-style: none; padding: 0; margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--sp-5);
+  margin-top: var(--sp-3);
+}
+ul.anchors li {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(16px, 1.4vw, 20px);
+  color: var(--ink);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--rule);
+}
+ul.anchors li .n {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: var(--sp-2);
+}
+
+/* Two-column reframe (slide 2) */
+.reframe {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-8);
+  align-items: start;
+}
+.reframe .col h3 {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0 0 var(--sp-5) 0;
+  color: var(--ink-mute);
+  font-weight: 500;
+}
+.reframe .col.expected li {
+  color: var(--strike);
+  text-decoration: line-through;
+  text-decoration-color: var(--strike);
+  text-decoration-thickness: 1px;
+}
+.reframe .col.actual li { color: var(--ink); }
+.reframe .col.actual h3 { color: var(--accent); }
+.reframe ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: var(--sp-4);
+  font-family: var(--f-body); font-size: clamp(18px, 1.8vw, 24px); line-height: 1.3;
+}
+
+/* Move examples (slide 3) */
+.moves {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-7);
+  margin-top: var(--sp-2);
+}
+.moves .card { padding: 0; }
+.moves .card h4 {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); margin: 0 0 var(--sp-3);
+  font-weight: 500;
+}
+.moves .card p.q {
+  font-family: var(--f-body); font-style: italic; color: var(--ink-mute);
+  margin-bottom: var(--sp-2); font-size: 15px;
+}
+.moves .card p.a {
+  font-family: var(--f-display); font-weight: 600; font-size: clamp(18px, 1.8vw, 24px);
+  line-height: 1.3; color: var(--ink);
+}
+
+/* Rationalization rebuttal table (slide 4) */
+table.rebut {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--f-body);
+  font-size: clamp(15px, 1.35vw, 18px);
+  line-height: 1.4;
+  margin-top: var(--sp-2);
+}
+table.rebut th {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; font-weight: 500; color: var(--ink-mute);
+  text-align: left; padding: 0 var(--sp-5) var(--sp-3);
+  border-bottom: 1px solid var(--rule);
+}
+table.rebut td {
+  padding: var(--sp-4) var(--sp-5);
+  vertical-align: top;
+}
+table.rebut td.lhs { color: var(--strike); font-style: italic; width: 48%; }
+table.rebut td.rhs { color: var(--ink); font-weight: 500; }
+table.rebut tr + tr td { border-top: 1px dotted var(--rule); }
+
+/* Two-artifact (slide 5) */
+.artifacts {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-7);
+}
+.artifacts .art {
+  border-top: 1px solid var(--ink);
+  padding-top: var(--sp-4);
+}
+.artifacts .art h4 {
+  font-family: var(--f-display); font-size: clamp(18px, 1.7vw, 22px);
+  font-weight: 700; margin: 0 0 var(--sp-2); color: var(--ink);
+}
+.artifacts .art .tag {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: var(--sp-4); display: block;
+  text-transform: uppercase;
+}
+.artifacts .art p { color: var(--ink-2); font-size: clamp(15px, 1.35vw, 17px); }
+
+/* Wrong/right (slide 6) */
+.wrongright {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-7);
+  margin-top: var(--sp-2);
+}
+.wrongright .col h3 {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; margin: 0 0 var(--sp-4); font-weight: 500;
+}
+.wrongright .wrong h3 { color: var(--strike); }
+.wrongright .right h3 { color: var(--accent); }
+.wrongright .wrong .example { color: var(--strike); }
+.wrongright .example {
+  font-family: var(--f-display); font-weight: 500;
+  font-size: clamp(17px, 1.6vw, 21px); line-height: 1.3;
+  margin-bottom: var(--sp-3);
+}
+.wrongright .example + .note {
+  font-family: var(--f-body); font-size: 14px; color: var(--ink-mute);
+  font-style: italic; margin-bottom: var(--sp-5);
+}
+.wrongright .right .example code {
+  font-family: var(--f-mono); font-size: 0.9em; background: var(--paper-2);
+  padding: 2px 6px; border-radius: 3px; color: var(--ink);
+}
+
+/* Chain diagram (slide 7) */
+.chain {
+  margin-top: var(--sp-4);
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2);
+  font-family: var(--f-mono);
+}
+.chain .node {
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-size: 13px;
+  color: var(--ink-2);
+  background: var(--paper);
+  white-space: nowrap;
+}
+.chain .node.core {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 500;
+}
+.chain .arrow {
+  color: var(--ink-mute);
+  font-size: 18px;
+  font-family: var(--f-body);
+}
+
+/* Costs list (slide 8) */
+ol.costs {
+  list-style: none; padding: 0; margin: var(--sp-4) 0 0;
+  display: flex; flex-direction: column; gap: var(--sp-5);
+  counter-reset: cost;
+  max-width: 70ch;
+}
+ol.costs li {
+  counter-increment: cost;
+  padding-left: var(--sp-7);
+  position: relative;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.45;
+}
+ol.costs li::before {
+  content: counter(cost);
+  position: absolute; left: 0; top: 0.1em;
+  font-family: var(--f-mono);
+  font-size: 0.75em;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+ol.costs li strong { display: block; color: var(--ink); margin-bottom: var(--sp-1); }
+
+/* Rollback (slide 9) */
+.rollback { display: grid; grid-template-columns: 2fr 1fr; gap: var(--sp-7); }
+.rollback .block h3 {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-mute); font-weight: 500;
+  margin: 0 0 var(--sp-4);
+}
+.rollback ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.rollback .steps li {
+  font-size: clamp(15px, 1.4vw, 18px);
+  padding-left: var(--sp-6); position: relative;
+}
+.rollback .steps li .k {
+  position: absolute; left: 0; top: 0.1em;
+  font-family: var(--f-mono); font-size: 11px; color: var(--accent);
+  letter-spacing: 0.1em;
+}
+.rollback .nots li {
+  font-size: 15px; color: var(--ink-2);
+  padding-left: var(--sp-5); position: relative;
+}
+.rollback .nots li::before {
+  content: "—"; position: absolute; left: 0; color: var(--strike);
+}
+
+/* Close slide (10) */
+.close {
+  display: flex; flex-direction: column; justify-content: space-between; height: 100%;
+  gap: var(--sp-6);
+}
+.close .takeaway {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(32px, 4.5vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  max-width: 20ch;
+}
+.close .takeaway span { color: var(--accent); }
+.close .ask {
+  border-top: 1px solid var(--rule); padding-top: var(--sp-5);
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--sp-6);
+}
+.close .ask .item .lbl {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: var(--sp-2);
+  display: block;
+}
+.close .ask .item .val {
+  font-family: var(--f-display); font-size: clamp(16px, 1.5vw, 20px);
+  font-weight: 500; color: var(--ink); line-height: 1.3;
+}
+
+/* --- Cover slide ------------------------------------------------------- */
+/*
+  Composition rule (html-renderer 2.4.1 §1a): exactly one <h1>, optionally one
+  <p class="subtitle"> (≤12 words, same voice), optionally a neutral meta row.
+  No kicker eyebrow above the h1. The h1 stands alone as a complete thought.
+*/
+.slide[data-role="cover"] {
+  justify-content: space-between;
+  padding: clamp(40px, 7vh, 96px) clamp(48px, 7vw, 120px);
+}
+.slide[data-role="cover"] .cover-title-block {
+  display: flex; flex-direction: column; gap: var(--sp-5);
+  margin-top: auto; margin-bottom: auto;
+}
+.slide[data-role="cover"] h1 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  color: var(--ink);
+  margin: 0;
+}
+.slide[data-role="cover"] .subtitle {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: clamp(18px, 1.8vw, 24px);
+  color: var(--ink-2);
+  max-width: 48ch;
+  line-height: 1.4;
+  margin: 0;
+}
+.slide[data-role="cover"] .cover-meta {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-top: 1px solid var(--rule); padding-top: var(--sp-4);
+  font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-mute);
+}
+
+/* --- Appendix divider -------------------------------------------------- */
+.slide[data-role="appendix-divider"] {
+  justify-content: center;
+  background: var(--paper-2);
+}
+.slide[data-role="appendix-divider"] .appendix-label {
+  font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--accent); margin: 0 0 var(--sp-5);
+}
+.slide[data-role="appendix-divider"] .appendix-hint {
+  font-family: var(--f-body); font-style: italic; color: var(--ink-mute);
+  font-size: 18px; margin-top: var(--sp-5); max-width: 48ch;
+}
+
+/* --- Appendix slides — visibly distinct treatment --------------------- */
+.slide[data-role="appendix"] {
+  background: var(--paper-2);
+  font-family: var(--f-body);
+}
+.slide[data-role="appendix"] .meta::before {
+  content: "REFERENCE · ";
+  color: var(--accent);
+  font-weight: 500;
+}
+.slide[data-role="appendix"] h1.slide-title {
+  font-weight: 600;
+  max-width: 30ch;
+}
+.slide[data-role="appendix"] .ref-body {
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--sp-7);
+  align-items: start;
+}
+.slide[data-role="appendix"] .ref-body p { font-size: clamp(14px, 1.3vw, 17px); color: var(--ink-2); }
+.slide[data-role="appendix"] table.cmds {
+  width: 100%; border-collapse: collapse; font-family: var(--f-mono); font-size: 13px;
+}
+.slide[data-role="appendix"] table.cmds td {
+  padding: 6px 12px; border-bottom: 1px dotted var(--rule); vertical-align: top;
+}
+.slide[data-role="appendix"] table.cmds td.cmd { color: var(--accent); white-space: nowrap; }
+.slide[data-role="appendix"] table.cmds td.desc { color: var(--ink-2); }
+.slide[data-role="appendix"] .graph {
+  font-family: var(--f-mono); font-size: 13px; color: var(--ink-2); line-height: 1.7;
+  background: var(--paper); padding: var(--sp-5); border: 1px solid var(--rule);
+}
+.slide[data-role="appendix"] .graph .node { color: var(--ink); font-weight: 500; }
+.slide[data-role="appendix"] .graph .arr { color: var(--accent); }
+.slide[data-role="appendix"] .bars {
+  display: flex; flex-direction: column; gap: var(--sp-4); margin-top: var(--sp-4);
+}
+.slide[data-role="appendix"] .bar {
+  display: grid; grid-template-columns: 140px 1fr 60px;
+  align-items: center; gap: var(--sp-4);
+  font-family: var(--f-mono); font-size: 12px;
+}
+.slide[data-role="appendix"] .bar .lbl { color: var(--ink-2); }
+.slide[data-role="appendix"] .bar .track {
+  height: 14px; background: var(--paper); border: 1px solid var(--rule); position: relative;
+}
+.slide[data-role="appendix"] .bar .with { height: 100%; background: var(--accent); }
+.slide[data-role="appendix"] .bar .without { height: 100%; background: var(--ink-mute); opacity: 0.5; }
+.slide[data-role="appendix"] .bar .val { color: var(--ink); text-align: right; }
+.slide[data-role="appendix"] blockquote {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: var(--sp-5) 0;
+  margin: var(--sp-4) 0;
+  font-family: var(--f-body); font-style: italic;
+  font-size: clamp(17px, 1.6vw, 22px); line-height: 1.4;
+  color: var(--ink); max-width: 56ch;
+}
+.slide[data-role="appendix"] blockquote cite {
+  display: block; margin-top: var(--sp-3);
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-mute); font-style: normal;
+}
+.slide[data-role="appendix"] pre.cli {
+  font-family: var(--f-mono); font-size: 13px; line-height: 1.5;
+  background: var(--ink); color: var(--paper); padding: var(--sp-5);
+  overflow: hidden; max-width: 60ch;
+}
+.slide[data-role="appendix"] pre.cli .ok { color: var(--accent-2); }
+.slide[data-role="appendix"] pre.cli .fail { color: oklch(68% 0.14 28); }
+
+/* --- Speaker notes ----------------------------------------------------- */
+.notes { display: none; }
+body.presenter .notes {
+  display: block;
+  position: fixed; right: 0; top: 0; bottom: 0;
+  width: min(38vw, 520px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--sp-7) var(--sp-6);
+  overflow: auto;
+  z-index: 100;
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.6;
+  border-left: 1px solid oklch(32% 0.02 50); /* 1px — within impeccable ban threshold */
+}
+body.presenter .notes::before {
+  content: "Speaker notes";
+  display: block;
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: var(--sp-4);
+}
+body.presenter .slide:not(.active) .notes { display: none; }
+
+/* --- Hint bar (dismisses on first keypress) --------------------------- */
+.hint {
+  position: fixed; bottom: 16px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em;
+  color: var(--ink-mute); background: var(--paper-2);
+  padding: 6px 14px; border-radius: 2px;
+  border: 1px solid var(--rule);
+  transition: opacity 200ms ease-out;
+  z-index: 50;
+}
+.hint.hidden { opacity: 0; pointer-events: none; }
+
+@media (max-width: 960px) {
+  .reframe, .moves, .artifacts, .wrongright, .rollback, .close .ask { grid-template-columns: 1fr; gap: var(--sp-5); }
+  .slide[data-role="appendix"] .ref-body { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+<!-- ======================================================================
+     COVER — one h1 (complete thought), one subtitle (same voice, 10 words),
+     one neutral meta row. No kicker eyebrow. Read aloud: "The design moves
+     behind impeccable and superpowers. For Claude Code authors who already
+     ship their own. Design-lessons talk, 12 minutes." One title, one
+     voice-matched subtitle, one metadata row — not three sentence fragments.
+     ================================================================== -->
+<section class="slide" data-role="cover">
+  <div class="cover-title-block">
+    <h1>The design moves behind impeccable and superpowers.</h1>
+    <p class="subtitle">For Claude Code authors who already ship their own.</p>
+  </div>
+  <div class="cover-meta">
+    <span>Design-lessons talk &middot; 12 min</span>
+    <span>Press <span style="color:var(--accent)">&rarr;</span> to begin &middot; <span style="color:var(--accent)">S</span> for notes</span>
+  </div>
+</section>
+
+<!-- ======================================================================
+     MAIN 1 — Answer up front (counter 01 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="01 · The answer, up front">
+  <div class="meta"><span class="section">01 · The answer, up front</span><span class="counter">01 / 16</span></div>
+  <h1 class="slide-title">Your skills mostly prescribe behaviour. The best ones <em class="accent">proscribe</em> it.</h1>
+  <p class="lead">The move is not adding capability. It is closing off the model's default failure paths.</p>
+  <ul class="anchors">
+    <li><span class="n">Move 01</span>Name the specific anti-pattern.</li>
+    <li><span class="n">Move 02</span>Rebut the rationalization before the model writes it.</li>
+    <li><span class="n">Move 03</span>Ship a check that runs without Claude.</li>
+    <li><span class="n">Move 04</span>Decompose by failure mode, not by topic.</li>
+  </ul>
+  <aside class="notes">
+    This is the thesis of the talk, stated before defending it. The eight body slides that follow each defend one move with direct evidence from impeccable and superpowers. Slide 8 is the honest-costs slide. Slide 9 is the rollback. Slide 10 is the action. Resist promising a tool tour — the audience is expecting one, and they will pay attention when they don't get one. The two skills everyone is already copying are impeccable and superpowers; name them by name here, in voice, so the cover doesn't have to carry that framing.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     MAIN 2 — STAR / reframe (counter 02 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="02 · The reframe">
+  <div class="meta"><span class="section">02 · The reframe</span><span class="counter">02 / 16</span></div>
+  <h1 class="slide-title">Both skills are <em class="accent">enforcement systems</em> dressed as capability skills.</h1>
+  <div class="reframe">
+    <div class="col expected">
+      <h3>What people install them for</h3>
+      <ul>
+        <li>impeccable &mdash; &ldquo;better fonts and layout&rdquo;</li>
+        <li>superpowers &mdash; &ldquo;a TDD and planning workflow&rdquo;</li>
+      </ul>
+    </div>
+    <div class="col actual">
+      <h3>What they actually do</h3>
+      <ul>
+        <li>Ban the fonts Claude reflexively picks.</li>
+        <li>Pre-empt the excuses Claude uses to skip TDD.</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">
+    This is the STAR moment — the thing the audience will quote to a teammate afterward. Quote pbakaus on generic-template convergence: every LLM learned from the same handful of design templates, so the default output is everybody's default output. Quote obra: "If you have a skill to do something, you must use it" — the model's first reflex is to explain why this case is different, and the skill has to shut that down. The authors are both treating the model's training priors as the adversary. The design move is that framing, not the surface features. Speaker-heavy slide — rehearse.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     MAIN 3 — Move 1 (counter 03 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="03 · Move 1 · Name the anti-pattern">
+  <div class="meta"><span class="section">03 · Move 1 · Name the anti-pattern</span><span class="counter">03 / 16</span></div>
+  <h1 class="slide-title">Vague guidance loses to strong priors. <em class="accent">Name the specific wrong thing.</em></h1>
+  <div class="moves">
+    <div class="card">
+      <h4>impeccable</h4>
+      <p class="q">Instead of &ldquo;use good fonts&rdquo;:</p>
+      <p class="a">&ldquo;DO NOT use Inter, DM Sans, Plus Jakarta, Instrument Serif, Fraunces, Space Grotesk&hellip;&rdquo;</p>
+    </div>
+    <div class="card">
+      <h4>superpowers</h4>
+      <p class="q">Instead of &ldquo;consider checking the skill&rdquo;:</p>
+      <p class="a">&ldquo;1% chance it applies means you MUST check.&rdquo;</p>
+    </div>
+  </div>
+  <aside class="notes">
+    "Use good fonts" activates nothing — the model's prior for "good font" is Inter, because that's what the training data optimized for. "Do not use Inter" forces a real decision. Same structural move in a non-visual skill: deck-architect (the skill that built this deck) ships a forbidden-phrase list — "leverage," "unlock," "seamlessly" — with concrete replacements. The domain does not matter. The move is always: name the specific wrong thing, name the replacement.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     MAIN 4 — Move 2 — rebuttal table (counter 04 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="04 · Move 2 · Write the rebuttal first">
+  <div class="meta"><span class="section">04 · Move 2 · Write the rebuttal first</span><span class="counter">04 / 16</span></div>
+  <h1 class="slide-title">Write the rebuttal before the model writes the rationalization.</h1>
+  <table class="rebut">
+    <thead><tr>
+      <th>What the model is about to think</th>
+      <th>Rebuttal that fires first</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="lhs">&ldquo;I just need a little more context first.&rdquo;</td>
+        <td class="rhs">Check the skill before you ask for clarification.</td>
+      </tr>
+      <tr>
+        <td class="lhs">&ldquo;This case is genuinely different.&rdquo;</td>
+        <td class="rhs">Every case feels different under pressure. Check anyway.</td>
+      </tr>
+      <tr>
+        <td class="lhs">&ldquo;The user seems to want me to skip this.&rdquo;</td>
+        <td class="rhs">Skill priority list beats inferred user intent.</td>
+      </tr>
+      <tr>
+        <td class="lhs">&ldquo;I'll do it next turn.&rdquo;</td>
+        <td class="rhs">Next turn does not exist. Do it now or name the skip.</td>
+      </tr>
+    </tbody>
+  </table>
+  <aside class="notes">
+    The rationalizations the model reaches for when it wants to skip a step are remarkably uniform across sessions and across users. Observing yours once and writing the rebuttal inline is the single highest-leverage authoring move in this whole talk. This is why Superpowers has the Red Flags table and why deck-architect has rationalizations.md. The excerpt here is four rows; the full Superpowers table is twelve. Sizing is in Q&amp;A — acknowledge that SKILL.md grows when you do this, then point at the tradeoff slide two clicks later.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     MAIN 5 — Move 3 (counter 05 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="05 · Move 3 · Ship a check">
+  <div class="meta"><span class="section">05 · Move 3 · Ship a check</span><span class="counter">05 / 16</span></div>
+  <h1 class="slide-title">Ship a check that runs without Claude. <em class="accent">Trust is a load-bearing feature.</em></h1>
+  <div class="artifacts">
+    <div class="art">
+      <h4>impeccable's standalone auditor</h4>
+      <span class="tag">Node CLI &middot; CI-runnable &middot; 24 rules</span>
+      <p>Scans HTML and CSS for the exact patterns the skill bans. Zero AI runtime. Anyone can run it. If the skill fails, the CLI tells you where.</p>
+    </div>
+    <div class="art">
+      <h4>superpowers' subagent pressure-test</h4>
+      <span class="tag">Subagent &middot; from a clean slate &middot; verifies trigger</span>
+      <p>A fresh agent runs the skill cold and reports whether it fired when it should have. Instructions drift under model variance; programmatic checks do not.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    This is the move that separates a piece of prose from a system. Your skill probably has no external verification today. Mejba's controlled test picks up on this implicitly: the measured 14% token reduction came from skills with teeth, not skills with gentle suggestions. The Impeccable CLI is also a trust signal for installers — they can verify the skill works before adopting it. That's a distribution advantage, not just a correctness one.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     MAIN 6 — Move 4 wrong/right (counter 06 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="06 · Move 4 · Decompose by failure mode">
+  <div class="meta"><span class="section">06 · Move 4 · Decompose by failure mode</span><span class="counter">06 / 16</span></div>
+  <h1 class="slide-title">Decompose by failure mode, not by topic.</h1>
+  <div class="wrongright">
+    <div class="col wrong">
+      <h3>By topic</h3>
+      <p class="example">One &ldquo;design skill&rdquo; that says &ldquo;do design well.&rdquo;</p>
+      <p class="note">Too broad to trigger reliably. Fires on every frontend task and says nothing specific once it does.</p>
+      <p class="example">One &ldquo;engineering skill&rdquo; that &ldquo;enforces quality.&rdquo;</p>
+      <p class="note">Same problem, different domain.</p>
+    </div>
+    <div class="col right">
+      <h3>By failure mode</h3>
+      <p class="example"><code>/audit</code> for missing accessibility<br><code>/distill</code> for over-elaboration<br><code>/colorize</code> for palette reflex<br><code>/quieter</code> for over-animation</p>
+      <p class="note">Each targets one specific failure the model makes. Triggers fire cleanly.</p>
+      <p class="example">superpowers: <code>brainstorming</code>, <code>writing-plans</code>, <code>subagent-driven-development</code>, <code>requesting-code-review</code></p>
+      <p class="note">Same pattern at workflow scale.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    Topic-decomposition creates skills too broad to trigger. Failure-mode decomposition creates skills that fire exactly when they are needed. Pragmatic threshold for the audience: start with one failure mode per skill; split only after you observe the same skill firing for genuinely different failures in your actual usage. If the room is early in their skill-authoring journey, slow here and give a second example — "the model skips writing a plan" versus "the model writes a plan that's too abstract" are different failures, not one topic.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     MAIN 7 — The chain (counter 07 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="07 · The multiplier">
+  <div class="meta"><span class="section">07 · The multiplier</span><span class="counter">07 / 16</span></div>
+  <h1 class="slide-title">A chain of enforcement skills beats any single hero skill.</h1>
+  <p class="lead">Superpowers' handoff chain is why reviewers describe it as transformative, not additive.</p>
+  <div class="chain">
+    <span class="node">using-superpowers</span>
+    <span class="arrow">&rarr;</span>
+    <span class="node">brainstorming</span>
+    <span class="arrow">&rarr;</span>
+    <span class="node core">writing-plans</span>
+    <span class="arrow">&rarr;</span>
+    <span class="node core">subagent-driven-development</span>
+    <span class="arrow">&rarr;</span>
+    <span class="node core">executing-plans</span>
+    <span class="arrow">&rarr;</span>
+    <span class="node">requesting-code-review</span>
+    <span class="arrow">&rarr;</span>
+    <span class="node">finishing-a-development-branch</span>
+  </div>
+  <p class="small" style="margin-top:var(--sp-5)">Mejba's controlled test &mdash; 12 sessions, 14% token reduction overall, gap concentrated on complex tasks, negligible on simple ones.</p>
+  <aside class="notes">
+    Evan Schwartz's review specifically highlights the chain effect — no individual skill was the thing; the sequence was. Mejba's controlled data backs it: on simple tasks, Superpowers produces no measurable improvement; on complex multi-step tasks where the full chain runs end-to-end, it does. The lesson for skill authors is that the multiplier is in composition, not any one skill. If you own two or three enforcement skills, designing the handoffs between them is where the next 2x is hiding.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     MAIN 8 — Tradeoff / honest costs (counter 08 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="08 · What you give up">
+  <div class="meta"><span class="section">08 · What you give up</span><span class="counter">08 / 16</span></div>
+  <h1 class="slide-title">What you give up: bigger files, sharper edges, real authoring effort.</h1>
+  <ol class="costs">
+    <li><strong>SKILL.md roughly doubles in size.</strong>Rationalization tables and ban lists cost context budget every session. The smallest usable version is one banned phrase and one rebuttal — still worth it.</li>
+    <li><strong>Opinionated skills fight user instinct on edge cases.</strong>The user-wins priority rule only covers the obvious ones. You will see friction from people who wanted a looser suggestion.</li>
+    <li><strong>You cannot ban a pattern for a domain you have not lived in.</strong>The authoring bar is real expertise, not prose skill. Thin expertise produces bans that feel arbitrary and get ignored.</li>
+  </ol>
+  <aside class="notes">
+    Name the "sounds heavy" instinct directly — the audience will think it before you get there. Counter: the smallest version of this is still worth doing. One banned phrase, one rebuttal, one concrete check. Twenty-minute authoring session. The payoff is not in the size of the intervention, it is in the fact that it fires.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     MAIN 9 — Rollback (counter 09 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="09 · Rollback in 72 hours">
+  <div class="meta"><span class="section">09 · Rollback in 72 hours</span><span class="counter">09 / 16</span></div>
+  <h1 class="slide-title">If this backfires, detect it in <em class="accent">72 hours</em> &mdash; not a week.</h1>
+  <div class="rollback">
+    <div class="block">
+      <h3>Rollback path</h3>
+      <ul class="steps">
+        <li><span class="k">A</span>Keep the prior SKILL.md as <code style="font-family:var(--f-mono)">SKILL.md.prev</code> in the same folder before you ship the change.</li>
+        <li><span class="k">B</span>Log invocation count for the first 72 hours &mdash; a single tally per session is enough.</li>
+        <li><span class="k">C</span>If invocations drop more than 30% vs. baseline, triggers regressed. Restore <code style="font-family:var(--f-mono)">.prev</code>, diagnose, retry.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>When not to do this</h3>
+      <ul class="nots">
+        <li>Skills with fewer than five real invocations of evidence &mdash; you'll over-fit to noise.</li>
+        <li>Bans without a specific replacement behaviour.</li>
+        <li>Anywhere enforcement would fight a user's explicit instruction. User wins.</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">
+    Anticipate the "I will not notice for a week" objection and answer it with the 72-hour invocation-count check. It is cheap, it survives being forgotten (you either see the number drop or you do not), and it prevents the week-of-silent-regression scenario. The three "when not to" rules are your permission slip to not apply every move to every skill — the audience needs that release valve or they will dismiss the whole deck as over-engineering.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     MAIN 10 — Close / action (counter 10 / 16)
+     ================================================================== -->
+<section class="slide" data-role="main" data-section="10 · The action">
+  <div class="meta"><span class="section">10 · The action</span><span class="counter">10 / 16</span></div>
+  <div class="close">
+    <p class="takeaway">The best skills are not instructions for Claude. They are <span>enforcement systems</span> tuned to Claude's specific failure modes.</p>
+    <div class="ask">
+      <div class="item">
+        <span class="lbl">Pick</span>
+        <div class="val">One skill you already own.</div>
+      </div>
+      <div class="item">
+        <span class="lbl">Apply</span>
+        <div class="val">Move 1 + Move 4.<br><span style="color:var(--ink-mute); font-size:0.8em">Name the anti-pattern. Decompose by failure mode.</span></div>
+      </div>
+      <div class="item">
+        <span class="lbl">Ship</span>
+        <div class="val">Before Friday. Check invocation count at 72h.</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    The deck's job ends when the audience commits. Do not leave this slide until at least one person has named the skill they are going to modify. Move 1 + Move 4 is the "if you can only do two" recommendation — highest reliability return for the least authoring effort. Someone will ask about questions — answer verbally, keep this slide up during Q&amp;A. Do not replace it with a "thanks" slide.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     APPENDIX DIVIDER (position 11; no counter chip on dividers)
+     ================================================================== -->
+<section class="slide" data-role="appendix-divider">
+  <p class="appendix-label">Appendix</p>
+  <h1>Reference material &mdash; triggered on question.</h1>
+  <p class="appendix-hint">B1 through B5. Depth indicators live in presenter notes; surface only what the room asks for.</p>
+</section>
+
+<!-- ======================================================================
+     B1 — full impeccable command list (counter 12 / 16, continuous)
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B1 · impeccable commands">
+  <div class="meta"><span class="section">B1 · impeccable commands</span><span class="counter">12 / 16</span></div>
+  <h1 class="slide-title">impeccable's full 18-command surface.</h1>
+  <div class="ref-body">
+    <table class="cmds">
+      <tr><td class="cmd">/audit</td><td class="desc">Scan for the 24 failure patterns; exit non-zero on any.</td></tr>
+      <tr><td class="cmd">/critique</td><td class="desc">Reviewer voice; strongest objection first.</td></tr>
+      <tr><td class="cmd">/polish</td><td class="desc">Tighten spacing rhythm and text sizing.</td></tr>
+      <tr><td class="cmd">/distill</td><td class="desc">Cut over-elaborated copy to its load-bearing core.</td></tr>
+      <tr><td class="cmd">/clarify</td><td class="desc">Resolve ambiguous UX language.</td></tr>
+      <tr><td class="cmd">/optimize</td><td class="desc">Performance pass on layout and asset loading.</td></tr>
+      <tr><td class="cmd">/harden</td><td class="desc">Accessibility and fallback coverage.</td></tr>
+      <tr><td class="cmd">/animate</td><td class="desc">Add motion only where it clarifies state.</td></tr>
+      <tr><td class="cmd">/colorize</td><td class="desc">Replace reflex palette with OKLCH, tinted neutrals.</td></tr>
+      <tr><td class="cmd">/typeset</td><td class="desc">Force non-reflex font pairing; fix scale.</td></tr>
+      <tr><td class="cmd">/layout</td><td class="desc">Break grid rhythm intentionally; kill sameness.</td></tr>
+      <tr><td class="cmd">/adapt</td><td class="desc">Container-query responsiveness, not breakpoints.</td></tr>
+      <tr><td class="cmd">/bolder</td><td class="desc">Push aesthetic intensity one notch past comfort.</td></tr>
+      <tr><td class="cmd">/delight</td><td class="desc">One memorable moment; not scattered sparkle.</td></tr>
+      <tr><td class="cmd">/quieter</td><td class="desc">Remove decorative motion and shadow.</td></tr>
+      <tr><td class="cmd">/shape</td><td class="desc">Silhouette and negative space pass.</td></tr>
+      <tr><td class="cmd">/overdrive</td><td class="desc">Max intensity &mdash; used rarely.</td></tr>
+      <tr><td class="cmd">/verify</td><td class="desc">Re-run audit after changes.</td></tr>
+    </table>
+    <p>Each command targets one specific failure the model makes. The surface looks wide, but the decomposition is the skill's actual backbone &mdash; a single &ldquo;design&rdquo; skill doing all eighteen jobs would trigger on everything and commit to nothing.</p>
+  </div>
+  <aside class="notes">
+    This is the long-form answer to "what does each command do." Don't walk through all eighteen on stage — point at the pattern. The commands that matter most for a first-time author to study are /audit (proof of standalone verification), /distill (the anti-elaboration failure mode), and /colorize (explicit-ban replacement).
+  </aside>
+</section>
+
+<!-- ======================================================================
+     B2 — superpowers skill graph (counter 13 / 16)
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B2 · superpowers graph">
+  <div class="meta"><span class="section">B2 · superpowers graph</span><span class="counter">13 / 16</span></div>
+  <h1 class="slide-title">superpowers' dependency graph &mdash; the handoff is the product.</h1>
+  <div class="ref-body">
+    <div class="graph">
+      <span class="node">using-superpowers</span> <span class="arr">&rarr;</span> <span class="node">brainstorming</span><br>
+      <span class="node">brainstorming</span> <span class="arr">&rarr;</span> <span class="node">writing-plans</span><br>
+      <span class="node">writing-plans</span> <span class="arr">&rarr;</span> <span class="node">subagent-driven-development</span><br>
+      <span class="node">subagent-driven-development</span> <span class="arr">&rarr;</span> <span class="node">executing-plans</span><br>
+      <span class="node">executing-plans</span> <span class="arr">&rarr;</span> <span class="node">requesting-code-review</span><br>
+      <span class="node">requesting-code-review</span> <span class="arr">&rarr;</span> <span class="node">finishing-a-development-branch</span>
+    </div>
+    <p>The entry skill (using-superpowers) is itself an enforcement skill &mdash; its only job is to stop the model from skipping the rest of the chain. The value lives in the arrows, not in any single node.</p>
+  </div>
+  <aside class="notes">
+    If someone asks where to start reading the source, send them to using-superpowers first — it's the smallest SKILL.md and the one that best demonstrates "one skill, one failure mode, named rebuttal." The individual workflow skills are more domain-specific and harder to generalize from.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     B3 — Mejba methodology (counter 14 / 16)
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B3 · evidence · Mejba">
+  <div class="meta"><span class="section">B3 · evidence · Mejba</span><span class="counter">14 / 16</span></div>
+  <h1 class="slide-title">The honest version of the 14% number.</h1>
+  <div class="bars">
+    <div class="bar">
+      <span class="lbl">Simple tasks</span>
+      <span class="track"><span class="without" style="width:100%"></span></span>
+      <span class="val">~0%</span>
+    </div>
+    <div class="bar">
+      <span class="lbl">Medium tasks</span>
+      <span class="track"><span class="without" style="width:92%"></span></span>
+      <span class="val">-8%</span>
+    </div>
+    <div class="bar">
+      <span class="lbl">Complex tasks</span>
+      <span class="track"><span class="with" style="width:72%"></span></span>
+      <span class="val">-22%</span>
+    </div>
+    <div class="bar">
+      <span class="lbl">Multi-step</span>
+      <span class="track"><span class="with" style="width:66%"></span></span>
+      <span class="val">-28%</span>
+    </div>
+  </div>
+  <p class="small" style="margin-top:var(--sp-5); max-width:64ch; color:var(--ink-mute)">12 paired sessions, single-author evaluation, task-selection bias not controlled for. The 14% headline is the unweighted average; the real distribution is heavy-tailed. On simple tasks, no measurable benefit.</p>
+  <aside class="notes">
+    This is the slide that buys the deck's credibility. Don't hide the caveats. Single-author, small n, selection bias all named. The claim is useful — not definitive — and the honesty about that is what makes the rest of the deck believable. If the room pushes for rigor, this is the right bar to meet.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     B4 — Cialdini / authority language (counter 15 / 16)
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B4 · why the tone">
+  <div class="meta"><span class="section">B4 · why the tone</span><span class="counter">15 / 16</span></div>
+  <h1 class="slide-title">The &ldquo;you MUST&rdquo; language is testing-derived, not stylistic.</h1>
+  <blockquote>
+    Authority, commitment, scarcity &mdash; Cialdini's three levers that reliably shift behaviour, applied to a model that will argue its way out of a soft instruction but complies with a hard one. The capital letters are load-bearing.
+    <cite>obra &mdash; fsck.com, Oct 2025 (paraphrased)</cite>
+  </blockquote>
+  <p class="small" style="color:var(--ink-mute); max-width:60ch">The uppercase tags (&ldquo;EXTREMELY-IMPORTANT&rdquo;) look aesthetic but were arrived at by A/B-testing compliance rates. Soft versions of the same instructions produced measurably worse adherence. Treat tone decisions as testable.</p>
+  <aside class="notes">
+    Answer to the "isn't the authoritarian tone off-putting?" objection. The tone is a feature, not a bug. The Cialdini framing is also useful for authors who don't want to sound like drill sergeants: you can be warm in prose and firm in instructions, and the firmness is specifically what gets obeyed. Soft enforcement is indistinguishable from suggestion.
+  </aside>
+</section>
+
+<!-- ======================================================================
+     B5 — CLI internals (counter 16 / 16)
+     ================================================================== -->
+<section class="slide" data-role="appendix" data-section="B5 · the CLI, inside">
+  <div class="meta"><span class="section">B5 · the CLI, inside</span><span class="counter">16 / 16</span></div>
+  <h1 class="slide-title">The Impeccable CLI is smaller than it looks.</h1>
+  <div class="ref-body">
+    <div>
+      <p>Reads the output HTML/CSS. Applies roughly 24 deterministic checks &mdash; font present in the approved list, contrast ratios above threshold, padding rhythm on the 4pt scale, heading-level monotonicity. No AI runtime at execution time; just a Node script. CI-runnable.</p>
+      <p class="small" style="margin-top:var(--sp-4); color:var(--ink-mute)">The architectural move is: any skill can ship with a companion verifier. The verifier does not need to understand intent &mdash; it only needs to encode the bans.</p>
+    </div>
+    <pre class="cli">$ impeccable audit build/index.html
+<span class="ok">  ok: no reflex fonts</span>
+<span class="ok">  ok: no gradient text</span>
+<span class="ok">  ok: heading monotonicity</span>
+<span class="fail">FAIL: border-left 4px on .callout</span>
+<span class="fail">FAIL: card nested inside card (.panel &gt; .panel)</span>
+FAIL  build/index.html &mdash; 2 check(s) failed
+</pre>
+  </div>
+  <aside class="notes">
+    The companion lint for deck-architect is the same architectural move — regex checks over the rendered HTML, no AI needed to run. The payoff is asymmetric: a few hundred lines of deterministic Node buys you verification that the skill's own instructions are being followed. If someone asks "can I really do this for my own skill" — yes, and the effort is one afternoon.
+  </aside>
+</section>
+
+</div>
+
+<div class="hint" id="hint">&larr; &rarr; navigate &nbsp;&middot;&nbsp; S presenter mode &nbsp;&middot;&nbsp; F fullscreen &nbsp;&middot;&nbsp; Esc exit</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+
+  function show(i, replaceHash){
+    if (i < 0) i = 0;
+    if (i >= slides.length) i = slides.length - 1;
+    slides[current].classList.remove('active');
+    slides[i].classList.add('active');
+    current = i;
+    const hash = '#' + (i + 1);
+    if (replaceHash) {
+      history.replaceState(null, '', hash);
+    } else {
+      if (location.hash !== hash) history.replaceState(null, '', hash);
+    }
+  }
+
+  function fromHash(){
+    const h = location.hash.replace('#','');
+    const n = parseInt(h, 10);
+    if (!isNaN(n) && n >= 1 && n <= slides.length) return n - 1;
+    return 0;
+  }
+
+  function dismissHint(){
+    const h = document.getElementById('hint');
+    if (h && !h.classList.contains('hidden')) h.classList.add('hidden');
+  }
+
+  document.addEventListener('keydown', function(e){
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') {
+      e.preventDefault(); show(current + 1, true); dismissHint();
+    } else if (k === 'ArrowLeft' || k === 'PageUp') {
+      e.preventDefault(); show(current - 1, true); dismissHint();
+    } else if (k === 'Home') {
+      e.preventDefault(); show(0, true); dismissHint();
+    } else if (k === 'End') {
+      e.preventDefault(); show(slides.length - 1, true); dismissHint();
+    } else if (k === 's' || k === 'S') {
+      e.preventDefault(); document.body.classList.toggle('presenter'); dismissHint();
+    } else if (k === 'f' || k === 'F') {
+      e.preventDefault();
+      if (!document.fullscreenElement) {
+        (document.documentElement.requestFullscreen || function(){}).call(document.documentElement);
+      } else {
+        (document.exitFullscreen || function(){}).call(document);
+      }
+      dismissHint();
+    } else if (k === 'Escape') {
+      if (document.body.classList.contains('presenter')) {
+        document.body.classList.remove('presenter');
+      } else if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
+    }
+  });
+
+  window.addEventListener('hashchange', function(){ show(fromHash(), true); });
+
+  show(fromHash(), true);
+  setTimeout(dismissHint, 6000);
+})();
+</script>
+
+</body>
+</html>
