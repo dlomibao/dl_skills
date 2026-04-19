@@ -38,9 +38,11 @@ bash scripts/install-skill.sh deck-architect
 # Or install all skills
 bash scripts/install-skill.sh --all
 
-# Regenerate the README skills table
+# Regenerate the README skills table (required before pushing if SKILL.md changed)
 bash scripts/generate-index.sh
 ```
+
+The lint check fails the PR if the README skills index is stale, so always run `generate-index.sh` and commit the result when you change a skill's frontmatter.
 
 ## Pull requests
 

@@ -197,6 +197,20 @@ fi
 echo
 echo "Summary: $ERRORS error(s), $WARNINGS warning(s) across $found skill(s)"
 
+# Verify the README skills index is up to date (run as part of lint so
+# stale READMEs fail the PR — branch protection blocks the alternative
+# of having a workflow auto-commit to main).
+if [[ -x scripts/generate-index.sh ]]; then
+  cp README.md /tmp/README.before
+  bash scripts/generate-index.sh > /dev/null
+  if ! cmp -s /tmp/README.before README.md; then
+    err "README" "skills index is stale — run: bash scripts/generate-index.sh && commit"
+    mv /tmp/README.before README.md  # restore so the diff isn't left behind locally
+  else
+    rm -f /tmp/README.before
+  fi
+fi
+
 if (( ERRORS > 0 )); then
   exit 1
 fi
