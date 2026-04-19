@@ -134,7 +134,25 @@ if (bannedHits.length) {
   ok(`no slide-body commentary bans hit`);
 }
 
-// ─── Check 6: impeccable absolute bans in rendered CSS/HTML ───────────────
+// ─── Check 6: cover slide composition ─────────────────────────────────────
+// The cover may have at most one <h1>. A second h1 or a kicker that renders
+// as a title fragment is the "fragmented cover" failure mode. Also check
+// that the cover's displayed text doesn't start with a continuation word
+// like "And", "Plus", "Or" — the telltale of a split-title chain.
+const cover = slides.find(s => s.role === "cover");
+if (cover) {
+  const h1Count = (cover.body.match(/<h1\b/gi) || []).length;
+  if (h1Count > 1) fail(`cover slide has ${h1Count} <h1> elements (max 1)`);
+  else ok(`cover has exactly one <h1>`);
+
+  const h1Match = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(cover.body);
+  const h1Text = h1Match ? h1Match[1].replace(/<[^>]+>/g, "").trim() : "";
+  if (/^\s*(And|Plus|Or|But|Also)\b/i.test(h1Text)) {
+    fail(`cover <h1> starts with continuation word — likely a split-title fragment: "${h1Text.slice(0, 60)}…"`);
+  }
+}
+
+// ─── Check 7: impeccable absolute bans in rendered CSS/HTML ───────────────
 const cssBans = [
   { pat: /-webkit-background-clip\s*:\s*text|background-clip\s*:\s*text/i, why: `gradient text (impeccable BAN 2)` },
   { pat: /border-(left|right)\s*:\s*[2-9]\d*\s*px/i,                       why: `border-left/right > 1px accent stripe (impeccable BAN 1)` },

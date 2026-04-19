@@ -15,6 +15,7 @@ Observed in real generations. Each rule below ties back to one of these:
 3. **Appendix is invisible.** Backup slides render with a changed meta label and nothing else. A presenter advancing past the close walks straight into the reference material.
 4. **Counter / meta row overflows.** `N / 16` renders as `N /` because the meta element isn't shrink-protected.
 5. **Stock-AI aesthetics bleed in.** Gradient text, border-left accent stripes, cards-in-cards, reflex fonts — every rule impeccable bans, re-introduced by the renderer.
+6. **Fragmented cover.** Three title-like text blocks (kicker + headline + subtitle) on the cover, each in a different typographic register, reading as three sentences instead of one unified deck name.
 
 ---
 
@@ -34,6 +35,35 @@ Every slide element must declare its role via `data-role`:
 
 The renderer must fail loudly (or the lint must catch it) if `appendix` slides appear without a preceding `appendix-divider`.
 
+### 1a. Cover composition
+
+The cover slide renders exactly one `<h1>` (the deck title) and **at most one** supporting element — a `<p class="subtitle">` of ≤ 12 words in the same voice, or a meta row with neutral metadata (time, format, author).
+
+Forbidden on the cover:
+- A kicker eyebrow *above* the title that reads as sentence part 1, with the `<h1>` reading as sentence part 2. The eye does not stitch them across vertical whitespace; the audience reads three fragments.
+- Two text blocks of display-weight typography competing for primary position.
+- A subtitle that introduces a *second* argument ("and the four moves that make them work") — that's a slide 2 promise, not cover copy.
+
+If the outline specifies kicker + headline + subtitle, collapse to one title (merge the strongest part) plus at most one subtitle. Flag the merge in handoff notes.
+
+```html
+<!-- GOOD -->
+<section class="slide" data-role="cover">
+  <h1>What makes impeccable and superpowers great skills.</h1>
+  <p class="subtitle">For Claude Code authors who already ship their own.</p>
+  <div class="cover-meta">Design-lessons talk · 12 min</div>
+</section>
+
+<!-- BAD — three competing title fragments -->
+<section class="slide" data-role="cover">
+  <p class="kicker">THE TWO SKILLS EVERYONE IS COPYING</p>
+  <h1>And the four moves that actually make them work.</h1>
+  <p class="subtitle">A study of impeccable and superpowers for Claude Code authors.</p>
+</section>
+```
+
+The test: read the cover aloud. If it sounds like three sentences with different cadences, it's broken.
+
 ### 2. Speaker notes as a first-class element
 
 Every `main` and `appendix` slide **must** include an `<aside class="notes">` element containing the outline's `Speaker notes:` block verbatim (minus the label).
@@ -51,6 +81,8 @@ Every `main` and `appendix` slide **must** include an `<aside class="notes">` el
 Default CSS: `.notes { display: none; }`. Presenter mode (`S` keypress) toggles a side panel that reveals them — see keyboard nav below.
 
 **A slide without a speaker-notes aside is a missing output.** If the outline didn't specify notes, the renderer should emit `<aside class="notes" data-missing="true"></aside>` so the lint can flag it — not silently drop the element.
+
+**Notes must carry real content — target ≥ 20 characters of meaningful text.** One-word notes ("context" or "examples") fail the lint and are indistinguishable from a placeholder. If the outline's speaker-notes field is genuinely thin, that's a Phase 3 problem — go back and write real notes, don't paper over it at render time.
 
 ### 3. Appendix divider
 
@@ -87,6 +119,8 @@ If the deck has a `counter` or `section-label` in a meta row, those elements mus
 
 A truncated `N /` counter is the canonical smell that the meta row wasn't tested.
 
+**Counter numbering for appendix slides:** continue past the main-flow total rather than restarting. A 10-main + 5-appendix deck numbers `01/16 … 10/16 … 11/16` (divider) `12/16 … 16/16`. Rationale: the presenter navigates by absolute slide index at runtime; `B1 / 5` forces them to mentally translate. The `data-section` label on backup slides (e.g. `B1 · Command list`) carries the "this is backup content" signal — the counter stays continuous.
+
 ### 6. Keyboard navigation minimum
 
 - `←` / `→` / `PageDown` / `PageUp`: prev/next slide
@@ -105,7 +139,30 @@ The HTML renderer inherits its aesthetic discipline from `/impeccable`. Before r
 
 1. Confirm the project has a `.impeccable.md` design context, or
 2. Invoke `/impeccable teach` to build one, or
-3. Explicitly assume a default and document the assumption in the handoff notes so the user can override.
+3. Explicitly assume a default and document the assumption using the template below.
+
+**Template for the "documented assumption" path** (when options 1 and 2 aren't available — e.g., non-interactive agent run). Embed this as an HTML comment at the top of the rendered file so the user can override on sight:
+
+```html
+<!--
+  design-context (inferred, no .impeccable.md present)
+
+  audience     : [one line — who reads this and where]
+  viewing ctx  : [one line — when/where/under what light]
+  theme        : [light | dark] — because [one-line rationale tied to audience]
+  brand words  : three concrete words for voice (e.g. "opinionated, instrumented, tested")
+                 NOT "modern" / "elegant" / "sleek" — dead categories.
+  font pick    : display = [name], body = [name], mono = [name]
+                 rejected reflexes: [≥3 names from impeccable reject list you
+                 actively chose against]
+  palette      : OKLCH, tinted toward [hue]. Accent: oklch(L C H).
+                 ≤10% visual weight for accent.
+  bans held    : no reflex fonts, no gradient text, no border-left>1px,
+                 no cards-in-cards, no pure #000 / #fff.
+-->
+```
+
+Anything vaguer than this — a one-line "using a warm palette" — is not a documented assumption; it is a hole. The user can't override what the renderer didn't decide.
 
 Downstream rules the renderer inherits (non-exhaustive — see `impeccable/SKILL.md` for the full list):
 

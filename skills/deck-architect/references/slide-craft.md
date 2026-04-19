@@ -13,6 +13,25 @@ The title is the message of the slide, stated as a full sentence. If the audienc
 | Full sentence with subject, verb, specific claim | Noun, category, or section label |
 | Title carries the insight even if the chart doesn't load | Title describes what the chart is |
 
+## Cover slide composition
+
+The cover is the one slide the audience reads *without* the presenter's voice. It must stand alone and unify in one breath. A split title — kicker + headline + subtitle each in a different register — reads as three fragments, not one deck.
+
+**The rule:** one primary title. Optionally one short supporting line. Nothing else that the eye tries to connect as narrative.
+
+| DO | DO NOT |
+|---|---|
+| One display title that names the deck. Optionally one sub-line of context (≤12 words, same voice). | Kicker eyebrow + display title + subtitle where each is a different sentence fragment |
+| Title that reads as a complete thought, not a continuation | Title that starts with "And", "Plus", "Or" as if continuing the kicker |
+| Supporting line answers "what kind of deck is this?" (audience, format) | Supporting line introduces a *second* argument the deck will make |
+| Metadata (time, setting, author) in a true meta row — clearly not title | Metadata typographically competing with the title |
+
+**The test:** read the cover aloud as one sentence. Does it sound like one thing, or three? "*The two skills everyone is copying — and the four moves that actually make them work*" is one thing if rendered on **one visual line**, but if the "kicker" and "headline" render as two separated blocks, the eye reads them as independent — and the cover has failed.
+
+When the outline specifies a cover, write the full intended title as one string. If you also want a subtitle, write it as one string, on its own field, explicitly marked. Do not emit three separate "kicker / headline / subtitle" fields and expect the renderer to unify them — it won't.
+
+**Handoff to HTML:** the cover's `data-role="cover"` section should render a single `<h1>` (the title) and at most one `<p class="subtitle">`. Any additional kicker-like content belongs in the meta row, styled as metadata — not as a title fragment.
+
 ## The opening — earn the first 30 seconds
 
 The first slide is not "Title + presenter name." The opening must do three things in ~30 seconds: pattern-interrupt, anchor to what the audience cares about, promise what they'll get.

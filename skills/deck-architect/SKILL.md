@@ -1,7 +1,7 @@
 ---
 name: deck-architect
 description: Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide what to say, in what order, and what to cut. Use when a draft feels too long, too generic, doesn't land, or sounds AI-generated. Use when someone says "help me make a deck about X" — structure is where decks fail. Do NOT use when the user only wants visual polish on already-finalized content. Style enforcement (slop-phrase list) is English-only; structural rules apply to any language.
-version: 2.4.0
+version: 2.4.1
 license: MIT
 allowed-tools: [WebSearch]
 tested-with: claude-sonnet-4.5+, claude-opus-4+
@@ -283,8 +283,13 @@ Deliver as **structured text**, not slides. Use this schema verbatim:
 ## Narrative spine
 [Which structure and why — one sentence]
 
+## Cover slide
+- Title: [the single deck title — one complete thought, not a kicker fragment]
+- Subtitle (optional, ≤12 words): [one supporting line, same voice, or omit]
+- Meta (optional): [neutral metadata — format, time, author — styled as metadata, not title]
+
 ## Opening hook (first 30 seconds)
-[The actual words / visual / stat that opens the deck — not "title slide"]
+[The actual words / visual / stat that opens the deck — distinct from the cover title; spoken, not displayed]
 
 ## STAR moment
 [The one thing the audience will remember and quote afterward — which slide it lives on]
@@ -443,6 +448,7 @@ Specific behaviors to avoid (the failure-modes catalogue is descriptive; this is
 - HTML rendering that drops speaker notes (or collapses them into on-slide footers)
 - HTML rendering without an appendix-divider between main flow and backup (main-to-reference transition is invisible live)
 - Outline metadata (`Triggered by:`, `Depth: L2`, `See B4`, `[INFERRED]`) rendered as audience-visible slide copy
+- Cover split across kicker + headline + subtitle where each reads as an independent sentence fragment (fragmented cover)
 
 For background on *why* these matter — the failure modes that motivate this whole skill: [references/failure-modes.md](references/failure-modes.md). (Background reading; not required for any phase.)
 
