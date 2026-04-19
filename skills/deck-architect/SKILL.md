@@ -1,9 +1,9 @@
 ---
 name: deck-architect
 description: Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide what to say, in what order, and what to cut. Use when a draft feels too long, too generic, doesn't land, or sounds AI-generated. Use when someone says "help me make a deck about X" — structure is where decks fail. Do NOT use when the user only wants visual polish on already-finalized content.
-version: 2.0.0
+version: 2.1.0
 license: MIT
-allowed-tools: [WebSearch, Read, Write]
+allowed-tools: [WebSearch]
 ---
 
 # Deck Architect
@@ -15,6 +15,10 @@ Handles the part of deck-building AI is bad at: **content and structure**. Not v
 - User only wants visual polish on already-finalized slides → use `pptx` directly
 - Single-slide updates / one-off charts → overhead exceeds value
 - The deliverable is a written doc, not a deck → use a writing skill
+- The deck must follow a locked corporate template that conflicts with full-sentence titles or main-flow rollback slides — the skill's prescriptions will fight the template; flag this and let the user choose
+- User wants speaker notes only for an existing deck — the skill produces full outlines, not note-only revisions
+- Someone else owns the structural decisions and the user is just executing — the skill pushes back on structure; that's friction in this case
+- Non-English decks where the user wants enforcement on style — the structural checks (no agenda, full-sentence titles, tradeoff, rollback) still apply, but the slop-phrase list is English-only
 
 ## The Iron Law
 
@@ -32,7 +36,7 @@ A deck that passes:
 - The deck argues something — it doesn't just "cover" a topic
 - Nothing could be copy-pasted to another company with nouns swapped
 
-When the test fails: load [references/forbidden-phrases.md](references/forbidden-phrases.md) and rewrite.
+**When the test fails: Read `references/forbidden-phrases.md` and rewrite the offending content.**
 
 ## Operating principles
 
@@ -64,9 +68,15 @@ If the user brings an existing draft, don't start from scratch — but don't ski
 2. **What do they care about?** Their incentives, not the topic. ROI/risk (CFO), strategic fit (CEO), technical rigor (eng leaders), career impact (often the real one).
 3. **What do they already know/believe?** Skip what they know. Anticipate what they'll disagree with.
 4. **What's the transformation?** Walk-in state → walk-out state. ("Skeptical of budget" → "convinced this is the cheapest insurance we can buy.")
-5. **What objections / deep-dive questions will they raise?** List 3–5. These feed the backup layer (Phase 5).
+5. **What objections / deep-dive questions will they raise?** List 3–5. These feed the backup layer (Phase 8).
 
 Output: an **Audience Model block** at the top of your response. Cite it whenever you cut a slide in Phase 4.
+
+**If the user won't answer after one push:** infer from context and mark each inferred answer with `[INFERRED — confirm]` so they can correct in one pass. Better an inferred Audience Model than no Audience Model.
+
+**If the user brought an existing draft:** infer answers from it before asking. Audience clues = formality, jargon density, named stakeholders. Takeaway clues = the close (or its absence). Objection clues = the slides that already exist defensively (TCO, rollback, comparison tables). Confirm inferences with the user, don't replace asking.
+
+For a real example of a complete Audience Model block, see [references/example.md](references/example.md).
 
 ### Phase 1 — The rest of the brief
 
@@ -76,6 +86,8 @@ One block, four items:
 2. **Format & time.** Live presentation, async pre-read, or both? Minutes? Live decks and slide docs aren't interchangeable.
 3. **Constraints.** Slide-count cap? Required sections? Brand/template?
 4. **One-sentence takeaway.** If they remember one sentence, what is it? Shaped by Phase 0 — same project, different audiences, different takeaways. Don't move on without this.
+
+Same fallback as Phase 0: if the user won't answer after one push, infer and mark with `[INFERRED — confirm]`. Exception: the one-sentence takeaway. Don't infer this — help the user articulate it instead. A wrong takeaway is worse than a missing one.
 
 **Phase 1a — Team credit (conditional).** If the deck describes work by multiple people, ask once: *"Is this a team effort? If so, who contributed to which key wins?"* Then tie specific names to specific wins (see [references/team-credit.md](references/team-credit.md)). Never invent attributions.
 
@@ -115,7 +127,7 @@ Numbered list. Each slide:
 - **Close** (Phase 3e) — close on the takeaway, full screen. Not "Thank you." Not "Questions?" (say that verbally; keep the takeaway visible).
 - **Contrast** — alternate problem/solution, current/future. Don't stack slides in the same emotional register.
 
-Detailed slide-title rules, opening patterns, contrast patterns, tradeoff phrasing, and rollback specs: [references/slide-craft.md](references/slide-craft.md).
+**Read `references/slide-craft.md` before writing slide titles** — it contains the DO/DO NOT tables for titles, openings, contrast, tradeoff phrasing, rollback specs, and the slide/speaker split patterns. These rules are enforced; not loading them produces the exact failures Phase 4 will catch.
 
 ### Phase 4 — Ruthless discipline pass
 
@@ -142,7 +154,7 @@ If content exceeds the ceiling, **cut — don't shrink fonts.** Move detail to a
 - **Filler to delete on sight:** agenda slides on decks <15 slides; "About us" up front; "Thank you" / "Questions?" closers; transition slides ("Section 2"); slides that restate what's about to come.
 - **Empty-calorie tells:** title could apply to any company; lists categories without synthesis; chart shows data without takeaway in title.
 
-**Run the AI Slop Test.** Read the outline asking: would a sharp reader spot this as Claude output? Forbidden phrases and structural tells: [references/forbidden-phrases.md](references/forbidden-phrases.md). Reject on sight; rewrite with specifics.
+**Run the AI Slop Test.** Read the outline asking: would a sharp reader spot this as Claude output? **Read `references/forbidden-phrases.md`** for the reject-on-sight phrase list and structural tells. Rewrite with specifics — every forbidden phrase has a concrete replacement.
 
 **Audience-fit check.** Re-read through the audience's eyes. Cut what they know. Add what they'd push back on.
 
@@ -158,7 +170,7 @@ A slide earns a visual when:
 
 Otherwise: mark `text-only` and move on.
 
-For slides that earn a visual, full spec format (chart-type selection, diagram modes, image search/licensing protocol, screenshot format): [references/visuals.md](references/visuals.md).
+**Read `references/visuals.md`** for full chart-type selection rules, diagram modes, image search/licensing protocol, and screenshot format before specifying any non-text-only slide.
 
 When images are needed and the user hasn't supplied an asset, run `WebSearch` for 2–3 candidates with a slide-specific query. Surface URLs with one line on which fits best. **Always flag licensing risk** — user must verify reuse rights. Never fabricate URLs.
 
@@ -188,7 +200,7 @@ The other phases optimize for building a good argument. This phase optimizes for
 
 When in doubt, run Standard. Cost of too-large is minutes; too-small is torched meetings.
 
-Full pressure-test methodology and rationalizations: [references/pressure-test.md](references/pressure-test.md).
+**Read `references/pressure-test.md`** for the full step-by-step methodology, common-fix patterns, and rationalizations to refuse — load it before running the test, especially the first time per session.
 
 ### Phase 7 — Final scan
 
@@ -220,9 +232,77 @@ Typical backup by audience: [references/backup-patterns.md](references/backup-pa
 
 ### Phase 9 — Present the outline
 
-Deliver as **structured text**, not slides. Full output schema: [references/output-format.md](references/output-format.md).
+Deliver as **structured text**, not slides. Use this schema verbatim:
 
-Worked example (brief → full output): [references/example.md](references/example.md).
+````markdown
+# [Deck Title]
+
+## Audience Model
+- Who's in the room: ...
+- What they care about: ...
+- What they already know/believe: ...
+- Transformation (walk-in → walk-out state): ...
+- Likely objections / deep-dive triggers: ...
+
+## Brief
+- Decision/ask: ...
+- Format & time: ...
+- Constraints: ...
+- One-sentence takeaway: ...
+- Team contributors (if applicable): ...
+
+## Narrative spine
+[Which structure and why — one sentence]
+
+## Opening hook (first 30 seconds)
+[The actual words / visual / stat that opens the deck — not "title slide"]
+
+## STAR moment
+[The one thing the audience will remember and quote afterward — which slide it lives on]
+
+## Main flow
+1. [Title as full-sentence message]
+   - Purpose: ...
+   - On-slide: [what actually appears — short, anchor-oriented]
+   - Speaker notes: [what the presenter says that is NOT on the slide]
+   - Load: slide-heavy | balanced | speaker-heavy
+   - Visual: text-only  (or chart/diagram/image/screenshot + spec)
+
+2. ...
+
+## Backup layer
+B1. [Title] — triggered by: [question/moment] — depth: L2
+   - Content: ...
+   - Visual: [mode + spec]
+B2. ...
+
+## Visual consistency notes
+- [Cross-deck notes — single highlight color, icon family, etc.]
+- [Assets user needs to source vs. create]
+
+## What I cut (and why)
+- [Topic] — reason
+- ...
+
+## Handoff notes
+- For pptx/design: [visual or layout suggestions that emerged]
+- Credits slide (if team effort): [names + specific contributions]
+- Licensing flags: [web-sourced images needing license verification]
+
+## Pressure-test log [size: Micro | Standard | Extended]
+- Role(s) adopted: [who you role-played, with priors]
+- Top critiques surfaced: [in skeptic's voice — 2-3 Micro / 5-8 Standard / 8+ Extended]
+- Fixes applied: [specific slide → specific change]
+- Live-meeting prep notes (Standard/Extended only): [residual questions to rehearse]
+````
+
+**Length budget.** Default target: main flow ≤ 12 slides per response. Larger decks risk truncation — chunk into two responses (main flow first, backup second) or cap at 12 and offer to expand.
+
+**For Micro pressure tests**, the Pressure-test log can collapse to one paragraph: *"Pressure-tested as [role]. Surfaced [N critiques], fixed by [changes]."* The full template is overkill on a low-stakes deck.
+
+**Inferred answers** carry through to the output: `- Who's in the room: VP Eng + 2 staff engineers [INFERRED — confirm]`
+
+For a complete worked example (brief → full schema filled out), see [references/example.md](references/example.md).
 
 ### Phase 10 — Handoff (only if rendering)
 

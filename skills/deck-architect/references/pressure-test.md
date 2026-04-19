@@ -37,13 +37,7 @@ The other phases optimize for building a good argument. The pressure test optimi
 
 ## Sizing
 
-| Size | Stakes signal | Passes | Coverage | Critiques |
-|---|---|---|---|---|
-| **Micro** | No decision asked; small/reversible/friendly | 1 | Hook + headline + close | 2–3 |
-| **Standard** | Recommendation/proposal with at least one skeptic; ask involving money/people/commitment | 1 from hardest sell | Every main-flow slide + hook + close | 5–8 |
-| **Extended** | Irreversible decision, reorg, major investment, migration, launch, board, regulator-facing, async-read deck | Multiple from distinct skeptics | Every slide including backup | 8+ |
-
-When in doubt, run Standard. Cost of too-large is minutes; too-small is torched meetings.
+The sizing table lives in `SKILL.md` (Phase 6) — same content used on every run, kept inline to avoid double-loading. This file is methodology + rationalizations only.
 
 ## Rationalizations for skipping
 
