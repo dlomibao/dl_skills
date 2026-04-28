@@ -4,6 +4,8 @@ A renderer (manual, `/impeccable`, `reveal.js`, `slidev`, any agent) that turns 
 
 If the target is `pptx`, `keynote`, or `google-slides`, skip this file — Phase 9's `pptx` handoff covers those.
 
+**Start from the reference.** `references/html-renderer-reference.html` is a minimal working scaffold that implements every structural rule below. Adapt its colors, typography, and content per `/impeccable` — do not rebuild the scaffolding from scratch. The scaffolding is a solved problem with known failure modes; every re-derivation invites the same three bugs back (inline-notes disrupting layout, invisible shortcuts, fullscreen scroll drift).
+
 ---
 
 ## The failure modes this contract prevents
@@ -182,15 +184,144 @@ The impeccable bans carry over. The renderer enforces them; a custom shape exten
 - No reflex default typography — the SVG inherits the deck's display/sans/mono fonts; if the deck is clean, the SVG is clean
 - No fill tints as a "nice touch" — accent used sparingly per the 60/30/10 discipline
 
-### 6. Keyboard navigation minimum
+### 6. Viewport model — toggle, not scroll
 
-- `←` / `→` / `PageDown` / `PageUp`: prev/next slide
-- `Home` / `End`: first / last
-- `S`: toggle presenter mode (reveals `<aside class="notes">` in a side or overlay panel)
-- `F`: toggle fullscreen
-- `Esc`: exit fullscreen / presenter mode
+Each slide is a full-viewport layer; the active slide is revealed via a class swap. Do **not** use a document-scroll model with `min-height: 100vh` slides — that re-introduces the fractional-fullscreen bug (F lands on whatever scroll position was last, so the first slide after toggling in is vertically mis-aligned).
 
-Hash-based deep-links (`#7` for slide 7) should survive reload.
+**Required CSS pattern:**
+
+```css
+html, body { height: 100%; overflow: hidden; }
+.deck  { position: fixed; inset: 0; }
+.slide { position: absolute; inset: 0; display: none; overflow: hidden; }
+.slide.active { display: flex; flex-direction: column; }
+```
+
+`html, body { overflow: hidden }` is load-bearing — it's what makes fullscreen predictable. The active slide owns the viewport; there is no scroll.
+
+### 7. Composition — three regions, body centered
+
+Every active slide is a flex column with three regions: **meta** (top, `flex: 0 0 auto`) · **body** (`flex: 1 1 auto`, centered) · **footer** (bottom, `flex: 0 0 auto`). Content anchors to slide center, not top. This is what makes vertical rhythm predictable across every slide — the designer commits to a composition and the scaffold holds it.
+
+```css
+.slide.active {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+.slide > .meta,
+.slide > .footer { flex: 0 0 auto; }
+.slide > .body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* vertical center inside the middle row */
+  min-height: 0;             /* allow flex shrinking */
+}
+```
+
+Markup inside every `main` / `appendix` slide wraps content in a `<div class="body">`:
+
+```html
+<section class="slide" data-role="main">
+  <div class="meta">…</div>
+  <div class="body">
+    <h1>…</h1>
+    <p>…</p>
+  </div>
+  <div class="footer"></div>
+  <aside class="notes">…</aside>
+</section>
+```
+
+The cover slide skips the meta row but keeps the `.body` wrapper so centering still works.
+
+### 8. Speaker notes tray — NO inline rendering, ever
+
+`<aside class="notes">` is `display: none` in its source position, **always**. It never renders inline under its slide, not even "hidden by default and shown with S." Per-slide inline notes — even when toggled — destroy slide composition mid-presentation because the slide's vertical rhythm is no longer what the designer committed to.
+
+Notes surface through a single fixed presenter-mode tray:
+
+```html
+<div id="notes-tray" role="region" aria-label="Speaker notes" aria-hidden="true">
+  <div class="tray-head" id="notes-tray-head">speaker notes</div>
+  <div id="notes-tray-body"></div>
+</div>
+```
+
+**Tray contract:**
+
+- Fixed position, anchored bottom: `position: fixed; left: 0; right: 0; bottom: 0; max-height: 38vh`.
+- Hidden by default via `transform: translateY(100%)`; open via `transform: translateY(0)` on `[data-open="true"]`.
+- Head reads `speaker notes · slide N`. Body reads the **active** slide's `aside.notes` text content. Contents swap live when the presenter navigates while the tray is open.
+- `S` toggles. `Esc` closes. When the tray is open, the keyboard hint pill hides (see §9).
+
+The reference scaffold's `syncTray()` function is the canonical implementation — keep that shape.
+
+### 9. Keyboard hint pill — always visible, documented-in-README does not count
+
+A fixed `#kbd-hint` element anchored bottom-right shows the keyboard contract at all times:
+
+```html
+<div id="kbd-hint" aria-hidden="true">
+  <kbd>&larr;</kbd><kbd>&rarr;</kbd> slide &middot; <kbd>S</kbd> notes &middot; <kbd>F</kbd> fullscreen
+</div>
+```
+
+**Behavior:**
+
+- Always rendered. Dims to 25% opacity after 4 seconds of inactivity; wakes on `mousemove` or `keydown`.
+- Hidden when the notes tray is open (the presenter is already looking there).
+- Hidden in print.
+
+The failure mode this catches: keyboard shortcuts documented only in a README or source comment are invisible to anyone who didn't read them. The pill is the contract.
+
+### 10. Keyboard bindings
+
+- `←` / `→` / `PageDown` / `PageUp`: prev / next slide (via `.active` swap, not scrollIntoView).
+- `Home` / `End`: first / last.
+- `S`: toggle notes tray.
+- `F`: toggle fullscreen.
+- `Esc`: close tray if open; otherwise exit fullscreen.
+- Hash deep-link (`#7` → slide 7, 1-indexed) survives reload; `history.replaceState` updates the hash on navigation.
+
+### 11. `fullscreenchange` handler is mandatory
+
+Every deck that calls `requestFullscreen()` must register a `fullscreenchange` listener that re-asserts the active slide on the next animation frame:
+
+```js
+document.addEventListener('fullscreenchange', () => {
+  requestAnimationFrame(() => {
+    document.scrollingElement.scrollTop = 0;
+    show(index);  // re-apply .active to the current slide
+  });
+});
+```
+
+Why: some browsers shift `scrollTop` on the scrolling element when entering or exiting fullscreen. In the toggle model this is milder than in a scroll-snap model — the active slide is already `position: absolute; inset: 0` — but browser-specific drift can still leave focus or scroll state mis-aligned after an F toggle. Re-asserting the active slide is cheap insurance.
+
+A `requestFullscreen()` call with no `fullscreenchange` listener is a bug even if the specific browser you're testing in happens not to drift.
+
+### 12. Print override
+
+For PDF export (`⌘P` / `Ctrl+P`):
+
+```css
+@media print {
+  html, body { height: auto; overflow: visible; }
+  .deck { position: static; }
+  .slide {
+    position: static; inset: auto;
+    display: flex !important;     /* all slides visible */
+    page-break-after: always;
+    min-height: 100vh;
+  }
+  aside.notes { display: block; }  /* notes render inline in print only */
+  #notes-tray, #kbd-hint { display: none !important; }
+}
+```
+
+Print is the **only** context where `aside.notes { display: block }` is allowed. On screen, notes are always tray-only.
 
 ---
 
@@ -202,12 +333,55 @@ The HTML renderer inherits its aesthetic discipline from `/impeccable`. Before r
 2. Invoke `/impeccable teach` to build one, or
 3. Explicitly assume a default and document the assumption using the template below.
 
+**Two non-negotiables whenever the palette is agent-picked** (paths 2 and 3 — only path 1, `.impeccable.md`, is exempt because a human already decided):
+
+- **Commit to a one-sentence "feel."** Before picking any colors, write one concrete sentence describing the aesthetic register you are aiming for. Not three brand adjectives — one sentence with a noun the audience can picture. "A xerox zine pressed onto cream paper," "an architect's dark-mode CAD workspace," "a Financial Times print spread on a matte projector." This sentence is the load-bearing constraint the palette must serve. If you cannot write it, you cannot pick colors — go back and specify the feel first.
+- **Every palette token pair used together must clear WCAG contrast.** Compute, don't eyeball. For every (foreground, background) pair that will actually render as text or meaningful UI, the contrast ratio must be ≥ **4.5:1** for body text and ≥ **3:1** for large display text (≥ 24px or ≥ 18.66px bold). An OKLCH lightness delta of ~50 points is a reasonable first approximation — but verify the final hex/OKLCH values with a real contrast check before shipping.
+
+**The two-tone accent pattern.** A single accent token is a trap: bright enough to read as accent on a light background, too pale to use as text. Ship two:
+
+- `--accent` — identity / decoration only. Highlighter bands, chart fills, background tints. Never `color:` on text.
+- `--accent-ink` — the same hue at a lower L (typically L ≤ 50% on light themes, ≥ 70% on dark themes) with preserved chroma. This is the token allowed on text (`color: var(--accent-ink)`).
+
+The CSS rule: `color: var(--accent)` on body text is a bug. If the deck uses an accent color for readable text, it uses `--accent-ink`.
+
+### The text-color token whitelist — contract that makes contrast lintable
+
+A real contrast check needs a CSS parser plus OKLCH-to-L\* math plus a lightness computation across cascades. That's fragile in a regex lint. Instead we contract on **token naming**: only tokens whose names signal "text-safe" may appear in a `color:` declaration. The author commits to contrast at naming time; the lint enforces the name.
+
+**Text-safe token names (the whitelist).** These are the only identifiers allowed after `color: var(` in deck CSS:
+
+| Token | Use | Required contrast |
+|---|---|---|
+| `--ink` | Primary text on paper | ≥ 7:1 vs paper |
+| `--ink-2` | Secondary text, subtitles | ≥ 4.5:1 vs paper |
+| `--ink-mute` / `--muted` | Muted text, metadata, meta rows | ≥ 4.5:1 vs paper |
+| `--paper` / `--paper-2` | Text on inverted backgrounds (tray, dark theme) | ≥ 4.5:1 vs ink |
+| `--accent-ink` | Accent-hued text on paper | ≥ 4.5:1 vs paper |
+| `--accent-on-ink` | Accent-hued text on ink (optional; add only if needed) | ≥ 4.5:1 vs ink |
+
+**Anything else is a contract violation.** `color: var(--accent)`, `color: var(--rule)`, `color: var(--strike)`, or a literal `color: oklch(…)` in a text context are all caught by the same rule. The `color:` property takes a text-safe named token, and the named token commits to meeting contrast.
+
+Where an inline literal is unavoidable (e.g. terminal-output semantic colors like `.fail`), keep it inline but honor contrast:
+
+```css
+pre.term .fail { color: oklch(42% 0.17 28); }  /* dark enough for text on paper */
+```
+
+The lint permits literal `color: oklch(…)` but a human reviewer still owes contrast. Named tokens are the path of least friction; reach for literals only when the semantics are genuinely one-off.
+
+**Why this works.** The rule is: *"any text-safe identity concept gets a `-ink` suffix (or equivalent text-safe name); any decoration-only concept does not."* Authors pick colors freely; the naming convention gates what can go on text. The lint is a string match over identifier names — cheap, robust, and it catches the exact failure mode (v7's `color: var(--accent)` on L=97% paper with an L=86% chartreuse accent).
+
 **Template for the "documented assumption" path** (when options 1 and 2 aren't available — e.g., non-interactive agent run). Embed this as an HTML comment at the top of the rendered file so the user can override on sight:
 
 ```html
 <!--
   design-context (inferred, no .impeccable.md present)
 
+  feel         : one concrete sentence with a noun the audience can picture.
+                 e.g. "a xerox zine pressed onto cream paper",
+                 "an architect's dark-mode CAD workspace".
+                 NOT three adjectives — one sentence.
   audience     : [one line — who reads this and where]
   viewing ctx  : [one line — when/where/under what light]
   theme        : [light | dark] — because [one-line rationale tied to audience]
@@ -216,14 +390,22 @@ The HTML renderer inherits its aesthetic discipline from `/impeccable`. Before r
   font pick    : display = [name], body = [name], mono = [name]
                  rejected reflexes: [≥3 names from impeccable reject list you
                  actively chose against]
-  palette      : OKLCH, tinted toward [hue]. Accent: oklch(L C H).
+  palette      : OKLCH, tinted toward [hue]. Accent pair:
+                   --accent     = oklch(L₁ C H)   (decoration only)
+                   --accent-ink = oklch(L₂ C H)   (on-text; L₂ chosen so
+                                                  contrast vs paper ≥ 4.5:1)
                  ≤10% visual weight for accent.
+  contrast     : body-ink vs paper   = X.X:1  (≥ 4.5 required)
+                 accent-ink vs paper = X.X:1  (≥ 4.5 required)
+                 display-ink vs paper= X.X:1  (≥ 3.0 required)
+                 verified with [tool/method — e.g. WebAIM checker, OKLCH
+                 L-delta estimate ≥ 50 points].
   bans held    : no reflex fonts, no gradient text, no border-left>1px,
                  no cards-in-cards, no pure #000 / #fff.
 -->
 ```
 
-Anything vaguer than this — a one-line "using a warm palette" — is not a documented assumption; it is a hole. The user can't override what the renderer didn't decide.
+Anything vaguer than this — a one-line "using a warm palette" — is not a documented assumption; it is a hole. The user can't override what the renderer didn't decide. A filled template that skips the `feel` or `contrast` lines is also a hole — those are the two hardest things to re-derive by reading the code.
 
 Downstream rules the renderer inherits (non-exhaustive — see `impeccable/SKILL.md` for the full list):
 
@@ -253,85 +435,41 @@ See `forbidden-phrases.md` for the full audience-facing ban list (also applies h
 
 ## Minimal renderer checklist (run before presenting the file)
 
-Check each item; a "no" is a blocker:
+### Static structure
+
+Check each item; a "no" is a blocker. `scripts/lint-deck.js` automates these.
 
 - [ ] Exactly one `cover` slide; at the front
 - [ ] Every slide has `data-role`
 - [ ] Every `main` and `appendix` slide has an `<aside class="notes">` (not empty)
 - [ ] If any `appendix` exists, exactly one `appendix-divider` precedes it
-- [ ] No `main` slide body contains a banned meta phrase (see above)
-- [ ] Backup slides visibly differ from main (not just a label change)
-- [ ] Counter / meta row survives at 960px viewport
-- [ ] `S` reveals speaker notes; `F` goes fullscreen; `←/→` navigates
+- [ ] No `main` slide body contains a banned meta phrase
+- [ ] No `aside.notes { display: block }` in screen CSS — tray-only, print-only exception
+- [ ] `#notes-tray` element is present
+- [ ] `#kbd-hint` element is present
+- [ ] `requestFullscreen` is paired with a `fullscreenchange` listener
 - [ ] No reflex fonts (impeccable reject list)
 - [ ] No gradient text, no `border-left` accent stripes, no cards-in-cards
-- [ ] Deck loads without console errors
 
-The companion lint at `scripts/lint-deck.js` automates the static-checkable items.
+### Live-presentation dry run
+
+After the lint passes, actually drive the deck. Each failure maps to a real bug we've shipped:
+
+1. Load the deck → default slide lands centered (not top-anchored).
+2. `→` five times → every slide lands centered.
+3. `F` → centering still holds on the current slide.
+4. `→` inside fullscreen → still centered.
+5. `F` again (exit fullscreen) → current slide is still centered, not drifted.
+6. `S` → tray slides up from the bottom with the current slide's notes. Head reads `speaker notes · slide N`. Hint pill is hidden.
+7. `→` with tray open → tray contents swap live to the next slide's notes.
+8. `Esc` → tray closes, hint pill returns.
+9. Reload the page with `#7` in the URL → lands on slide 7.
+10. `⌘P` / `Ctrl+P` → one slide per page, notes render inline under each slide, no tray, no hint pill.
+
+Any failure → back to the structural contract. Do not "fix it in the moment" — the same bug ships next time.
 
 ---
 
-## Ready-to-paste template
+## Starting point
 
-A minimal skeleton that conforms to this contract:
-
-```html
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>{{ deck title }}</title>
-  <style>
-    :root {
-      /* Derived from .impeccable.md — OKLCH, tinted neutrals, one accent */
-      --paper: oklch(96.5% 0.018 82);
-      --paper-2: oklch(93% 0.022 82);
-      --ink: oklch(18% 0.018 50);
-      --accent: oklch(56% 0.205 32);
-      --rule: oklch(82% 0.025 80);
-    }
-    body { margin: 0; background: var(--ink); color: var(--ink); }
-    .slide { position: absolute; inset: 0; background: var(--paper); padding: 6vw 7vw; display: none; flex-direction: column; gap: 3vh; }
-    .slide.active { display: flex; }
-    .slide[data-role="appendix"] { background: var(--paper-2); }
-    .slide[data-role="appendix"] .meta::before { content: "REFERENCE · "; color: var(--accent); }
-    .slide[data-role="appendix-divider"] { justify-content: center; text-align: left; }
-    .meta { display: flex; justify-content: space-between; border-bottom: 1px solid var(--rule); padding-bottom: 12px; }
-    .meta .section { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .meta .counter { flex-shrink: 0; font-variant-numeric: tabular-nums; }
-    .notes { display: none; }
-    body.presenter .notes { display: block; position: fixed; right: 0; top: 0; bottom: 0; width: 36vw; background: var(--ink); color: var(--paper); padding: 24px; overflow: auto; z-index: 10; }
-    /* Typography, layout, etc. — derived from .impeccable.md */
-  </style>
-</head>
-<body>
-<div class="deck">
-  <section class="slide" data-role="cover">…</section>
-  <section class="slide" data-role="main" data-section="…">
-    <div class="meta"><span class="section">01 · …</span><span class="counter">01 / N</span></div>
-    …
-    <aside class="notes">Speaker says …</aside>
-  </section>
-  <!-- main slides -->
-  <section class="slide" data-role="appendix-divider">
-    <p class="appendix-label">Appendix</p>
-    <h1>Reference material — triggered on question.</h1>
-  </section>
-  <section class="slide" data-role="appendix" data-section="B1 · …">
-    <div class="meta"><span class="section">B1 · …</span><span class="counter">11 / N</span></div>
-    …
-    <aside class="notes">…</aside>
-  </section>
-  <!-- appendix slides -->
-</div>
-<script>
-  // keyboard nav: ← → PageUp PageDown Home End
-  // S → presenter mode, F → fullscreen, Esc → exit
-  // hash deep-link + reload
-</script>
-</body>
-</html>
-```
-
-This is a contract, not a style sheet. The look is inherited from `/impeccable`. The *structure* above is the non-negotiable part.
+`references/html-renderer-reference.html` is a minimal two-slide deck implementing every rule above end-to-end. Start from it. Adapt the `:root` palette, typography variables, and content — leave the scaffolding (viewport model, composition, tray, hint pill, keyboard/fullscreen handlers, print override) alone. The scaffolding is a contract, not a style sheet; the look is inherited from `/impeccable`.
