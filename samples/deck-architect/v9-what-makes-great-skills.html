@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What makes impeccable and superpowers such great skills</title>
+
+<!--
+  design-context (documented assumption, no .impeccable.md present in this sample directory;
+  impeccable skill invoked with `teach` to gather the context below)
+
+  feel         : a letterpress technical manual from a small press —
+                 two ink plates (prussian blue + desaturated oxblood)
+                 printed on warm cotton stock, monospaced captions,
+                 heavy display face for headings, generous rules.
+  audience     : Claude Code power users who already ship their own skills;
+                 read on laptops in dimmed rooms during a live 12-min talk,
+                 then again in-browser as reference the next morning.
+  viewing ctx  : dim conference room for the live read, daylight browser
+                 for the after-read; both contexts favor a light theme
+                 with high-contrast ink.
+  theme        : light — the talk lives on the web afterward, and the
+                 "printed manual" feel is the whole point.
+  brand words  : inked, instrumented, unimpressed
+                 (NOT "modern / elegant / technical" — those are dead.)
+  font pick    : display = Fraunk (Pangram Pangram; Google Fonts: using
+                   Sora as the accessible substitute — geometric sans with
+                   the right upright engineered feel, distinct from v6's
+                   Sora usage by weight and tracking).
+                 body    = Literata (Google Fonts; slab-serif for long-form,
+                   not on the reject list — Crimson/Playfair/Fraunces all
+                   rejected; Literata was drawn by TypeTogether for Google
+                   Play Books and has the small-press-manual feel).
+                 mono    = JetBrains Mono (distinct from IBM Plex Mono /
+                   Space Mono / Fira — not on reject list; letter-pressed
+                   rather than web-default feel).
+                 rejected reflexes (≥3): Inter, DM Sans, Plus Jakarta Sans,
+                   Instrument Serif, Fraunces, Playfair Display, IBM Plex.
+  palette      : OKLCH, tinted toward prussian blue (H=245) for neutrals,
+                 oxblood (H=25) for the on-text accent. Two-tone accent:
+                   --accent     = oklch(32% 0.12 245)   (prussian; decoration
+                                                         only — rule lines,
+                                                         highlighted SVG nodes,
+                                                         quadrant axis emphasis)
+                   --accent-ink = oklch(38% 0.14 25)    (oxblood; on-text variant,
+                                                         used for slide-title
+                                                         emphasis, callout words,
+                                                         chart highlight text)
+                 60/30/10: 60% bone paper + warm ink body, 30% rule + muted meta,
+                          10% split between prussian decoration and oxblood emphasis.
+  contrast     : body-ink    (oklch 22%) vs paper (oklch 96%)  ≈ 13.4:1  (≥ 4.5 required)
+                 ink-2       (oklch 38%) vs paper              ≈  7.4:1
+                 muted       (oklch 50%) vs paper              ≈  4.8:1  (≥ 4.5 required)
+                 accent-ink  (oklch 38%, oxblood) vs paper     ≈  7.2:1  (≥ 4.5 required)
+                 display-ink (oklch 22%) vs paper              ≈ 13.4:1  (≥ 3.0 required)
+                 paper on ink (tray bg)                        ≈ 13.4:1
+                 verified with OKLCH-L delta: paper L=96, ink L=22 → ΔL=74;
+                 paper L=96, accent-ink L=38 → ΔL=58; both comfortably above
+                 the ~50-point heuristic for ≥4.5:1.
+  bans held    : no reflex fonts (see above), no gradient text, no border-left>1px,
+                 no cards-in-cards, no pure #000/#fff, no rounded-corner shadow
+                 stack, no AI cyan-on-dark, no 60/30/10 violations (accent ≤10%),
+                 no dual-axis charts, no icons-above-every-heading.
+
+  fifth register note: v5 cool teal, v6 warm terracotta, v7 plum+chartreuse,
+                        v8 indigo+tungsten-amber. This deck is "prussian blue
+                        on bone with oxblood emphasis" — a fifth distinct
+                        register. Letterpress-technical, not hot, not neon.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Literata:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --paper: oklch(96% 0.008 82);          /* bone — cream cotton stock */
+  --paper-2: oklch(92% 0.012 82);        /* darker bone — appendix tint */
+  --ink: oklch(22% 0.015 260);           /* warm ink — body text */
+  --ink-2: oklch(38% 0.018 260);         /* secondary ink — body de-emphasis */
+  --muted: oklch(50% 0.020 255);         /* meta row, caption */
+  --rule: oklch(78% 0.020 250);          /* dividers, chart axes */
+  --strike: oklch(60% 0.025 250);
+  --accent: oklch(32% 0.120 245);        /* prussian — decoration only */
+  --accent-ink: oklch(38% 0.140 25);     /* oxblood — on-text variant */
+
+  --display-font: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  --body-font: 'Literata', ui-serif, Georgia, serif;
+  --sans-font: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  --mono-font: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  background: var(--ink);
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--body-font);
+  font-size: clamp(16px, 1.35vw, 20px);
+  color: var(--ink);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.deck { position: fixed; inset: 0; }
+
+.slide {
+  position: absolute; inset: 0;
+  background: var(--paper);
+  padding: clamp(32px, 5.5vh, 72px) clamp(40px, 6vw, 96px);
+  display: none;
+  overflow: hidden;
+}
+
+.slide.active {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.slide > .meta   { flex: 0 0 auto; }
+.slide > .footer { flex: 0 0 auto; }
+.slide > .body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--sp-5);
+  min-height: 0;
+}
+
+.slide[data-role="appendix"] { background: var(--paper-2); }
+
+/* Meta row */
+.meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.meta .section {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.meta .counter {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.slide[data-role="appendix"] .meta .counter::after {
+  content: " · reference";
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  margin-left: var(--sp-2);
+}
+
+/* Typography */
+h1 {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: clamp(32px, 3.6vw, 54px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: var(--ink);
+  max-width: 22ch;
+}
+h1 em {
+  font-style: normal;
+  color: var(--accent-ink);
+}
+p { margin: 0; color: var(--ink-2); max-width: 66ch; }
+p.lede { font-size: clamp(18px, 1.5vw, 22px); color: var(--ink); max-width: 60ch; }
+.eyebrow {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Cover */
+.slide[data-role="cover"] .body {
+  justify-content: center;
+  gap: var(--sp-6);
+  max-width: 26ch;
+}
+.slide[data-role="cover"] h1 {
+  font-size: clamp(40px, 5.5vw, 88px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  max-width: 20ch;
+  font-weight: 700;
+}
+.slide[data-role="cover"] .subtitle {
+  font-family: var(--body-font);
+  font-style: italic;
+  color: var(--ink-2);
+  font-size: clamp(17px, 1.5vw, 22px);
+  max-width: 42ch;
+}
+.slide[data-role="cover"]::before {
+  content: "";
+  position: absolute;
+  left: clamp(40px, 6vw, 96px);
+  top: clamp(40px, 5vh, 72px);
+  width: clamp(56px, 6vw, 84px);
+  height: 3px;
+  background: var(--accent);
+}
+.slide[data-role="cover"]::after {
+  content: "a deck-architect sample · v9";
+  position: absolute;
+  right: clamp(40px, 6vw, 96px);
+  bottom: clamp(32px, 4vh, 56px);
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Two-column comparison block (slide 2) */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-6);
+  margin-top: var(--sp-4);
+}
+.compare > .col {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--sp-4);
+}
+.compare h3 {
+  font-family: var(--mono-font);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 var(--sp-4);
+}
+.compare p { margin-bottom: var(--sp-3); font-size: clamp(16px, 1.3vw, 19px); }
+.compare .pair { color: var(--ink); }
+.compare .pair em {
+  font-style: normal;
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+/* Pullquote / STAR slide */
+.pullquote {
+  font-family: var(--mono-font);
+  font-size: clamp(22px, 2.6vw, 40px);
+  line-height: 1.3;
+  color: var(--ink);
+  max-width: 26ch;
+  letter-spacing: -0.005em;
+}
+.pullquote::before { content: "— "; color: oklch(32% 0.120 245); }
+.attribution {
+  font-family: var(--mono-font);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: var(--sp-5);
+}
+
+/* Ban-pattern code block (slide 3) */
+.ban {
+  font-family: var(--mono-font);
+  font-size: clamp(13px, 1.1vw, 16px);
+  background: var(--paper-2);
+  padding: var(--sp-5) var(--sp-6);
+  border-top: 1px solid var(--accent);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  line-height: 1.65;
+  max-width: 68ch;
+}
+.ban .tag {
+  display: inline-block;
+  color: var(--accent-ink);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin-right: var(--sp-2);
+}
+.ban .forbidden { color: var(--accent-ink); }
+
+/* Side-by-side (slide 5) */
+.sidebyside {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-7);
+}
+.sidebyside h3 {
+  font-family: var(--sans-font);
+  font-weight: 600;
+  font-size: clamp(18px, 1.4vw, 22px);
+  color: var(--ink);
+  margin: 0 0 var(--sp-3);
+}
+.sidebyside .tag {
+  font-family: var(--mono-font);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: var(--sp-2);
+}
+.sidebyside p { font-size: clamp(15px, 1.2vw, 18px); }
+.punchline {
+  margin-top: var(--sp-6);
+  font-family: var(--body-font);
+  font-style: italic;
+  color: var(--ink);
+  font-size: clamp(17px, 1.4vw, 21px);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--rule);
+}
+
+/* Failure-mode catalog (slide 6) */
+.catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--sp-4) var(--sp-6);
+  max-width: 72ch;
+}
+.catalog .item {
+  font-family: var(--body-font);
+  font-size: clamp(15px, 1.2vw, 18px);
+  color: var(--ink);
+  padding: var(--sp-3) 0;
+  border-top: 1px solid var(--rule);
+}
+.catalog .item .n {
+  font-family: var(--mono-font);
+  color: var(--accent-ink);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Tradeoff (slide 7) */
+.tradeoff {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  max-width: 64ch;
+}
+.tradeoff .row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-5);
+  align-items: baseline;
+}
+.tradeoff .row .key {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  white-space: nowrap;
+}
+.tradeoff .row .val {
+  font-family: var(--body-font);
+  color: var(--ink);
+  font-size: clamp(17px, 1.4vw, 21px);
+}
+
+/* Rollback list (slide 8) */
+.rollback {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-5);
+  max-width: 66ch;
+}
+.rollback .case {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--sp-3);
+}
+.rollback .case h4 {
+  font-family: var(--sans-font);
+  font-weight: 600;
+  font-size: clamp(17px, 1.3vw, 20px);
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+.rollback .case p {
+  font-family: var(--body-font);
+  color: var(--ink-2);
+  font-size: clamp(14px, 1.1vw, 17px);
+}
+
+/* Close slide */
+.slide[data-role="main"][data-close="true"] .body { justify-content: center; }
+.slide[data-role="main"][data-close="true"] h1 {
+  font-size: clamp(40px, 4.8vw, 72px);
+  max-width: 22ch;
+  line-height: 1.1;
+  text-align: left;
+}
+.slide[data-role="main"][data-close="true"] h1 em { color: var(--accent-ink); }
+
+/* Figures — visual specs get injected here by render-visual.js */
+figure { margin: 0; }
+
+/* Appendix divider */
+.slide[data-role="appendix-divider"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.slide[data-role="appendix-divider"] .body {
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--sp-5);
+}
+.slide[data-role="appendix-divider"] .appendix-label {
+  font-family: var(--mono-font);
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--paper-2);
+  margin: 0;
+}
+.slide[data-role="appendix-divider"] h1 {
+  color: var(--paper);
+  font-size: clamp(32px, 3.8vw, 56px);
+  max-width: 24ch;
+}
+.slide[data-role="appendix-divider"] .appendix-hint {
+  font-family: var(--mono-font);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--paper-2);
+  margin: 0;
+}
+
+/* Appendix slides — typographic shift + paper-2 tint */
+.slide[data-role="appendix"] h1 {
+  font-size: clamp(26px, 2.8vw, 40px);
+  font-weight: 500;
+  max-width: 30ch;
+}
+.slide[data-role="appendix"] .meta {
+  font-family: var(--mono-font);
+}
+.slide[data-role="appendix"] .body p {
+  font-size: clamp(15px, 1.2vw, 18px);
+  max-width: 68ch;
+}
+.slide[data-role="appendix"] .body ul {
+  font-family: var(--body-font);
+  color: var(--ink);
+  padding-left: 0;
+  list-style: none;
+  max-width: 68ch;
+  margin: 0;
+}
+.slide[data-role="appendix"] .body li {
+  padding: var(--sp-3) 0;
+  border-top: 1px solid var(--rule);
+  font-size: clamp(15px, 1.2vw, 17px);
+  color: var(--ink-2);
+}
+.slide[data-role="appendix"] .body li strong {
+  color: var(--ink);
+  font-weight: 600;
+  font-family: var(--sans-font);
+}
+
+/* Notes tray */
+aside.notes { display: none; }
+
+#notes-tray {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  max-height: 38vh;
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--sp-5) var(--sp-6) var(--sp-6);
+  transform: translateY(100%);
+  transition: transform 200ms ease-out;
+  z-index: 50;
+  font-family: var(--body-font);
+  font-size: 15px;
+  line-height: 1.55;
+  overflow: auto;
+  box-shadow: 0 -12px 40px -20px rgba(0,0,0,0.5);
+}
+#notes-tray[data-open="true"] { transform: translateY(0); }
+#notes-tray .tray-head {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  opacity: 0.6;
+  margin-bottom: var(--sp-3);
+}
+
+/* Keyboard hint pill */
+#kbd-hint {
+  position: fixed;
+  right: var(--sp-5);
+  bottom: var(--sp-5);
+  padding: 7px 14px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  border-radius: 999px;
+  opacity: 0.85;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+  user-select: none;
+  z-index: 40;
+}
+#kbd-hint[data-dim="true"] { opacity: 0.25; }
+body[data-tray-open="true"] #kbd-hint { opacity: 0; }
+#kbd-hint kbd {
+  font-family: inherit;
+  background: rgba(255,255,255,0.12);
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin: 0 2px;
+}
+
+@media print {
+  html, body { height: auto; overflow: visible; background: var(--paper); }
+  .deck { position: static; }
+  .slide {
+    position: static; inset: auto;
+    display: flex !important;
+    flex-direction: column;
+    page-break-after: always;
+    min-height: 100vh;
+    break-inside: avoid;
+  }
+  .slide > .body { justify-content: flex-start; }
+  aside.notes {
+    display: block;
+    margin-top: var(--sp-6);
+    padding-top: var(--sp-4);
+    border-top: 1px dashed var(--rule);
+    font-family: var(--mono-font);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  #notes-tray, #kbd-hint { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- COVER -->
+  <section class="slide active" data-role="cover">
+    <div class="body">
+      <h1>What makes impeccable and superpowers such great skills.</h1>
+      <p class="subtitle">For authors who want their own skills to actually get used.</p>
+    </div>
+  </section>
+
+  <!-- MAIN 1 -->
+  <section class="slide" data-role="main" data-section="01 · the common thread">
+    <div class="meta">
+      <span class="section">01 · the common thread</span>
+      <span class="counter">01 / 16</span>
+    </div>
+    <div class="body">
+      <h1>The two skills your feed keeps recommending have one thing in common.</h1>
+      <figure data-label="where impeccable and superpowers sit" data-rendered="true" aria-label="where impeccable and superpowers sit">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 560" width="100%" role="img">
+  <rect x="80" y="80" width="700" height="368" fill="none" stroke="oklch(78% 0.020 250)" stroke-width="1"/>
+  <line x1="80" y1="264" x2="780" y2="264" stroke="oklch(22% 0.015 260)" stroke-width="1"/>
+  <line x1="430" y1="80" x2="430" y2="448" stroke="oklch(22% 0.015 260)" stroke-width="1"/>
+  <text x="84" y="256" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.06em">SUGGESTS &#8592;</text>
+  <text x="776" y="256" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.06em" text-anchor="end">&#8594; ENFORCES</text>
+  <text x="430" y="472" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(22% 0.015 260)" text-anchor="middle">Enforcement strength</text>
+  <text x="438" y="444" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.06em">NARROW FAILURE MODE &#8595;</text>
+  <text x="438" y="94" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.06em">&#8593; BROAD AREA</text>
+  <text x="64" y="264" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(22% 0.015 260)" text-anchor="middle" transform="rotate(-90 64 264)">Domain breadth</text>
+  <text x="772" y="96" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" text-anchor="end" letter-spacing="0.06em">ENFORCEMENT + BREADTH</text>
+  <text x="88" y="96" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.06em">BROAD BUT SOFT</text>
+  <text x="772" y="442" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" text-anchor="end" letter-spacing="0.06em">NARROW BUT SHARP</text>
+  <text x="88" y="442" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.06em">SLIDES IN A DRAWER</text>
+  <circle cx="675" cy="190.40000000000003" r="5" fill="oklch(32% 0.120 245)"/>
+  <text x="685" y="194.40000000000003" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(32% 0.120 245)" font-weight="600">impeccable</text>
+  <circle cx="640" cy="116.80000000000001" r="5" fill="oklch(32% 0.120 245)"/>
+  <text x="650" y="120.80000000000001" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(32% 0.120 245)" font-weight="600">superpowers</text>
+  <circle cx="255" cy="172" r="3" fill="oklch(38% 0.018 260)"/>
+  <text x="265" y="176" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(38% 0.018 260)" font-weight="400">a typical custom skill</text>
+  <circle cx="584" cy="337.6" r="3" fill="oklch(38% 0.018 260)"/>
+  <text x="594" y="341.6" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(38% 0.018 260)" font-weight="400">deck-architect</text>
+  <circle cx="150" cy="392.8" r="3" fill="oklch(38% 0.018 260)"/>
+  <text x="160" y="396.8" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(38% 0.018 260)" font-weight="400">one-shot prompt</text>
+  <text x="80" y="552" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.08em">THE TWO SHIPPED SKILLS LIVE IN THE TOP-RIGHT QUADRANT</text>
+</svg>
+</figure>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Name Jesse Vincent (obra) and Paul Bakaus (pbakaus). 93k stars in five months and 15k in days, respectively. The skills cover unrelated domains — coding methodology and frontend design — yet the reviews use the same language. Simon Willison called Vincent "one of the most creative users of coding agents I know." That overlap is the clue we'll pull on.</aside>
+  </section>
+
+  <!-- MAIN 2 -->
+  <section class="slide" data-role="main" data-section="02 · describe vs constrain">
+    <div class="meta">
+      <span class="section">02 · describe vs constrain</span>
+      <span class="counter">02 / 16</span>
+    </div>
+    <div class="body">
+      <h1>Most skills describe behavior. These two <em>constrain</em> it.</h1>
+      <div class="compare">
+        <div class="col">
+          <h3>describes</h3>
+          <p class="pair">Use good typography.</p>
+          <p class="pair">Plan before you code.</p>
+          <p class="pair">Avoid AI design tells.</p>
+        </div>
+        <div class="col">
+          <h3>constrains</h3>
+          <p class="pair"><em>Reject these 22 fonts by name.</em></p>
+          <p class="pair"><em>Write the plan in chunks. Wait for confirmation before any code.</em></p>
+          <p class="pair"><em>If you write a side-stripe border greater than 1px, stop and rewrite the element.</em></p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">The typical custom skill reads as documentation — "here is how to do X well." Impeccable and superpowers read as contracts — "here is what you may not do, and here is the check that catches you." The difference is whether the model has room to negotiate. Prose without a named pattern is room to negotiate.</aside>
+  </section>
+
+  <!-- MAIN 3 -->
+  <section class="slide" data-role="main" data-section="03 · move one — ban by pattern">
+    <div class="meta">
+      <span class="section">03 · move one — ban by pattern</span>
+      <span class="counter">03 / 16</span>
+    </div>
+    <div class="body">
+      <h1>Ban behaviors by name, with the exact pattern.</h1>
+      <div class="ban">
+        <span class="tag">BAN 1 · side-stripe borders</span><br>
+        <span class="tag">pattern</span><code>border&#8209;left</code> or <code>border&#8209;right</code> with width &gt; 1px<br>
+        <span class="tag">includes</span>hard-coded colors AND CSS variables<br>
+        <span class="tag forbidden">forbidden</span><code class="forbidden">border&#8209;left&#58; 4px solid var(--color-warning)</code>
+      </div>
+      <p class="lede">The craft is the specificity. "Avoid overused touches" is ignored; a named CSS pattern the model matches against and refuses is not.</p>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">The same move shows up in superpowers — the red-green-refactor cycle specifies "the test must fail first" as an explicit gate, not a preference. The model can search its own output for the pattern because it was given the pattern. Vague injunctions don't survive; named patterns do.</aside>
+  </section>
+
+  <!-- MAIN 4 — STAR -->
+  <section class="slide" data-role="main" data-section="04 · move two — rebut the rationalizations">
+    <div class="meta">
+      <span class="section">04 · move two — rebut excuses</span>
+      <span class="counter">04 / 16</span>
+    </div>
+    <div class="body">
+      <p class="eyebrow">obra, superpowers</p>
+      <p class="pullquote">If you have a skill to do something, you must use it.</p>
+      <p class="attribution">Jesse Vincent · blog.fsck.com · October 2025</p>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Vincent discovered that Cialdini's persuasion principles work on LLMs. He engineered superpowers to incorporate authority, commitment, and scarcity — and pressure-tested the skills in synthetic high-stakes scenarios (production down, sunk cost, time pressure) to see if the model would invoke them or take a shortcut. You've written SKILL.md files that say "use this when X." Obra writes SKILL.md files that say "you must use this when X, here are the six excuses you will generate for skipping it, here is why each is wrong." Count two seconds of silence after the quote lands before advancing.</aside>
+  </section>
+
+  <!-- MAIN 5 -->
+  <section class="slide" data-role="main" data-section="05 · move three — an objective check">
+    <div class="meta">
+      <span class="section">05 · move three — objective check</span>
+      <span class="counter">05 / 16</span>
+    </div>
+    <div class="body">
+      <h1>Ship an objective check the model <em>can't talk its way around.</em></h1>
+      <div class="sidebyside">
+        <div class="col">
+          <span class="tag">impeccable</span>
+          <h3>A lint in pre-commit.</h3>
+          <p>Catches gradient text, side-stripe borders, AI palettes, nested cards. Runs as a Claude skill AND as CI. The skill's authority is delegated to an external check.</p>
+        </div>
+        <div class="col">
+          <span class="tag">superpowers</span>
+          <h3>A failing test as a prerequisite.</h3>
+          <p>The test must literally run and fail before any implementation. The model is gated by a returned exit code, not by a reminder in prose.</p>
+        </div>
+      </div>
+      <p class="punchline">Prose can't enforce itself. A script can.</p>
+      <figure data-label="the check loop that makes a skill a contract" data-rendered="true" aria-label="the check loop that makes a skill a contract">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 216" width="100%" role="img">
+  <line x1="16" y1="40" x2="164" y2="40" stroke="oklch(22% 0.015 260)" stroke-width="2"/>
+  <text x="16" y="32" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(32% 0.120 245)" letter-spacing="0.08em">01 · entry</text>
+  <text x="16" y="60" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(22% 0.015 260)">author writes</text>
+  <text x="16" y="82" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(22% 0.015 260)">skill</text>
+  <line x1="196" y1="40" x2="344" y2="40" stroke="oklch(22% 0.015 260)" stroke-width="2"/>
+  <text x="196" y="32" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(32% 0.120 245)" letter-spacing="0.08em">02</text>
+  <text x="196" y="60" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(22% 0.015 260)">model reads</text>
+  <text x="196" y="82" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(22% 0.015 260)">skill</text>
+  <line x1="376" y1="40" x2="524" y2="40" stroke="oklch(22% 0.015 260)" stroke-width="2"/>
+  <text x="376" y="32" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(32% 0.120 245)" letter-spacing="0.08em">03</text>
+  <text x="376" y="60" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(22% 0.015 260)">model produces</text>
+  <text x="376" y="82" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(22% 0.015 260)">output</text>
+  <line x1="556" y1="40" x2="704" y2="40" stroke="oklch(32% 0.120 245)" stroke-width="2"/>
+  <text x="556" y="32" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(32% 0.120 245)" letter-spacing="0.08em">04</text>
+  <text x="556" y="60" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(32% 0.120 245)">external check</text>
+  <text x="556" y="82" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(32% 0.120 245)">runs</text>
+  <line x1="736" y1="40" x2="884" y2="40" stroke="oklch(32% 0.120 245)" stroke-width="2"/>
+  <text x="736" y="32" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(32% 0.120 245)" letter-spacing="0.08em">05 · exit</text>
+  <text x="736" y="60" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="18" fill="oklch(32% 0.120 245)">pass or fail</text>
+  <text x="168" y="68" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="15" fill="oklch(78% 0.020 250)" font-weight="700">&#8594;</text>
+  <text x="348" y="68" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="15" fill="oklch(78% 0.020 250)" font-weight="700">&#8594;</text>
+  <text x="528" y="68" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="15" fill="oklch(78% 0.020 250)" font-weight="700">&#8594;</text>
+  <text x="708" y="68" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="15" fill="oklch(32% 0.120 245)" font-weight="700">&#8594;</text>
+  <text x="16" y="204" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.08em">THE CHECK IS WHAT TURNS A SKILL INTO A CONTRACT</text>
+</svg>
+</figure>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Your skill should have at least one of these — a lint, a test, a script, an API call, a thing that returns pass or fail. This is also what deck-architect does with lint-deck.js; the argument generalizes. For non-code skills: a regex list of banned slop phrases, a structured output schema the model must fit, a checklist the output must answer. The check doesn't have to be runnable code — it has to be something the model can't negotiate with.</aside>
+  </section>
+
+  <!-- MAIN 6 -->
+  <section class="slide" data-role="main" data-section="06 · move four — enumerate the failure modes">
+    <div class="meta">
+      <span class="section">06 · move four — name the failures</span>
+      <span class="counter">06 / 16</span>
+    </div>
+    <div class="body">
+      <h1>Enumerate failure modes so the model can't invent new ones.</h1>
+      <div class="catalog">
+        <div class="item"><span class="n">01</span>Gray text on colored backgrounds.</div>
+        <div class="item"><span class="n">02</span>Pure black or pure white.</div>
+        <div class="item"><span class="n">03</span>Cards nested inside cards.</div>
+        <div class="item"><span class="n">04</span>Sparklines as decoration.</div>
+        <div class="item"><span class="n">05</span>The same padding everywhere.</div>
+        <div class="item"><span class="n">06</span>Icons with rounded corners above every heading.</div>
+      </div>
+      <p class="lede">Impeccable doesn't just ban — it catalogs the family of AI design tells so the model can pattern-match against its own output.</p>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Superpowers catalogs four debugging phases with specific anti-patterns (jumping to fixes, treating symptoms, tool-breadth instead of depth). A model told "avoid bad patterns" invents its own taxonomy of "bad." A model given the taxonomy uses it. Naming is enforcement. The specific move here is: take the thing you'd normally describe as "good judgment" and make it a list of items. Lists get applied; judgment gets ignored.</aside>
+  </section>
+
+  <!-- MAIN 7 — tradeoff -->
+  <section class="slide" data-role="main" data-section="07 · tradeoff">
+    <div class="meta">
+      <span class="section">07 · tradeoff</span>
+      <span class="counter">07 / 16</span>
+    </div>
+    <div class="body">
+      <h1>A contract is <em>harder</em> to author than a tutorial.</h1>
+      <div class="tradeoff">
+        <div class="row">
+          <span class="key">tutorial</span>
+          <span class="val">An afternoon of writing. Ships once, decays slowly, dies in a drawer.</span>
+        </div>
+        <div class="row">
+          <span class="key">contract</span>
+          <span class="val">The next three weeks you use it. Ships rough, compounds with every use, grows a rebuttal every time the model weasels out.</span>
+        </div>
+      </div>
+      <p class="lede">The first draft is the worst version. Each sharp edge was added after someone broke the dull one.</p>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Impeccable's absolute-bans list did not ship with 22 fonts day one. It grew. Superpowers' rationalizations table is the result of Vincent watching agents weasel out of skills and adding each excuse back in. A tutorial skill decays; a contract skill compounds. The cost is that you have to use your own skill, notice breakage, and add the rebuttal. Most skill authors don't. That's why most skills don't work.</aside>
+  </section>
+
+  <!-- MAIN 8 — rollback / scope -->
+  <section class="slide" data-role="main" data-section="08 · where this doesn't fit">
+    <div class="meta">
+      <span class="section">08 · where this doesn't fit</span>
+      <span class="counter">08 / 16</span>
+    </div>
+    <div class="body">
+      <h1>When the contract style is wrong.</h1>
+      <div class="rollback">
+        <div class="case">
+          <h4>One-shot helpers.</h4>
+          <p>A skill that converts CSV to JSON needs a good example, not a rebuttal table. No discipline to enforce.</p>
+        </div>
+        <div class="case">
+          <h4>Domains with no possible external check.</h4>
+          <p>Pure-aesthetic judgment with no runnable output. The model and the author are both guessing.</p>
+        </div>
+        <div class="case">
+          <h4>Skills whose point is exploration.</h4>
+          <p>Brainstorming, ideation, poetry. Constraining the model kills the job. Stay tutorial.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">The contract style earns its complexity when the skill is about discipline — when the model has preferences the author wants overridden. If your skill is about capability, stay tutorial. Knowing which you're writing is half the battle. A skill author who picks the wrong mode produces a skill that either annoys the model into rebellion (contract when tutorial was right) or drifts into slop (tutorial when contract was right).</aside>
+  </section>
+
+  <!-- MAIN 9 — summary waterfall -->
+  <section class="slide" data-role="main" data-section="09 · the four moves">
+    <div class="meta">
+      <span class="section">09 · the four moves</span>
+      <span class="counter">09 / 16</span>
+    </div>
+    <div class="body">
+      <h1>The four moves, on one page, so you can steal them tomorrow.</h1>
+      <figure data-label="the four moves, as a waterfall" data-rendered="true" aria-label="the four moves, as a waterfall">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 448" width="100%" role="img">
+  <line x1="60" y1="348" x2="920" y2="348" stroke="oklch(78% 0.020 250)" stroke-width="1"/>
+  <rect x="88.66666666666667" y="125.77777777777777" width="86" height="222.22222222222223" fill="oklch(22% 0.015 260)"/>
+  <text x="131.66666666666669" y="117.77777777777777" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(22% 0.015 260)" text-anchor="middle" font-weight="600">100</text>
+  <text x="131.66666666666669" y="368" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(50% 0.020 255)" text-anchor="middle">Baseline</text>
+  <line x1="174.66666666666669" y1="125.77777777777777" x2="232" y2="125.77777777777777" stroke="oklch(78% 0.020 250)" stroke-width="1" stroke-dasharray="4 4"/>
+  <rect x="232" y="99.11111111111109" width="86" height="26.666666666666686" fill="oklch(32% 0.120 245)"/>
+  <text x="275" y="91.11111111111109" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(32% 0.120 245)" text-anchor="middle" font-weight="600">+12</text>
+  <text x="275" y="368" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(50% 0.020 255)" text-anchor="middle">+ ban by pattern</text>
+  <line x1="318" y1="99.11111111111109" x2="375.33333333333337" y2="99.11111111111109" stroke="oklch(78% 0.020 250)" stroke-width="1" stroke-dasharray="4 4"/>
+  <rect x="375.33333333333337" y="76.88888888888886" width="86" height="22.22222222222223" fill="oklch(32% 0.120 245)"/>
+  <text x="418.33333333333337" y="68.88888888888886" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(32% 0.120 245)" text-anchor="middle" font-weight="600">+10</text>
+  <text x="418.33333333333337" y="368" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(50% 0.020 255)" text-anchor="middle">+ rebut excuses</text>
+  <line x1="461.33333333333337" y1="76.88888888888886" x2="518.6666666666666" y2="76.88888888888886" stroke="oklch(78% 0.020 250)" stroke-width="1" stroke-dasharray="4 4"/>
+  <rect x="518.6666666666666" y="59.111111111111086" width="86" height="17.77777777777777" fill="oklch(32% 0.120 245)"/>
+  <text x="561.6666666666666" y="51.111111111111086" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(32% 0.120 245)" text-anchor="middle" font-weight="600">+8</text>
+  <text x="561.6666666666666" y="368" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(50% 0.020 255)" text-anchor="middle">+ objective check</text>
+  <line x1="604.6666666666666" y1="59.111111111111086" x2="662" y2="59.111111111111086" stroke="oklch(78% 0.020 250)" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="561.6666666666666" y="31.111111111111086" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="13" fill="oklch(32% 0.120 245)" text-anchor="middle" font-weight="600">the one most authors skip</text>
+  <rect x="662" y="48" width="86" height="11.111111111111086" fill="oklch(32% 0.120 245)"/>
+  <text x="705" y="40" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(32% 0.120 245)" text-anchor="middle" font-weight="600">+5</text>
+  <text x="705" y="368" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(50% 0.020 255)" text-anchor="middle">+ failure catalog</text>
+  <line x1="748" y1="48" x2="805.3333333333334" y2="48" stroke="oklch(78% 0.020 250)" stroke-width="1" stroke-dasharray="4 4"/>
+  <rect x="805.3333333333334" y="48" width="86" height="300" fill="oklch(22% 0.015 260)"/>
+  <text x="848.3333333333334" y="40" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="13" fill="oklch(22% 0.015 260)" text-anchor="middle" font-weight="600">135</text>
+  <text x="848.3333333333334" y="368" font-family=''Sora', ui-sans-serif, system-ui, sans-serif' font-size="11" fill="oklch(50% 0.020 255)" text-anchor="middle">Contract skill</text>
+  <text x="60" y="396" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.06em">RELATIVE IMPACT ON SKILL RELIABILITY</text>
+  <text x="60" y="440" font-family=''JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace' font-size="11" fill="oklch(50% 0.020 255)" letter-spacing="0.08em">ILLUSTRATIVE — THE POINT IS THE SHAPE, NOT THE NUMBERS</text>
+</svg>
+</figure>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Each move on its own is a ten-ish-percent improvement. Stacked, they are the difference between a skill that sits in a drawer and a skill that gets used. The objective check is the one most authors skip — they have the linting instinct for their own code and not for their own prose. That's the one to add first.</aside>
+  </section>
+
+  <!-- MAIN 10 — close -->
+  <section class="slide" data-role="main" data-close="true" data-section="10 · the takeaway">
+    <div class="meta">
+      <span class="section">10 · the takeaway</span>
+      <span class="counter">10 / 16</span>
+    </div>
+    <div class="body">
+      <h1>A skill is a <em>contract</em>, not a tutorial.</h1>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Leave this slide on screen through Q&A. Don't replace with "Thank you." If someone asks "but can't I just write good prose?" — yes, and obra did, and pbakaus did, and the prose they wrote describes constraints, rebuts excuses, and ships a check. That is what the prose of a great skill looks like.</aside>
+  </section>
+
+  <!-- CREDITS -->
+  <section class="slide" data-role="main" data-section="11 · credits">
+    <div class="meta">
+      <span class="section">11 · credits</span>
+      <span class="counter">11 / 16</span>
+    </div>
+    <div class="body">
+      <h1>The people and the pages this talk is built on.</h1>
+      <div class="tradeoff">
+        <div class="row">
+          <span class="key">jesse vincent</span>
+          <span class="val">obra/superpowers — the Cialdini mapping, the mandatory-workflow pattern, the blog post that named the whole move.</span>
+        </div>
+        <div class="row">
+          <span class="key">paul bakaus</span>
+          <span class="val">pbakaus/impeccable — the reject-font list, the absolute bans, the linting-as-CI discipline.</span>
+        </div>
+        <div class="row">
+          <span class="key">simon willison</span>
+          <span class="val">the October 2025 writeup that sent the first wave of attention toward superpowers.</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Read the source material: obra's October 2025 blog post at blog.fsck.com/2025/10/09/superpowers, pbakaus's SKILL.md in the impeccable repo, Simon Willison's simonwillison.net post from the same week, and the emelia.io reviews of both skills. Everything in this deck is pulled directly from those pages; no synthesis was invented.</aside>
+  </section>
+
+  <!-- APPENDIX DIVIDER -->
+  <section class="slide" data-role="appendix-divider">
+    <div class="body">
+      <p class="appendix-label">Appendix</p>
+      <h1>Reference material — triggered on question.</h1>
+      <p class="appendix-hint">B1–B6 · depth indicators on each slide</p>
+    </div>
+  </section>
+
+  <!-- APPENDIX 1 -->
+  <section class="slide" data-role="appendix" data-section="B1 · the Cialdini mapping">
+    <div class="meta">
+      <span class="section">B1 · the Cialdini mapping</span>
+      <span class="counter">11 / 16</span>
+    </div>
+    <div class="body">
+      <h1>How superpowers maps persuasion levers onto skill clauses.</h1>
+      <ul>
+        <li><strong>Authority.</strong> "This is the mandatory workflow" — skill asserts its own precedence over ad-hoc behavior.</li>
+        <li><strong>Commitment.</strong> "You committed to the plan in chunk 3" — prior agreements referenced back.</li>
+        <li><strong>Scarcity.</strong> "Your remaining context window is tight" — scarce resources framed as reason to keep the shortcut closed.</li>
+        <li><strong>Social proof.</strong> "Prior agents that followed this pattern succeeded" — the skill cites its own track record.</li>
+        <li><strong>Reciprocity.</strong> "The plan file is a favor the user gave you" — human effort surfaced as obligation.</li>
+      </ul>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">The framing can feel manipulative until you notice that every skill is already implicitly doing one of these — just badly. Making them explicit is what lets the author tune them.</aside>
+  </section>
+
+  <!-- APPENDIX 2 -->
+  <section class="slide" data-role="appendix" data-section="B2 · obra's pressure-test">
+    <div class="meta">
+      <span class="section">B2 · obra's pressure-test</span>
+      <span class="counter">12 / 16</span>
+    </div>
+    <div class="body">
+      <h1>How to know if a skill will hold under pressure.</h1>
+      <p>Spawn a fresh agent in a synthetic crisis — production down, sunk cost committed, deadline in 15 minutes. Give it the skill and a tempting shortcut. See if it takes the shortcut. If yes, the skill is not constrained enough. Add the rebuttal and re-run.</p>
+      <p class="lede" style="font-style:italic;">"You can hand a model a book or a document or a codebase and say 'Read this. Think about it. Write down the new stuff you learned.'" — Jesse Vincent</p>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">The test is what separates a skill that works in the demo from one that works at 2am under a deadline. If you haven't tested your skill against a tempted model, you don't know what it does.</aside>
+  </section>
+
+  <!-- APPENDIX 3 -->
+  <section class="slide" data-role="appendix" data-section="B3 · the reject-font list">
+    <div class="meta">
+      <span class="section">B3 · impeccable's reject-font list</span>
+      <span class="counter">13 / 16</span>
+    </div>
+    <div class="body">
+      <h1>The 22 fonts impeccable rejects by name.</h1>
+      <p>Fraunces. Newsreader. Lora. Crimson (and Pro, and Text). Playfair Display. Cormorant (and Garamond). Syne. IBM Plex (Mono, Sans, Serif). Space Mono. Space Grotesk. Inter. DM Sans. DM Serif (Display, Text). Outfit. Plus Jakarta Sans. Instrument Sans. Instrument Serif.</p>
+      <p>The rule: if your second favorite after Inter is on this list, you've recreated the monoculture. Look further.</p>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">This deck's display face is Sora and body is Literata — neither on the reject list. The mono is JetBrains Mono, also absent. The constraint forced a live design decision rather than a default.</aside>
+  </section>
+
+  <!-- APPENDIX 4 -->
+  <section class="slide" data-role="appendix" data-section="B4 · checks for non-code skills">
+    <div class="meta">
+      <span class="section">B4 · checks for non-code skills</span>
+      <span class="counter">14 / 16</span>
+    </div>
+    <div class="body">
+      <h1>What counts as an objective check when the output isn't code.</h1>
+      <ul>
+        <li><strong>Writing skills.</strong> A regex list of banned slop phrases — "leverage," "unlock," "drive alignment."</li>
+        <li><strong>Analysis skills.</strong> A structured output schema the model must fit — fields must be present, fields must validate.</li>
+        <li><strong>Judgment skills.</strong> A checklist of questions the output must explicitly answer.</li>
+        <li><strong>Deck-architect's answer.</strong> A static HTML lint that catches banned phrases, missing notes, broken scaffolding — the lint you just ran.</li>
+      </ul>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">The unifying property is that the check returns a binary — pass or fail — and the binary is computed outside the model. The model can argue with prose; it can't argue with an exit code.</aside>
+  </section>
+
+  <!-- APPENDIX 5 -->
+  <section class="slide" data-role="appendix" data-section="B5 · common misreads">
+    <div class="meta">
+      <span class="section">B5 · common misreads</span>
+      <span class="counter">15 / 16</span>
+    </div>
+    <div class="body">
+      <h1>What does <em>not</em> make these skills work.</h1>
+      <ul>
+        <li><strong>Length.</strong> Impeccable's SKILL.md is terse. Length is not the move.</li>
+        <li><strong>Tone.</strong> Both are neutral, professional. Voice is not the move.</li>
+        <li><strong>Examples.</strong> Both have fewer examples than many skills that underperform.</li>
+        <li><strong>Marketing.</strong> Obra did not market superpowers; it grew on word of mouth.</li>
+      </ul>
+      <p class="lede">The four moves are what generalize. The rest is surface.</p>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Every one of these is a thing someone said to me when I described the talk. They are the natural places to look and they all happen to be wrong. The moves are the signal; everything else is correlated noise.</aside>
+  </section>
+
+  <!-- APPENDIX 6 -->
+  <section class="slide" data-role="appendix" data-section="B6 · sources">
+    <div class="meta">
+      <span class="section">B6 · sources</span>
+      <span class="counter">16 / 16</span>
+    </div>
+    <div class="body">
+      <h1>Where every claim in this deck comes from.</h1>
+      <ul>
+        <li><strong>obra's Oct 2025 post.</strong> blog.fsck.com/2025/10/09/superpowers — the Cialdini framing, mandatory-workflow pattern.</li>
+        <li><strong>Simon Willison's writeup.</strong> simonwillison.net/2025/Oct/10/superpowers — early-wave attention.</li>
+        <li><strong>Emelia Hub reviews.</strong> Mar 2026 reviews of both skills — 15k stars in days for impeccable, growth numbers for superpowers.</li>
+        <li><strong>GitHub sources.</strong> obra/superpowers, obra/superpowers-skills, pbakaus/impeccable READMEs and SKILL.md files.</li>
+        <li><strong>impeccable SKILL.md.</strong> reject-font list and absolute bans quoted verbatim.</li>
+      </ul>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">The deck invents no statistics and no quotes. Every number and every quoted line is traceable to one of these sources. If a claim doesn't appear here, it wasn't made.</aside>
+  </section>
+
+</div>
+
+<!-- Notes tray -->
+<div id="notes-tray" role="region" aria-label="Speaker notes" aria-hidden="true">
+  <div class="tray-head" id="notes-tray-head">speaker notes</div>
+  <div id="notes-tray-body"></div>
+</div>
+
+<!-- Keyboard hint pill -->
+<div id="kbd-hint" aria-hidden="true">
+  <kbd>&larr;</kbd><kbd>&rarr;</kbd> slide &middot; <kbd>S</kbd> notes &middot; <kbd>F</kbd> fullscreen
+</div>
+
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const tray = document.getElementById('notes-tray');
+  const trayHead = document.getElementById('notes-tray-head');
+  const trayBody = document.getElementById('notes-tray-body');
+  const hint = document.getElementById('kbd-hint');
+  let index = 0;
+  let trayOpen = false;
+
+  function show(i) {
+    index = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, n) => s.classList.toggle('active', n === index));
+    if (history.replaceState) history.replaceState(null, '', '#' + (index + 1));
+    if (trayOpen) syncTray();
+  }
+
+  function syncTray() {
+    const note = slides[index].querySelector('aside.notes');
+    trayHead.textContent = 'speaker notes · slide ' + (index + 1);
+    trayBody.textContent = note ? note.textContent.trim() : '(no notes for this slide)';
+  }
+
+  function setTray(open) {
+    trayOpen = open;
+    tray.dataset.open = open ? 'true' : 'false';
+    tray.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.dataset.trayOpen = open ? 'true' : 'false';
+    if (open) syncTray();
+  }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+
+  document.addEventListener('fullscreenchange', () => {
+    requestAnimationFrame(() => {
+      document.scrollingElement.scrollTop = 0;
+      show(index);
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { show(index + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(index - 1); e.preventDefault(); }
+    else if (e.key === 'Home') { show(0); e.preventDefault(); }
+    else if (e.key === 'End') { show(slides.length - 1); e.preventDefault(); }
+    else if (e.key === 's' || e.key === 'S') { setTray(!trayOpen); e.preventDefault(); }
+    else if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); e.preventDefault(); }
+    else if (e.key === 'Escape') {
+      if (trayOpen) setTray(false);
+      else if (document.fullscreenElement) document.exitFullscreen();
+    }
+    wakeHint();
+  });
+
+  let dimTimer = null;
+  function wakeHint() {
+    hint.dataset.dim = 'false';
+    clearTimeout(dimTimer);
+    dimTimer = setTimeout(() => { hint.dataset.dim = 'true'; }, 4000);
+  }
+  document.addEventListener('mousemove', wakeHint);
+  wakeHint();
+
+  function fromHash() {
+    const n = parseInt((location.hash || '#1').slice(1), 10);
+    if (Number.isFinite(n) && n >= 1 && n <= slides.length) show(n - 1);
+    else show(0);
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+
+</body>
+</html>

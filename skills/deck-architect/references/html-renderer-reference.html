@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reference scaffold — deck-architect HTML</title>
+
+<!--
+  Pure scaffolding. No content. Copy this file, replace every
+  <!-- content: … --> marker with real slide content, fill in the :root
+  tokens per the design-context block in references/html-renderer.md.
+
+  For a full-deck regeneration (all five visual shapes, rebut table,
+  terminal block, cover/close/appendix), start instead from the most
+  recent lint-passing sample (see samples/deck-architect/README.md) —
+  this scaffold is the minimum, not the template.
+
+  Viewport model: toggle, not scroll. Each slide is position: absolute
+  at inset: 0; the active slide is revealed via .active. There is no
+  document scroll, so fullscreen cannot land on a fractional offset.
+
+  Six NON-NEGOTIABLE scaffolding pieces are encoded below and should
+  NOT be modified:
+    1. Slide viewport model (absolute + .active toggle)
+    2. 3-region flex composition (meta · body · footer), body centered
+    3. Notes tray — fixed bottom sheet; aside.notes is display:none inline
+    4. Keyboard hint pill — always visible, dims after inactivity
+    5. fullscreenchange handler — re-asserts layout after FS toggle
+    6. Print override — all slides render, notes inline, tray/hint hidden
+-->
+
+<!--
+  TODO: replace this block with the documented-assumption design-context
+  block per references/html-renderer.md § "Visual design inheritance".
+  Required fields: feel, audience, viewing ctx, theme, brand words,
+  font pick, palette (with --accent / --accent-ink pair), contrast
+  (with measured ΔL per pair), bans held.
+-->
+
+<style>
+:root {
+  /* PLACEHOLDER palette — replace per the design-context block above. */
+  --paper: oklch(97% 0.010 80);
+  --paper-2: oklch(93% 0.016 78);
+  --ink: oklch(22% 0.020 50);
+  --ink-2: oklch(42% 0.020 55);
+  --muted: oklch(58% 0.020 60);
+  --rule: oklch(82% 0.020 70);
+  --accent: oklch(58% 0.140 40);       /* decoration only — never color: on text */
+  --accent-ink: oklch(36% 0.120 40);   /* on-text variant of the accent hue */
+
+  /* PLACEHOLDER typography — replace per the design-context block above. */
+  --display-font: ui-sans-serif, system-ui, sans-serif;
+  --body-font: ui-serif, Georgia, serif;
+  --mono-font: ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  background: var(--ink);
+  overflow: hidden;                 /* toggle model — no document scroll */
+}
+
+body {
+  font-family: var(--body-font);
+  font-size: clamp(16px, 1.4vw, 20px);
+  color: var(--ink);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── (1) SLIDE VIEWPORT MODEL — NON-NEGOTIABLE ─────────────────────────
+   Each slide is absolute-positioned and layered at the viewport. The
+   active slide is revealed via `.active`. Do NOT use `min-height: 100vh`
+   + document scroll — that re-introduces the fractional-fullscreen bug. */
+.deck { position: fixed; inset: 0; }
+
+.slide {
+  position: absolute; inset: 0;
+  background: var(--paper);
+  padding: clamp(32px, 5.5vh, 72px) clamp(40px, 6vw, 96px);
+  display: none;
+  overflow: hidden;
+}
+
+/* ── (2) 3-REGION FLEX COMPOSITION — NON-NEGOTIABLE ────────────────────
+   The active slide is a 3-region flex column: meta (top, auto) · body
+   (flex: 1, centered) · footer (bottom, auto). The body is centered by
+   the flex row, not by ad-hoc margins, so vertical rhythm is predictable
+   across every slide. */
+.slide.active {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.slide > .meta   { flex: 0 0 auto; }
+.slide > .footer { flex: 0 0 auto; }
+.slide > .body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;          /* vertical center within the row */
+  gap: var(--sp-4);
+  min-height: 0;
+}
+
+/* Backup slide distinct treatment — tint shift, not just a label. */
+.slide[data-role="appendix"] { background: var(--paper-2); }
+
+/* ── Meta row (shrink-protected counter, ellipsed section) ───────────── */
+.meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono-font);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.meta .section {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.meta .counter {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sensible defaults so the scaffold renders with placeholder content.
+   The real deck overrides these per the design-context block. */
+h1 { font-family: var(--display-font); margin: 0; color: var(--ink); }
+p  { margin: 0; color: var(--ink-2); }
+
+/* ── (3) NOTES TRAY — NON-NEGOTIABLE ───────────────────────────────────
+   aside.notes is ALWAYS display:none in its source position — notes must
+   never render inline under a slide. The #notes-tray is a fixed bottom
+   sheet that slides up when presenter mode is on, reading the active
+   slide's notes via #notes-tray-body. */
+aside.notes { display: none; }
+
+#notes-tray {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  max-height: 38vh;
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--sp-5) var(--sp-6) var(--sp-6);
+  transform: translateY(100%);
+  transition: transform 200ms ease-out;
+  z-index: 50;
+  font-family: var(--body-font);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow: auto;
+  box-shadow: 0 -12px 40px -20px rgba(0,0,0,0.5);
+}
+#notes-tray[data-open="true"] { transform: translateY(0); }
+#notes-tray .tray-head {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+  margin-bottom: var(--sp-3);
+}
+
+/* ── (4) KEYBOARD HINT PILL — NON-NEGOTIABLE ───────────────────────────
+   Always visible. Dims to 25% after 4 seconds of inactivity; wakes on
+   mousemove or keypress. Hidden when the notes tray is open, and hidden
+   in print. Documented-in-the-README does not count. */
+#kbd-hint {
+  position: fixed;
+  right: var(--sp-5);
+  bottom: var(--sp-5);
+  padding: 6px 12px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono-font);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  opacity: 0.85;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+  user-select: none;
+  z-index: 40;
+}
+#kbd-hint[data-dim="true"] { opacity: 0.25; }
+body[data-tray-open="true"] #kbd-hint { opacity: 0; }
+#kbd-hint kbd {
+  font-family: inherit;
+  background: rgba(255,255,255,0.12);
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin: 0 2px;
+}
+
+/* ── (6) PRINT OVERRIDE — NON-NEGOTIABLE ───────────────────────────────
+   For PDF export: heights auto, tray/hint hidden, notes render inline
+   under each slide, every slide visible in order. */
+@media print {
+  html, body { height: auto; overflow: visible; background: var(--paper); }
+  .deck { position: static; }
+  .slide {
+    position: static; inset: auto;
+    display: flex !important;
+    flex-direction: column;
+    page-break-after: always;
+    min-height: 100vh;
+    break-inside: avoid;
+  }
+  .slide > .body { justify-content: flex-start; }
+  aside.notes {
+    display: block;
+    margin-top: var(--sp-6);
+    padding-top: var(--sp-4);
+    border-top: 1px dashed var(--rule);
+    font-family: var(--mono-font);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  #notes-tray, #kbd-hint { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- ══════ COVER ═══════════════════════════════════════════════════
+       One <h1>. At most one supporting element (<p class="subtitle"> ≤ 12
+       words, same voice). No meta row. No counter. See html-renderer.md
+       § 1a for the fragmented-cover failure mode. =========================== -->
+  <section class="slide active" data-role="cover">
+    <div class="body">
+      <!-- content: cover <h1> here -->
+      <!-- content: optional single subtitle <p class="subtitle"> here -->
+    </div>
+    <!-- Cover has no <aside class="notes"> — the lint exempts cover slides. -->
+  </section>
+
+  <!-- ══════ MAIN SLIDE (repeat per main-flow slide) ═════════════════
+       data-section is the authoring label rendered in the meta row.
+       counter is NN / DENOM where DENOM = total slides minus the cover.
+       Every main slide has an <aside class="notes"> with ≥ 20 chars of
+       real content — see html-renderer.md § 2. ============================== -->
+  <section class="slide" data-role="main" data-section="NN · section label">
+    <div class="meta">
+      <span class="section">NN · section label</span>
+      <span class="counter">NN / DENOM</span>
+    </div>
+    <div class="body">
+      <!-- content: <h1 class="slide-title"> (declarative, one sentence) -->
+      <!-- content: supporting body — paragraph, list, figure, visual-spec -->
+    </div>
+    <div class="footer"><!-- content: optional footer (source attribution, aside) --></div>
+    <aside class="notes">
+      PLACEHOLDER — replace with the slide's speaker notes from the Phase 3 outline. Minimum 20 characters of real content; never leave this string in a shipping deck.
+    </aside>
+  </section>
+
+  <!-- ══════ APPENDIX DIVIDER (required if any appendix slide exists) ═══
+       No meta row. No counter. One <h1>. Single dramatic pause slide.
+       See html-renderer.md § 3. =========================================== -->
+  <!--
+  <section class="slide" data-role="appendix-divider">
+    <div class="body">
+      <p class="appendix-label">Appendix</p>
+      <h1>Reference material — triggered on question.</h1>
+      <p class="appendix-hint">B1–BN · depth indicators on each slide</p>
+    </div>
+  </section>
+  -->
+
+  <!-- ══════ APPENDIX SLIDE (repeat per backup slide) ═══════════════════
+       Backup layer. Must visibly differ from main (tint handled by CSS
+       [data-role="appendix"] background: var(--paper-2)). Counter
+       continues from main — does NOT reset. See html-renderer.md § 4. ======= -->
+  <!--
+  <section class="slide" data-role="appendix" data-section="B1 · label">
+    <div class="meta">
+      <span class="section">B1 · label</span>
+      <span class="counter">NN / DENOM</span>
+    </div>
+    <div class="body">
+      <h1 class="slide-title">Backup slide title.</h1>
+    </div>
+    <div class="footer"></div>
+    <aside class="notes">Speaker notes for this backup slide.</aside>
+  </section>
+  -->
+
+</div>
+
+<!-- (3) Notes tray — single fixed element, contents swap per active slide. -->
+<div id="notes-tray" role="region" aria-label="Speaker notes" aria-hidden="true">
+  <div class="tray-head" id="notes-tray-head">speaker notes</div>
+  <div id="notes-tray-body"></div>
+</div>
+
+<!-- (4) Keyboard hint pill — the contract, always visible. -->
+<div id="kbd-hint" aria-hidden="true">
+  <kbd>&larr;</kbd><kbd>&rarr;</kbd> slide &middot; <kbd>S</kbd> notes &middot; <kbd>F</kbd> fullscreen
+</div>
+
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const tray = document.getElementById('notes-tray');
+  const trayHead = document.getElementById('notes-tray-head');
+  const trayBody = document.getElementById('notes-tray-body');
+  const hint = document.getElementById('kbd-hint');
+  let index = 0;
+  let trayOpen = false;
+
+  function show(i) {
+    index = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, n) => s.classList.toggle('active', n === index));
+    if (history.replaceState) history.replaceState(null, '', '#' + (index + 1));
+    if (trayOpen) syncTray();
+  }
+
+  function syncTray() {
+    const note = slides[index].querySelector('aside.notes');
+    trayHead.textContent = 'speaker notes · slide ' + (index + 1);
+    trayBody.textContent = note ? note.textContent.trim() : '(no notes for this slide)';
+  }
+
+  function setTray(open) {
+    trayOpen = open;
+    tray.dataset.open = open ? 'true' : 'false';
+    tray.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.dataset.trayOpen = open ? 'true' : 'false';
+    if (open) syncTray();
+  }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+
+  /* (5) fullscreenchange handler — NON-NEGOTIABLE. Some browsers shift
+     scrollTop on the scrolling element when entering/exiting fullscreen.
+     Re-asserting the active slide on the next animation frame keeps the
+     layout locked regardless. */
+  document.addEventListener('fullscreenchange', () => {
+    requestAnimationFrame(() => {
+      document.scrollingElement.scrollTop = 0;
+      show(index);
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { show(index + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(index - 1); e.preventDefault(); }
+    else if (e.key === 'Home') { show(0); e.preventDefault(); }
+    else if (e.key === 'End') { show(slides.length - 1); e.preventDefault(); }
+    else if (e.key === 's' || e.key === 'S') { setTray(!trayOpen); e.preventDefault(); }
+    else if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); e.preventDefault(); }
+    else if (e.key === 'Escape') {
+      if (trayOpen) setTray(false);
+      else if (document.fullscreenElement) document.exitFullscreen();
+    }
+    wakeHint();
+  });
+
+  /* (4) Hint pill auto-dim — 4s of inactivity → 25% opacity. */
+  let dimTimer = null;
+  function wakeHint() {
+    hint.dataset.dim = 'false';
+    clearTimeout(dimTimer);
+    dimTimer = setTimeout(() => { hint.dataset.dim = 'true'; }, 4000);
+  }
+  document.addEventListener('mousemove', wakeHint);
+  wakeHint();
+
+  /* Hash deep-link: #7 → slide 7 (1-indexed), survives reload. */
+  function fromHash() {
+    const n = parseInt((location.hash || '#1').slice(1), 10);
+    if (Number.isFinite(n) && n >= 1 && n <= slides.length) show(n - 1);
+    else show(0);
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+
+</body>
+</html>

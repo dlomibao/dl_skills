@@ -1,7 +1,7 @@
 ---
 name: deck-architect
 description: Use when the user is building, outlining, or revising a slide deck, presentation, talk, pitch, board update, or briefing — any time someone needs to decide what to say, in what order, and what to cut. Use when a draft feels too long, too generic, doesn't land, or sounds AI-generated. Use when someone says "help me make a deck about X" — structure is where decks fail. Do NOT use when the user only wants visual polish on already-finalized content. Style enforcement (slop-phrase list) is English-only; structural rules apply to any language.
-version: 2.5.2
+version: 2.6.0
 license: MIT
 allowed-tools: [WebSearch]
 tested-with: claude-sonnet-4.5+, claude-opus-4+
@@ -364,16 +364,31 @@ Don't render slides in this skill. Hand off to a visual skill with the outline a
 1. **Confirm design context first.** The renderer inherits aesthetic discipline from `/impeccable`. Before generating HTML:
    - Check for `.impeccable.md` in the project root. If present, the palette, typography, and ban-lists are already decided — use them.
    - If absent, either run `/impeccable teach` to gather design context, or make a documented assumption in handoff notes so the user can override.
-2. **Follow `references/html-renderer.md` exactly.** It specifies semantic `data-role` values (`cover`, `main`, `appendix-divider`, `appendix`, `credits`), the `<aside class="notes">` contract, appendix-divider requirement, backup-slide visual treatment, meta-row overflow guards, and the keyboard-nav minimum. Every item on that contract's checklist is a non-negotiable.
-3. **Never collapse speaker notes into slide body.** They render as `<aside class="notes">` and reveal via presenter mode (`S` key). A rendered HTML deck with no `<aside>` elements is a broken handoff — regenerate.
+   - **Whichever path produced the context, verify two non-negotiables before writing CSS:** (a) a one-sentence "feel" describing the aesthetic register using a noun the audience can picture (not three adjectives); (b) contrast math on every token pair that will render as text — body-ink vs paper ≥ 4.5:1, display-ink vs paper ≥ 3:1, and an `--accent` / `--accent-ink` pair where `--accent-ink` is the one allowed on text. If either is missing, fill them in before rendering. See `references/html-renderer.md` § "Visual design inheritance" for the template and the two-tone accent rule. A bright accent used as body text is the canonical failure mode — v7 shipped with `color: var(--accent)` on terminal output and failed readability despite passing the structural lint.
+2. **Start from the reference scaffold.** `skills/deck-architect/references/html-renderer-reference.html` is a minimal two-slide deck that implements the full structural contract end-to-end (viewport model, 3-region composition, notes tray, keyboard hint pill, fullscreenchange handler, print override). Copy it and adapt colors, typography, and content. Do not rebuild the scaffolding from scratch — it is a solved problem with known failure modes. Most first-render bugs come from re-deriving the scaffold.
+3. **Never render speaker notes inline on the slide — not "hidden by default and shown with `S`," not at the bottom of each slide.** Notes render in a dedicated presenter-mode tray (fixed-position bottom sheet, `#notes-tray`) that swaps contents as the presenter navigates. Per-slide inline notes — even when toggled by `S` — destroy slide composition mid-presentation because the slide's vertical rhythm is no longer what the designer committed to. `aside.notes` is `display: none` on screen, `display: block` only inside `@media print`. See `references/html-renderer.md` §8 for the tray contract.
 4. **Never let outline metadata leak onto slides.** `Triggered by:`, `Depth:`, `Hardest sell:`, `[INFERRED — confirm]`, `Pressure-tested as:` — all authoring vocabulary. They're in the outline because the outline is also the handoff spec; they are not slide content. The renderer places them in notes or omits them.
 5. **Render visual specs before lint.** `node skills/deck-architect/scripts/render-visual.js path/to/deck.html` walks the file for `<figure data-visual-spec>` placeholders and swaps each for an inline SVG that reads the deck's own `:root` tokens (accent, ink, paper, rule, typography). This is the unification mechanism — no hardcoded colors or fonts in the SVG. Run it after HTML generation, before the lint.
-6. **Lint before declaring done.** `node skills/deck-architect/scripts/lint-deck.js path/to/deck.html` runs the static checks: missing `data-role`, missing notes asides, missing appendix divider, slide-body commentary bans, impeccable absolute-ban CSS, remaining `data-visual-todo` on main-flow slides. A clean lint is the minimum bar; it does not replace a manual review of the visible design.
+6. **Lint before declaring done.** `node skills/deck-architect/scripts/lint-deck.js path/to/deck.html` runs the static checks: missing `data-role`, missing notes asides, missing appendix divider, slide-body commentary bans, inline `aside.notes` display, missing `#notes-tray`, missing `#kbd-hint`, `requestFullscreen` without a `fullscreenchange` handler, `.slide { min-height: 100vh }` (wrong viewport model), impeccable absolute-ban CSS, remaining `data-visual-todo` on main-flow slides. A clean lint is the minimum bar; it does not replace either checklist below.
 7. **Visible checklist before shipping:**
    - Counter and meta row survive at a 960px viewport (no truncation).
    - Backup slides visibly differ from main (tint, watermark, or typographic shift — not just a label change).
-   - `S` reveals notes; `F` goes fullscreen; `←/→` navigates; `#N` deep-links work after reload.
    - No reflex fonts, no gradient text, no border-left accent stripes, no cards-in-cards.
+   - Keyboard hint pill is visible bottom-right on load.
+8. **Live-presentation dry run** — actually drive the deck before shipping. Each step maps to a bug we've shipped:
+   1. Load the deck → default slide lands centered (not top-anchored).
+   2. `→` five times → every slide lands centered.
+   3. `F` (enter fullscreen) → current slide still centered.
+   4. `→` inside fullscreen → still centered.
+   5. `F` (exit fullscreen) → current slide still centered, no drift.
+   6. `S` → `#notes-tray` slides up with current slide's notes. Head reads `speaker notes · slide N`. Hint pill hides.
+   7. `→` with tray open → tray contents swap live to next slide's notes.
+   8. `Esc` → tray closes, hint pill returns.
+   9. Reload with `#7` in the URL → lands on slide 7.
+   10. `⌘P` / `Ctrl+P` → one slide per page, notes inline under each, no tray, no hint pill.
+
+   Any failure → back to `references/html-renderer.md`. Do not patch it in the moment; the same bug ships next time.
+9. **Feel retrospective.** Before declaring done, re-read the one-sentence `feel` committed to in step 1's documented-assumption block. Open the rendered deck and ask: *does this deck look like that sentence?* If the feel-sentence is "a xerox zine pressed onto cream paper" and the deck reads as "a generic light-mode SaaS template," the palette/typography landed somewhere other than the commitment. Name the gap in handoff notes so the user can redirect before presenting. The feel sentence is a contract — honor it or document the departure.
 
 ---
 
