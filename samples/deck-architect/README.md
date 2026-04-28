@@ -16,7 +16,16 @@ Outline source at [v7-outline.md](v7-outline.md). Open the HTML and press `S` to
 
 **[v5-what-makes-great-skills.html](v5-what-makes-great-skills.html)** and **[v6-what-makes-great-skills.html](v6-what-makes-great-skills.html)** predate the scaffold contract. They remain strong references for content, palette, and typographic choices (v5: cool teal + Unbounded; v6: warm terracotta + Sora), but fail three current lint rules (inline `aside.notes` display, no `#notes-tray`, no `#kbd-hint`). Do not copy them as templates — start from the reference scaffold instead.
 
-## The progression — how we got to v7
+## What the scaffold isolates: v8 and v9
+
+Two follow-on generations against the same 2.6.0 contract, each demonstrating a different axis the scaffold lets the author vary independently.
+
+- **[v8-what-makes-great-skills.html](v8-what-makes-great-skills.html)** — *register-isolation.* Same outline as v7 (validated finding-set, identical four moves) re-rendered in a different visual register: indigo ink on oat-milk paper under tungsten-amber accent (Syne / Spectral / Martian Mono). The scaffold makes content–visual separation cheap; v8 changes only the design-context block.
+- **[v9-what-makes-great-skills.html](v9-what-makes-great-skills.html)** — *content fork.* Different outline (pyramid spine; Cialdini "if you have a skill … you must use it" as the STAR), different opening hook (93k stars in five months), fifth distinct visual register. Demonstrates the scaffold travels with arbitrary content.
+
+Both lint clean on all 17 checks.
+
+## The progression — how we got here
 
 Each version was a fresh end-to-end subagent run against a different skill version. Every regression the prior version surfaced drove the next skill bump.
 
@@ -28,7 +37,9 @@ Each version was a fresh end-to-end subagent run against a different skill versi
 | [v4](v4-what-makes-great-skills.html) | 2.5.0 | quotable ("Four moves that turn a skill into a system.") | A, 93 | Structured visual specs + shipped renderer — chain is finally SVG |
 | [v5](v5-what-makes-great-skills.html) | 2.5.1 | rhetorical ("Great skills refuse. Average skills suggest.") | A+, 97 | Cover echoes close; hyphen-wrap fixes flow overflow |
 | [v6](v6-what-makes-great-skills.html) | 2.5.2 | "Weak skills describe. Strong skills forbid." | A+, 97 | Graph label wrap + budget warnings at render time |
-| **[v7](v7-what-makes-great-skills.html)** | **2.6.0** | **"Your skills mostly say do. The best ones say don't — and check the don't held."** | **PASS** | **Presenter-mode scaffold contract: notes tray, kbd-hint pill, fullscreenchange handler, print override — three production bugs fixed** |
+| [v7](v7-what-makes-great-skills.html) | 2.6.0 | "Your skills mostly say do. The best ones say don't — and check the don't held." | PASS | Presenter-mode scaffold contract: notes tray, kbd-hint pill, fullscreenchange handler, print override — three production bugs fixed |
+| [v8](v8-what-makes-great-skills.html) | 2.6.0 | "Weak skills describe. Strong skills forbid." (v7 outline, indigo-on-oat register) | PASS | Same outline as v7 re-rendered in a different register — proves the scaffold isolates visual variation cleanly |
+| **[v9](v9-what-makes-great-skills.html)** | **2.6.0** | **"What makes impeccable and superpowers such great skills."** | **PASS** | **Different outline (contracts-not-tutorials reframe, Cialdini STAR), fifth visual register — proves the scaffold travels with arbitrary content** |
 
 Each HTML file has the corresponding `-outline.md` alongside it showing the Phase 8 source the subagent produced.
 
